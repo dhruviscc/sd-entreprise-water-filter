@@ -1,0 +1,11 @@
+/* Full page layout */
+.layout {
+  display: flex;
+}
+
+/* Main content */
+.content {
+  flex: 1;
+  padding: 10px;
+
+}

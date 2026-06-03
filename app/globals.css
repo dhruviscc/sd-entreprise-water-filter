@@ -1,0 +1,322 @@
+@import "tailwindcss";
+
+@layer components {
+  .input {
+    width: 100%;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: #334155;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .input:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 2px rgb(2 132 199 / 0.12);
+  }
+}
+
+:root {
+  --background: #ffffff; /* clean water themed background */
+ /* clean water themed background */
+  --foreground: #334155; /* slate-700 for text */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  overflow-x: hidden;
+}
+
+.site-shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* Premium webkit scrollbars styling representing pure water blue */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f0f9ff;
+}
+::-webkit-scrollbar-thumb {
+  background: #bae6fd;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #7dd3fc;
+}
+
+/* Custom Keyframe Animations for Hero Slider content on transition */
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes zoomFadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-slide-up-fade {
+  animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-zoom-fade-in {
+  animation: zoomFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+
+@keyframes float3d {
+  0%,100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(6deg);
+  }
+}
+
+.animate-float-3d {
+  animation: float3d 8s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin 30s linear infinite;
+}
+
+
+/* Delay classes to stagger elements */
+.delay-150 {
+  animation-delay: 150ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+/* Infinite Wave Animation */
+@keyframes waveAnimation {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-wave-motion {
+  animation: waveAnimation 12s linear infinite;
+}
+
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-25%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-wave {
+  animation: wave 14s ease-in-out infinite alternate;
+}
+
+/* Background Blob Animations */
+@keyframes blobFloat1 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(40px, -60px) scale(1.1) rotate(5deg); }
+  66% { transform: translate(-30px, 30px) scale(0.9) rotate(-5deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+}
+@keyframes blobFloat2 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(-40px, 60px) scale(1.15) rotate(-5deg); }
+  66% { transform: translate(30px, -30px) scale(0.85) rotate(5deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+}
+@keyframes blobFloat3 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(60px, 30px) scale(0.9) rotate(5deg); }
+  66% { transform: translate(-40px, -40px) scale(1.1) rotate(-5deg); }
+  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+}
+
+/* 3D Glassmorphism Utilities */
+.glass-3d {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 
+    0 8px 32px 0 rgba(31, 38, 135, 0.05),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
+  transform: translateZ(0);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.glass-3d:hover {
+  box-shadow: 
+    0 15px 35px 0 rgba(31, 38, 135, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.3);
+  transform: translateY(-5px) translateZ(10px);
+}
+
+.card-3d-wrapper {
+  perspective: 1000px;
+}
+
+.card-3d-inner {
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.card-3d-wrapper:hover .card-3d-inner {
+  transform: rotateY(10deg) rotateX(5deg);
+}
+
+/* Light Theme Animated Gradient Background */
+.bg-animated-light {
+  background: linear-gradient(-45deg, #f8fafc, #f1f5f9, #e2e8f0, #ffffff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Float Animation for 3D elements */
+@keyframes float-3d {
+  0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+  50% { transform: translateY(-10px) rotateX(5deg) rotateY(5deg); }
+  100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+}
+.animate-float-3d {
+  animation: float-3d 6s ease-in-out infinite;
+}
+
+/* ========== Bubble Background Effect ========== */
+@keyframes bubbleRise {
+  0% {
+    transform: translateY(0) translateX(0) scale(0.3);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-50vh) translateX(var(--wobble, 40px)) scale(0.8);
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120vh) translateX(calc(var(--wobble, 40px) * -0.5)) scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes bubbleShimmer {
+  0%, 100% {
+    box-shadow: 
+      inset -2px -3px 6px rgba(255,255,255,0.5),
+      inset 2px 2px 6px rgba(14,165,233,0.08),
+      0 0 8px rgba(14,165,233,0.06);
+  }
+  50% {
+    box-shadow: 
+      inset -3px -4px 8px rgba(255,255,255,0.7),
+      inset 3px 3px 8px rgba(14,165,233,0.12),
+      0 0 14px rgba(14,165,233,0.1);
+  }
+}
+
+.bubble-particle {
+  position: absolute;
+  bottom: -60px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(186, 230, 253, 0.4) 30%,
+    rgba(56, 189, 248, 0.2) 70%,
+    rgba(14, 165, 233, 0.1) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 
+    inset -2px -2px 6px rgba(14, 165, 233, 0.15),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.5),
+    0 0 6px rgba(14, 165, 233, 0.1);
+  animation: bubbleRise linear infinite both;
+  will-change: transform, opacity;
+}
+
+.bubble-particle::before {
+  content: '';
+  position: absolute;
+  top: 15%;
+  left: 20%;
+  width: 35%;
+  height: 25%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  filter: blur(1px);
+  transform: rotate(-45deg);
+}
+
+.bubble-large {
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgba(255, 255, 255, 0.6) 0%,
+    rgba(186, 230, 253, 0.3) 30%,
+    rgba(56, 189, 248, 0.15) 70%,
+    rgba(14, 165, 233, 0.05) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    inset -4px -4px 10px rgba(14, 165, 233, 0.1),
+    inset 4px 4px 10px rgba(255, 255, 255, 0.4),
+    0 0 10px rgba(14, 165, 233, 0.08);
+  animation: bubbleRise linear infinite both, bubbleShimmer 4s ease-in-out infinite;
+}
+
+.bubble-large::before {
+  width: 30%;
+  height: 20%;
+  background: rgba(255, 255, 255, 0.4);
+}
