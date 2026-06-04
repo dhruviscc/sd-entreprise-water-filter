@@ -475,6 +475,18 @@ export default function HomePage() {
     }
   }, [isVideoTransitioning]);
 
+  const handlePrev = () => {
+    if (videoReviews.length <= itemsVisible) return;
+    setIsVideoTransitioning(true);
+    setVideoIdx((prev) => (prev === 0 ? Math.max(videoReviews.length - 1, 0) : prev - 1));
+  };
+
+  const handleNext = () => {
+    if (videoReviews.length <= itemsVisible) return;
+    setIsVideoTransitioning(true);
+    setVideoIdx((prev) => prev + 1);
+  };
+
   // --- Customer Reviews Slider State ---
   const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
   const [isReviewPaused, setIsReviewPaused] = useState(false);
@@ -1060,48 +1072,44 @@ export default function HomePage() {
                 <div
                   key={`${review.id}-${i}`}
                   className="shrink-0 transition-all duration-500"
-                  style={{ width: `${100 / itemsVisible}%`, }}
+                  style={{ width: `${100 / itemsVisible}%` }}
                 >
-                  <div className="group  rounded-2xl p-4">
-                    <div className="relative  rounded-xl overflow-hidden shadow-md w-full  h-[450px]">
+                  <div className="group rounded-2xl p-4">
+                    <div className="relative rounded-xl overflow-hidden shadow-md w-full h-[450px]">
                       <video
                         src={review.video_url}
                         className="absolute inset-0 w-full h-full object-cover"
-
                         muted
                         loop
                         playsInline
                         autoPlay
-
                       />
                     </div>
-
                   </div>
                 </div>
               ))}
             </motion.div>
 
-            {videoReviews.length > itemsVisible && (
-              /* Pagination Dots */
-              <div className="flex flex-wrap justify-center items-center gap-2 mt-10 sm:mt-10 lg:mt-10 px-4">
-                {videoReviews.map((_, i) => (
-                  <button
-                    key={`dot-${i}`}
-                    onClick={() => {
-                      setIsVideoTransitioning(true);
-                      setVideoIdx(i);
-                    }}
-                    className={`rounded-full transition-all duration-300 cursor-pointer ${i === videoIdx % videoReviews.length
-                        ? "bg-sky-500 w-6 h-2"
-                        : "bg-slate-300 w-2 h-2"
-                      }`}
-                    aria-label={`Go to slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-            )}
+            <div className="flex justify-center md:justify-end gap-3 mt-6">
+              <button
+                onClick={handlePrev}
+                className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
+                aria-label="Previous video"
+              >
+                <ChevronLeft />
+              </button>
+
+              <button
+                onClick={handleNext}
+                className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
+                aria-label="Next video"
+              >
+                <ChevronRight />
+              </button>
+            </div>
 
           </div>
+          
         </div>
 
       </section>
