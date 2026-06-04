@@ -39,16 +39,16 @@ export default function Footer() {
         </svg>
       </div>
       {/* Upper Footer section */}
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-16  ">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-4 gap-10"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-10"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
         >
           {/* Column 1: Company Profile */}
-          <motion.div variants={containerVariants} className="space-y-4 col-span-2 lg:col-span-1">
+          <motion.div variants={containerVariants} className="space-y-6">
             <Link href="/" className="flex items-center group shrink-0">
               <Image
                 src="/logo.png"
@@ -56,160 +56,121 @@ export default function Footer() {
                 width={180}
                 height={60}
                 priority
-                className="object-contain transition-all duration-500 group-hover:scale-105 h-15 sm:h-13 md:h-14 lg:h-20 w-auto"
+                className="object-contain transition-all duration-500 group-hover:scale-105 h-14 sm:h-16 w-auto"
               />
             </Link>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
               Leading water purification experts in Gujarat. Dedicated to delivering state-of-the-art domestic, commercial, and industrial RO systems, water softeners, and annual maintenance services.
             </p>
-            <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">
-              Working Hours:
-              <span className="block text-slate-400 normal-case mt-1 font-normal">
-                Monday - Saturday: 9:00 AM - 7:00 PM
-              </span>
-              <span className="block text-slate-400 normal-case font-normal">
-                Sunday: Emergency Support Only
-              </span>
+            <div className="space-y-2">
+              <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">Working Hours</div>
+              <p className="text-sm text-slate-400">Mon - Sat: 9:00 AM - 7:00 PM</p>
+              <p className="text-sm text-slate-400">Sun: Emergency Support Only</p>
             </div>
           </motion.div>
 
-
-          {/* Column 2: Quick Directory Links */}
-          {/* <motion.div variants={containerVariants} className="space-y-4 ">
+          {/* Column 2: Quick Links */}
+          <motion.div variants={containerVariants} className="space-y-6">
             <h4 className="text-white text-base font-bold tracking-wider relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-sky-500">
-              Quick Links
+              Quick Navigation
             </h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/" className="hover:text-sky-400 transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/services" className="hover:text-sky-400 transition-colors">
-                  Services
-                </Link>
-              </li>
-              <li>
-                <Link href="/products" className="hover:text-sky-400 transition-colors">
-                  Products
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="hover:text-sky-400 transition-colors">
-                  Blogs
-                </Link>
-              </li>
-              <li>
-                <Link href="/faq" className="hover:text-sky-400 transition-colors">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-sky-400 transition-colors">
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
-          </motion.div> */}
-    <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.6 }}
-            className="flex flex-col items-center"
-          >
-            <h4 className="text-white text-base font-bold tracking-wider relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-sky-500">
-              Quick Links
-            </h4>
-
-            <ul className="space-y-3 mt-4 ">
+            <ul className="space-y-3 mt-4">
               {[
                 { name: 'Home', href: '/' },
                 { name: 'Services', href: '/services' },
                 { name: 'Products', href: '/products' },
                 { name: 'FAQ', href: '/faq' },
                 { name: 'Blog', href: '/blog' },
-              
+                { name: 'Contact Us', href: '/contact' },
               ].map((link, index) => (
-                <motion.li
-                  key={link.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.08 }}
-                >
+                <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-blue-500 transition-all duration-300 text-sm font-medium flex items-center gap-2 group"
+                    className="text-slate-400 hover:text-sky-400 transition-all duration-300 text-sm font-medium flex items-center gap-2 group"
                   >
-                    <span className="w-0 h-[1px] bg-blue-500 transition-all duration-300 group-hover:w-3 ml-[-30%]" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-sky-500/40 group-hover:bg-sky-500 transition-all" />
                     {link.name}
                   </Link>
-                </motion.li>
+                </li>
               ))}
             </ul>
           </motion.div>
+
           {/* Column 3: Contact details */}
-          <motion.div variants={containerVariants} className="space-y-4">
+          <motion.div variants={containerVariants} className="space-y-6">
             <h4 className="text-white text-base font-bold tracking-wider relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-sky-500">
               Get In Touch
             </h4>
-            <ul className="space-y-3.5 text-sm text-slate-400">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />
+            <ul className="space-y-4 text-sm text-slate-400">
+              <li className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
+                  <MapPin className="w-4 h-4 text-sky-500" />
+                </div>
                 <span>
-                  Plot No. 12, GIDC Phase 3,
-                  <br />
+                  Plot No. 12, GIDC Phase 3,<br />
                   Naroda, Ahmedabad, Gujarat - 382330
                 </span>
               </li>
               <li>
-                <a href="tel:+919999999999" className="flex items-center gap-2.5 hover:text-sky-400 transition-colors">
-                  <Phone className="w-4 h-4 text-sky-500" />
-                  <span>+91 99999 99999</span>
+                <a href="tel:+919999999999" className="flex items-center gap-3 hover:text-sky-400 transition-all group">
+                  <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 group-hover:border-sky-500/30">
+                    <Phone className="w-4 h-4 text-sky-500" />
+                  </div>
+                  <span className="font-medium">+91 99999 99999</span>
                 </a>
               </li>
               <li>
-                <a href="mailto:info@sdenterprise.com" className="flex items-center gap-2.5 hover:text-sky-400 transition-colors">
-                  <Mail className="w-4 h-4 text-sky-500" />
-                  <span>info@sdenterprise.com</span>
+                <a href="mailto:info@sdenterprise.com" className="flex items-center gap-3 hover:text-sky-400 transition-all group">
+                  <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 group-hover:border-sky-500/30">
+                    <Mail className="w-4 h-4 text-sky-500" />
+                  </div>
+                  <span className="font-medium">info@sdenterprise.com</span>
                 </a>
               </li>
             </ul>
           </motion.div>
 
-          {/* Column 4: Legal Information */}
-          <motion.div variants={containerVariants} className="space-y-4 col-span-2 lg:col-span-1">
+          {/* Column 4: Legal & Newsletter */}
+          <motion.div variants={containerVariants} className="space-y-6">
             <h4 className="text-white text-base font-bold tracking-wider relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-sky-500">
-              Legal Information
+              Legal Info
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-3 text-sm">
               <li>
-                <Link href="#" className="hover:text-sky-400 transition-colors ">
+                <Link href="#" className="text-slate-400 hover:text-sky-400 transition-colors flex items-center gap-2">
+                  <span className="w-1.5 h-[1px] bg-slate-600" />
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="hover:text-sky-400 transition-colors">
+                <Link href="#" className="text-slate-400 hover:text-sky-400 transition-colors flex items-center gap-2">
+                  <span className="w-1.5 h-[1px] bg-slate-600" />
                   Terms of Service
                 </Link>
               </li>
             </ul>
-
+            
+            
           </motion.div>
         </motion.div>
-
-
       </div>
 
       {/* Lower Copyright section */}
-      <div className="border-t border-slate-800 bg-slate-250  py-6 text-center text-xs text-slate-500">
-        <div className="max-w-full mx-auto px-4 sm:px-6 text-slate-300 lg:px-8 flex flex-col sm:flex-row items-center justify-center gap-2">
-          <p>© {new Date().getFullYear()} SD Enterprise. All rights reserved.</p>
-
+      <div className="border-t border-slate-800 bg-slate-900/50 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-xs text-slate-500 font-medium">
+              © {new Date().getFullYear()} SD Enterprise. Built for excellence in water treatment.
+            </p>
+            <div className="flex items-center gap-6 text-[10px] font-bold text-slate-600 uppercase tracking-widest">
+              <span>All Rights Reserved</span>
+              <span className="w-1 h-1 rounded-full bg-slate-800" />
+              <span>Gujarat, India</span>
+            </div>
+          </div>
         </div>
       </div>
-
     </footer>
+
   );
 }

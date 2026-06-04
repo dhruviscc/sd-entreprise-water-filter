@@ -11,13 +11,13 @@ import { toast } from "sonner";
 
 
 export default function UsersPage() {
-    const PAGE_SIZE = 10;
+  
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
     const [isAdmin, setIsAdmin] = useState(false);
+
     const [loggedInUser, setLoggedInUser] = useState<any>(null);
     const router = useRouter();
 
@@ -103,20 +103,9 @@ export default function UsersPage() {
         fetchUsers(debouncedSearch);
     }, [debouncedSearch]);
 
-    const totalPages = Math.max(1, Math.ceil(users.length / PAGE_SIZE));
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
-    const paginatedUsers = users.slice(startIndex, startIndex + PAGE_SIZE);
 
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [debouncedSearch]);
 
-    useEffect(() => {
-        if (currentPage > totalPages) {
-            setCurrentPage(totalPages);
-        }
-    }, [currentPage, totalPages]);
-
+   
     // Add User
     useEffect(() => {
         if (!isResetModalOpen) {
@@ -190,7 +179,7 @@ export default function UsersPage() {
     const openEditModal = (user: any) => {
         setEditingUser(user);
         setEditName(user.name);
-        setEditEmail(user.email) ;
+        setEditEmail(user.email);
         setEditMobile(user.mobile || "");
         setEditRole(user.role || "user");
         setEditStatus(user.status || "active");
@@ -218,20 +207,19 @@ export default function UsersPage() {
     };
 
     return (
-        <div className="p-[10px] text-slate-800 bg-slate-50 min-h-screen  rounded-md">
-            <div className="flex justify-between items-center mb-4">
-
-                <div className="search-center">
-                    <div className="relative w-fit">
+        <div className="space-y-4 sm:space-y-6 bg-slate-50 min-h-screen">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
+                <div className="w-full lg:w-auto">
+                    <div className="relative flex-1 sm:w-80">
                         <input
-                            className="py-[11px] pr-[40px] pl-[16px] w-[320px] rounded-lg border border-gray-200 outline-none bg-white text-sm transition-all focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                            className="w-full py-2.5 pr-[40px] pl-[16px] rounded-xl border border-slate-200 outline-none bg-white text-sm transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 shadow-sm"
                             placeholder="Search Users..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
                         {search && (
                             <button
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-none border-none cursor-pointer text-sky-600 flex items-center justify-center p-1 rounded-full transition-all hover:bg-[#f1f5f9] hover:text-[#1e293b]"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                                 onClick={() => setSearch("")}
                                 type="button"
                             >
@@ -241,23 +229,116 @@ export default function UsersPage() {
                     </div>
                 </div>
 
-                <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+             <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-3">
 
-                    <button className="px-5 py-2 border-none rounded-[10px] text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-semibold cursor-pointer transition-all flex items-center gap-2 whitespace-nowrap hover:bg-sky-700 hover:from-sky-700 via-sky-700 to-slate-700 transform transition duration-300 ease-in-out hover:scale-105" onClick={() => setIsAddModalOpen(true)}>
-                        <Plus size={18} /> Add User
+                    <button
+                        onClick={() => setIsAddModalOpen(true)}
+                        className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
+                    >
+                        <Plus size={18} /> <span>Add User</span>
                     </button>
-
                 </div>
             </div>
 
+      {/* Users Table */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
+                        <tr>
+                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">#</th>
+                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Name</th>
+                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Email</th>
+                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Mobile</th>
+                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Role</th>
+                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Status</th>
+                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {loading ? (
+                            <tr>
+                                <td colSpan={7} className="text-center p-[48px] text-sky-600">
+                                    Loading users...
+                                </td>
+                            </tr>
+                        ) : users.length === 0 ? (
+                            <tr>
+                                <td colSpan={7} className="text-center p-[48px] text-sky-600">
+                                    No users found. Start by adding one above.
+                                </td>
+                            </tr>
+                        ) : (
+                            users.map((user, index) => (
+                                <tr key={user.id} className="hover:bg-[#f1f5f9]">
+                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{index + 1}</td>
+
+                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]" style={{ fontWeight: 500 }}>{user.name}</td>
+                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{user.email}</td>
+                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{user.mobile || "-"}</td>
+                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">
+                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-semibold bg-[#f1f5f9] text-[#475569]">{user.role}</span>
+                                    </td>
+                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">
+                                        <button
+                                            className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${user.status === 'active' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}
+                                            onClick={() => isAdmin && handleToggleStatus(user.id, user.status)}
+                                            style={{ cursor: isAdmin ? 'pointer' : 'default' }}
+                                        >
+                                            {user.status === 'active' ? 'Active' : 'Inactive'}
+                                        </button>
+                                    </td>
+                                    <td className="px-4 py-[14px] text-sm  border-b border-[#e2e8f0] text-[#1e293b] flex gap-2">
+
+                                        <>
+                                            <button
+                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-slate-700 bg-[#f8fafc] hover:bg-[#e2e8f0] cursor-pointer transition-all"
+                                                title="Reset Password"
+                                                onClick={() => {
+                                                    setResetUser(user);
+                                                    setResetPassword("");
+                                                    setResetConfirmPassword("");
+                                                    setIsResetModalOpen(true);
+                                                }}
+                                            >
+                                                <Key size={16} />
+                                            </button>
+                                            <button
+                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-sky-600 bg-[#eff6ff] hover:bg-[#dbeafe] cursor-pointer transition-all"
+                                                title="Edit User"
+                                                onClick={() => openEditModal(user)}
+                                            >
+                                                <Edit size={16} />
+                                            </button>
+                                            <button
+                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-[#ef4444] bg-[#fef2f2] hover:bg-[#fee2e2] cursor-pointer transition-all"
+                                                title="Delete User"
+                                                onClick={() => openDeleteModal(user)}
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
+                                        </>
+
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+
+
             {/* Add User Modal */}
             {isAddModalOpen && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
-                    <div className="bg-white p-[28px]  rounded-[16px] w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-lg animate-in slide-in-from-bottom-2 duration-200">
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                            <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>Create New User</h3>
-                            <button onClick={() => setIsAddModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
+                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
+                    <div className="bg-white p-6 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-slate-800">Create New User</h3>
+                            <button onClick={() => setIsAddModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 transition-colors">
+                                <X size={20} />
+                            </button>
                         </div>
+
                         <form className="flex flex-col gap-3.5" style={{ flexDirection: "column" }} onSubmit={handleAddUser}>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col gap-[5px]">
@@ -329,126 +410,19 @@ export default function UsersPage() {
                 </div>
             )}
 
-            {/* Users Table */}
-            <div className="bg-white rounded-[16px] border border-[#e2e8f0] shadow-sm overflow-hidden overflow-x-auto">
-                <table className="w-full border-collapse">
-                    <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
-                        <tr>
-                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">#</th>
-                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Name</th>
-                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Email</th>
-                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Mobile</th>
-                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Role</th>
-                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Status</th>
-                            <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan={7} className="text-center p-[48px] text-sky-600">
-                                    Loading users...
-                                </td>
-                            </tr>
-                        ) : users.length === 0 ? (
-                            <tr>
-                                <td colSpan={7} className="text-center p-[48px] text-sky-600">
-                                    No users found. Start by adding one above.
-                                </td>
-                            </tr>
-                        ) : (
-                            paginatedUsers.map((user, index) => (
-                                <tr key={user.id} className="hover:bg-[#f1f5f9]">
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{startIndex + index + 1}</td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]" style={{ fontWeight: 500 }}>{user.name}</td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{user.email}</td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{user.mobile || "-"}</td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">
-                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-semibold bg-[#f1f5f9] text-[#475569]">{user.role}</span>
-                                    </td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">
-                                        <button
-                                            className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${user.status === 'active' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}
-                                            onClick={() => isAdmin && handleToggleStatus(user.id, user.status)}
-                                            style={{ cursor: isAdmin ? 'pointer' : 'default' }}
-                                        >
-                                            {user.status === 'active' ? 'Active' : 'Inactive'}
-                                        </button>
-                                    </td>
-                                    <td className="px-4 py-[14px] text-sm  border-b border-[#e2e8f0] text-[#1e293b] flex gap-2">
-
-                                        <>
-                                            <button
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-slate-700 bg-[#f8fafc] hover:bg-[#e2e8f0] cursor-pointer transition-all"
-                                                title="Reset Password"
-                                                onClick={() => {
-                                                    setResetUser(user);
-                                                    setResetPassword("");
-                                                    setResetConfirmPassword("");
-                                                    setIsResetModalOpen(true);
-                                                }}
-                                            >
-                                                <Key size={16} />
-                                            </button>
-                                            <button
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-sky-600 bg-[#eff6ff] hover:bg-[#dbeafe] cursor-pointer transition-all"
-                                                title="Edit User"
-                                                onClick={() => openEditModal(user)}
-                                            >
-                                                <Edit size={16} />
-                                            </button>
-                                            <button
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-[#ef4444] bg-[#fef2f2] hover:bg-[#fee2e2] cursor-pointer transition-all"
-                                                title="Delete User"
-                                                onClick={() => openDeleteModal(user)}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </>
-
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-            </div>
-
-            {users.length > 0 && (
-                <div className="mt-[14px] flex items-center justify-between gap-2.5 flex-wrap">
-                    <p className="m-0 text-[13px] text-sky-600">
-                        Showing {startIndex + 1} to {Math.min(startIndex + PAGE_SIZE, users.length)} of {users.length}
-                    </p>
-                    <div className="flex items-center gap-2.5">
-                        <button
-                            className="pagination-btn"
-                            disabled={currentPage === 1}
-                            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                        >
-                            Previous
-                        </button>
-                        <span className="text-[13px] text-sky-600 font-semibold">
-                            Page {currentPage} of {totalPages}
-                        </span>
-                        <button
-                            className="pagination-btn"
-                            disabled={currentPage === totalPages}
-                            onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
-                        >
-                            Next
-                        </button>
-                    </div>
-                </div>
-            )}
+      
 
             {/* Edit Modal */}
             {isEditModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-lg animate-in slide-in-from-bottom-2 duration-200">
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                            <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>Edit User</h3>
-                            <button onClick={() => setIsEditModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
+                    <div className="bg-white p-6 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-slate-800">Edit User</h3>
+                            <button onClick={() => setIsEditModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 transition-colors">
+                                <X size={20} />
+                            </button>
                         </div>
+
                         <div className="flex flex-col gap-3.5" style={{ flexDirection: "column" }}>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col gap-[5px]">
@@ -497,7 +471,7 @@ export default function UsersPage() {
                                     </select>
                                 </div>
                             </div>
-                          
+
                         </div>
                         <div className="flex gap-3 mt-6">
                             <button className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b] " onClick={() => setIsEditModalOpen(false)}>
@@ -514,15 +488,16 @@ export default function UsersPage() {
             {/* Reset Password Modal */}
             {isResetModalOpen && resetUser && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-lg animate-in slide-in-from-bottom-2 duration-200">
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                            <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>
-                                Reset Password for {resetUser.name}
+                    <div className="bg-white p-6 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-slate-800">
+                                Reset Password
                             </h3>
-                            <button onClick={() => setIsResetModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
-                                <X size={18} />
-                                </button>
+                            <button onClick={() => setIsResetModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 transition-colors">
+                                <X size={20} />
+                            </button>
                         </div>
+
                         <div className="flex flex-col gap-3.5" style={{ flexDirection: "column" }}>
                             <div className="flex flex-col gap-[5px]">
                                 <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">New Password *</label>
@@ -600,7 +575,8 @@ export default function UsersPage() {
             {/* Delete Confirmation Modal */}
             {isDeleteModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in slide-in-from-bottom-2 duration-200 text-center">
+                    <div className="bg-white p-8 rounded-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto shadow-xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out text-center">
+
                         <div style={{ marginBottom: "20px" }}>
                             <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
                                 <Trash2 size={30} />

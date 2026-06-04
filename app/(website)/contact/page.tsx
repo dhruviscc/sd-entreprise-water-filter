@@ -16,24 +16,46 @@ export default function ContactUsPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      setFormData({
-        fullName: "",
-        mobileNumber: "",
-        emailAddress: "",
-        serviceInterest: "General Enquiry",
-        message: "",
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          full_name: formData.fullName,
+          mobile_number: formData.mobileNumber,
+          email_address: formData.emailAddress,
+          service_interest: formData.serviceInterest,
+          message: formData.message,
+        }),
       });
-      // Reset success message after 5 seconds
-      setTimeout(() => setIsSuccess(false), 5000);
-    }, 1500);
+
+      if (res.ok) {
+        setIsSuccess(true);
+        setFormData({
+          fullName: "",
+          mobileNumber: "",
+          emailAddress: "",
+          serviceInterest: "General Enquiry",
+          message: "",
+        });
+        // Reset success message after 5 seconds
+        setTimeout(() => setIsSuccess(false), 5000);
+      } else {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to send request");
+      }
+    } catch (err: any) {
+      console.error("Contact Form Error:", err);
+      // You could add a toast here if you have a toast provider
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -81,32 +103,28 @@ export default function ContactUsPage() {
               <ScrollReveal variant="fadeInLeft" duration={800}>
                 <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 lg:p-8 h-full">
 
-                  <h2 className="text-2xl font-bold text-slate-800 pb-4 border-b">
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-800 tracking-wide pb-3 border-b border-slate-200 mb-6">
                     Customer Support Desk
                   </h2>
 
-                  <p className="mt-5 text-slate-600 leading-7">
-                    We respond promptly to all calls, messages and enquiries.
-                    Our experts are ready to assist you with installation,
-                    maintenance and water treatment solutions.
-                  </p>
 
-                  <div className="mt-8 space-y-4">
+
+                  <div className="mt-5 space-y-4">
 
                     {/* Phone */}
                     <a
                       href="tel:+919999999999"
-                      className="flex gap-4 p-4 rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
+                      className="flex gap-4 p-2 rounded-xl border  border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
                     >
-                      <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
-                        <Phone className="w-5 h-5 text-emerald-600" />
+                      <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
+                        <Phone className="w-5 h-5 text-sky-600" />
                       </div>
 
                       <div>
                         <p className="text-xs uppercase tracking-wider text-slate-400">
                           Call Support
                         </p>
-                        <p className="font-bold text-slate-800 text-lg">
+                        <p className="font-bold text-slate-800 text-sm">
                           +91 99999 99999
                         </p>
                       </div>
@@ -117,7 +135,7 @@ export default function ContactUsPage() {
                       href="https://wa.me/919999999999"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex gap-4 p-4 rounded-xl border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
+                      className="flex gap-4 p-2 rounded-xl border items-center border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
                     >
                       <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
                         <MessageSquare className="w-5 h-5 text-emerald-600" />
@@ -127,14 +145,14 @@ export default function ContactUsPage() {
                         <p className="text-xs uppercase tracking-wider text-slate-400">
                           WhatsApp Support
                         </p>
-                        <p className="font-bold text-emerald-600">
+                        <p className="font-bold text-emerald-600 text-sm">
                           Chat with Service Team
                         </p>
                       </div>
                     </a>
 
                     {/* Email */}
-                    <div className="flex gap-4 p-4 rounded-xl border border-slate-200">
+                    <div className="flex gap-4 p-2 items-center rounded-xl border border-slate-200">
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <Mail className="w-5 h-5 text-sky-600" />
                       </div>
@@ -143,14 +161,14 @@ export default function ContactUsPage() {
                         <p className="text-xs uppercase tracking-wider text-slate-400">
                           Email Desk
                         </p>
-                        <p className="font-bold text-slate-800">
+                        <p className="font-bold text-slate-800 text-sm">
                           info@sdenterprise.com
                         </p>
                       </div>
                     </div>
 
                     {/* Address */}
-                    <div className="flex gap-4 p-4 rounded-xl border border-slate-200">
+                    <div className="flex gap-4 p-2 items-center rounded-xl border border-slate-200">
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <MapPin className="w-5 h-5 text-sky-600" />
                       </div>
@@ -159,7 +177,7 @@ export default function ContactUsPage() {
                         <p className="text-xs uppercase tracking-wider text-slate-400">
                           Office Address
                         </p>
-                        <p className="font-medium text-slate-700">
+                        <p className=" text-slate-800 text-sm">
                           Plot No. 12, GIDC Phase 3,
                           Naroda, Ahmedabad,
                           Gujarat - 382330
@@ -168,7 +186,7 @@ export default function ContactUsPage() {
                     </div>
 
                     {/* Hours */}
-                    <div className="flex gap-4 p-4 rounded-xl border border-slate-200">
+                    <div className="flex gap-4 px-2 py-4 items-center rounded-xl border border-slate-200">
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <Clock className="w-5 h-5 text-sky-600" />
                       </div>
@@ -177,7 +195,7 @@ export default function ContactUsPage() {
                         <p className="text-xs uppercase tracking-wider text-slate-400">
                           Business Hours
                         </p>
-                        <p className="font-medium text-slate-700">
+                        <p className="text-slate-800 text-sm">
                           Mon - Sat : 9:00 AM - 7:00 PM
                         </p>
                       </div>
@@ -190,8 +208,8 @@ export default function ContactUsPage() {
 
             {/* RIGHT PANEL */}
             <div>
-              <ScrollReveal variant="fadeInRight" duration={800}>
-                <div className="glass-3d bg-white/70 rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm card-3d-inner">
+              <ScrollReveal  >
+                <div className=" bg-white/70 rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm card-3d-inner">
                   <h2 className="text-xl sm:text-2xl font-black text-slate-800 tracking-wide pb-3 border-b border-slate-200 mb-6">
                     Send Message / Service Request
                   </h2>
@@ -255,7 +273,7 @@ export default function ContactUsPage() {
 
                       <div>
                         <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                          Service / Product Interest <span className="text-red-500">*</span>
+                          Service <span className="text-red-500">*</span>
                         </label>
                         <select
                           name="serviceInterest"

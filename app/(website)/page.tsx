@@ -7,9 +7,10 @@ import { motion } from "framer-motion";
 import {
   productsData,
   blogPostsData,
-  reviewsData,
+  servicesData,
 } from "@/app/(website)/data/mockData";
-import { Service } from "@/modules/services/servicesService";
+import { Review } from "@/modules/review/reviewService";
+
 
 import {
   Home,
@@ -102,6 +103,71 @@ const fallbackBanners: HeroBanner[] = [
   }
 ];
 
+const fallbackTextReviews: Review[] = [
+  {
+    id: "rev-1",
+    name: "Sunita Vyas",
+    location: "Ahmedabad, Gujarat",
+    rating: 5,
+    content: "Switched to SD Aqua Sparkle RO three months ago, and the difference in water taste is amazing. The service was set up in just 2 hours! Highly recommended.",
+    type: "text",
+    is_active: true
+  },
+  {
+    id: "rev-2",
+    name: "Anand Shah",
+    location: "Vadodara, Gujarat",
+    rating: 5,
+    content: "We bought the Kangan Life Ionizer for our parents. Their acid reflux issues have reduced significantly, and beauty water is a great addition for skincare.",
+    type: "text",
+    is_active: true
+  },
+  {
+    id: "rev-4",
+    name: "Meera Deshmukh",
+    location: "Surat, Gujarat",
+    rating: 4,
+    content: "The hard water in our area was causing bad scale deposits in our geyser and hair fall. The SD Soft-Home water softener completely resolved it. Five stars!",
+    type: "text",
+    is_active: true
+  }
+];
+
+const fallbackVideoReviews: Review[] = [
+  {
+    id: "rev-3",
+    name: "Harish Patel (Factory Owner)",
+    location: "GIDC Naroda, Gujarat",
+    rating: 5,
+    content: "Excellent service on the 250 LPH Industrial RO system. It feeds our plant smoothly. Their response on AMC calls is quick and parts replaced are always genuine.",
+    type: "video",
+    video_url: "https://www.shutterstock.com/shutterstock/videos/1101915055/preview/stock-footage-industrial-equipment-for-water-purification-water-purification-system-equipment-interior-of-water.mp4",
+    is_active: true
+  },
+  {
+    id: "rev-5",
+    name: "Anita Sharma",
+    location: "Rajkot, Gujarat",
+    rating: 5,
+    content: "Great experience with the domestic filter installation.",
+    type: "video",
+    video_url: "https://www.shutterstock.com/shutterstock/videos/3521349219/preview/stock-footage-woman-on-her-kitchen-floor-assembling-the-reverse-osmosis-water-filter.mp4",
+    is_active: true
+  },
+  {
+    id: "rev-6",
+    name: "Rajesh Patel",
+    location: "Bhavnagar, Gujarat",
+    rating: 5,
+    content: "The water softener works like magic.",
+    type: "video",
+    video_url: "https://www.shutterstock.com/shutterstock/videos/4031391119/preview/stock-footage-interior-of-water-treatment-plant-facility-for-purification-of-drinking-water.mp4",
+    is_active: true
+  }
+];
+
+
+
 export default function HomePage() {
   const { openEnquiry } = useEnquiry();
 
@@ -109,15 +175,28 @@ export default function HomePage() {
   const [heroBanners, setHeroBanners] = useState(fallbackBanners);
   const [isBannersLoading, setIsBannersLoading] = useState(true);
 
-  // --- Services: Dynamic data from admin ---
-  const [services, setServices] = useState<Service[]>([]);
-  const [isServicesLoading, setIsServicesLoading] = useState(true);
 
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
   const [isProductsLoading, setIsProductsLoading] = useState(true);
 
   const [blogs, setBlogs] = useState<any[]>([]);
   const [isBlogsLoading, setIsBlogsLoading] = useState(true);
+
+  // --- Reviews: Dynamic data from admin ---
+  const [allReviews, setAllReviews] = useState<Review[]>([]);
+  const [isReviewsLoading, setIsReviewsLoading] = useState(true);
+
+  const textReviews = useMemo(() => {
+    const filtered = allReviews.filter(r => r.type === 'text');
+    return filtered.length > 0 ? filtered : fallbackTextReviews;
+  }, [allReviews]);
+
+  const videoReviews = useMemo(() => {
+    const filtered = allReviews.filter(r => r.type === 'video');
+    return filtered.length > 0 ? filtered : fallbackVideoReviews;
+  }, [allReviews]);
+
+
 
   const normalizeAdminProduct = (product: any) => ({
     id: product.id,
@@ -130,32 +209,6 @@ export default function HomePage() {
     specifications: product.specifications || {},
   });
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const res = await fetch("/api/services");
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          const mapped = data
-            .filter((s: any) => s.is_active !== false)
-            .sort((a: any, b: any) => (a.sort_order || 0) - (b.sort_order || 0))
-            .map((s: any) => ({
-              ...s,
-              short_description: s.short_description || s.shortDescription || s.description || "",
-              features: s.features || [],
-              faqs: s.faqs || [],
-            }));
-          setServices(mapped);
-        }
-      } catch (err) {
-        // Fallback to mockData (already in state)
-      } finally {
-        setIsServicesLoading(false);
-      }
-    };
-    fetchServices();
-  }, []);
 
   useEffect(() => {
     const fetchHeroBanners = async () => {
@@ -226,6 +279,27 @@ export default function HomePage() {
 
     fetchProducts();
   }, []);
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch("/api/review");
+        if (!res.ok) throw new Error("Failed to fetch reviews");
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setAllReviews(data);
+        }
+
+
+      } catch (err) {
+        console.error("Error fetching reviews:", err);
+      } finally {
+        setIsReviewsLoading(false);
+      }
+    };
+    fetchReviews();
+  }, []);
+
 
   // --- Hero Slider State & Logics ---
   const [slideIndex, setSlideIndex] = useState(1);
@@ -347,23 +421,20 @@ export default function HomePage() {
     return slideIndex - 1;
   })();
 
-  // --- Video Reviews Slider State ---
-  const videoReviews = useMemo(() => [
-    { id: "v1", videoUrl: "https://www.shutterstock.com/shutterstock/videos/3521349219/preview/stock-footage-woman-on-her-kitchen-floor-assembling-the-reverse-osmosis-water-filter.mp4", rating: 5, client: "Anita Sharma" },
-    { id: "v2", videoUrl: "https://www.shutterstock.com/shutterstock/videos/4031391119/preview/stock-footage-interior-of-water-treatment-plant-facility-for-purification-of-drinking-water.mp4", rating: 5, client: "Rajesh Patel" },
-    { id: "v3", videoUrl: "https://www.shutterstock.com/shutterstock/videos/1101915055/preview/stock-footage-industrial-equipment-for-water-purification-water-purification-system-equipment-interior-of-water.mp4", rating: 5, client: "Suresh Mehta" },
-    { id: "v4", videoUrl: "https://www.shutterstock.com/shutterstock/videos/1104243637/preview/stock-footage-plumber-repairing-sink-in-kitchen.mp4", rating: 5, client: "Meera Shah" },
-    { id: "v5", videoUrl: "https://www.shutterstock.com/shutterstock/videos/1100695963/preview/stock-footage-water-purifier-filter-tube-ultra-filtration-filter-workflow-system.mp4", rating: 5, client: "Vikram Gohil" },
-  ], []);
 
   const [videoIdx, setVideoIdx] = useState(0);
   const [itemsVisible, setItemsVisible] = useState(1);
   const [isVideoTransitioning, setIsVideoTransitioning] = useState(true);
 
-  const extendedVideoReviews = useMemo(() => [
-    ...videoReviews,
-    ...videoReviews.slice(0, itemsVisible)
-  ], [videoReviews, itemsVisible]);
+  const extendedVideoReviews = useMemo(() => {
+    if (videoReviews.length === 0) return [];
+    if (videoReviews.length <= itemsVisible) return videoReviews;
+    return [
+      ...videoReviews,
+      ...videoReviews.slice(0, itemsVisible)
+    ];
+  }, [videoReviews, itemsVisible]);
+
 
   useEffect(() => {
     const updateVisible = () => {
@@ -377,15 +448,17 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
+    if (videoReviews.length <= itemsVisible) return;
     const timer = setInterval(() => {
       setIsVideoTransitioning(true);
       setVideoIdx((prev) => prev + 1);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [videoReviews.length, itemsVisible]);
+
 
   useEffect(() => {
-    if (videoIdx >= videoReviews.length) {
+    if (videoReviews.length > 0 && videoIdx >= videoReviews.length) {
       const timer = setTimeout(() => {
         setIsVideoTransitioning(false);
         setVideoIdx(0);
@@ -393,6 +466,7 @@ export default function HomePage() {
       return () => clearTimeout(timer);
     }
   }, [videoIdx, videoReviews.length]);
+
 
   useEffect(() => {
     if (!isVideoTransitioning) {
@@ -406,12 +480,15 @@ export default function HomePage() {
   const [isReviewPaused, setIsReviewPaused] = useState(false);
 
   const prevReview = () => {
-    setCurrentReviewIndex((prev) => (prev - 1 + reviewsData.length) % reviewsData.length);
+    if (textReviews.length === 0) return;
+    setCurrentReviewIndex((prev) => (prev - 1 + textReviews.length) % textReviews.length);
   };
 
   const nextReview = () => {
-    setCurrentReviewIndex((prev) => (prev + 1) % reviewsData.length);
+    if (textReviews.length === 0) return;
+    setCurrentReviewIndex((prev) => (prev + 1) % textReviews.length);
   };
+
 
   useEffect(() => {
     if (isReviewPaused) return;
@@ -638,7 +715,6 @@ export default function HomePage() {
         </div>
       </section>
 
-
       {/* ================= SERVICES SECTION ================= */}
       <section className="w-full bg-sky-50 pt-20 sm:pt-24 lg:pt-20 relative">
         {/* Decorative background vectors */}
@@ -711,9 +787,8 @@ export default function HomePage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {services.map((service, index) => {
-              // Fallback to Settings icon if service.icon is missing or not in the map
-              const IconComponent = (service.icon && iconMap[service.icon]) || Settings;
+            {servicesData.map((service, index) => {
+              const IconComponent = iconMap[service.icon] || Droplets;
               return (
                 <ScrollReveal key={service.id} variant="fadeInUp" delay={index * 100}>
                   <div className="group relative bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 border border-slate-100 shadow-sm hover:shadow-2xl hover:shadow-sky-100/50 transition-all duration-500 sm:hover:-translate-y-2 flex flex-col h-full overflow-hidden">
@@ -732,12 +807,12 @@ export default function HomePage() {
                           {service.name}
                         </h3>
                         <p className="text-sm text-slate-500 line-clamp-3 leading-relaxed font-medium">
-                          {service.short_description}
+                          {service.description}
                         </p>
                       </div>
                     </div>
 
-                    {/* <div className="relative z-10 grid grid-cols-2 gap-2 sm:gap-3 mt-5 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-50">
+                    <div className="relative z-10 grid grid-cols-2 gap-2 sm:gap-3 mt-5 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-50">
                       <Link
                         href={`/services#${service.id}`}
                         className="flex items-center justify-center py-2 sm:py-3 rounded-xl sm:rounded-2xl text-xs font-bold text-slate-400 hover:text-sky-600 hover:bg-sky-50 transition-all"
@@ -750,7 +825,7 @@ export default function HomePage() {
                       >
                         Enquiry
                       </button>
-                    </div> */}
+                    </div>
                   </div>
                 </ScrollReveal>
               );
@@ -776,7 +851,6 @@ export default function HomePage() {
           </svg>
         </div>
       </section>
-
 
 
       {/* ================= FEATURED PRODUCTS SECTION ================= */}
@@ -902,17 +976,18 @@ export default function HomePage() {
           </svg>
         </div>
         <AnimatedTestimonials
-          testimonials={reviewsData.map((r: any) => ({
-            id: Number(r.id.replace('rev-', '')) || 0,
+          testimonials={textReviews.map((r: any) => ({
+            id: r.id,
             name: r.name,
-            role: r.location,
+            role: r.location || 'Customer',
             company: '',
-            content: r.text,
+            content: r.content || '',
             rating: r.rating,
-            avatar: "/placeholder-avatar.png",
+            avatar: r.image_url || "/placeholder-avatar.png",
           }))}
           className="max-w-7xl mx-auto"
         />
+
         {/* Bottom Wave (Sky-50 to White) */}
         <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 transform translate-y-1">
           <svg className="relative block w-[200%] max-w-none h-[15px] sm:h-[35px] animate-[waveAnimation_60s_linear_infinite]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 120" preserveAspectRatio="none">
@@ -974,10 +1049,11 @@ export default function HomePage() {
           <div className="relative overflow-hidden group/slider">
 
             <motion.div
-              className="flex"
-              animate={{ x: `-${videoIdx * (100 / itemsVisible)}%` }}
+              className={`flex ${videoReviews.length <= itemsVisible ? 'justify-center' : ''}`}
+              animate={videoReviews.length > itemsVisible ? { x: `-${videoIdx * (100 / itemsVisible)}%` } : { x: 0 }}
               transition={isVideoTransitioning ? { duration: 0.8, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
             >
+
               {extendedVideoReviews.map((review, i) => (
                 <div
                   key={`${review.id}-${i}`}
@@ -987,8 +1063,9 @@ export default function HomePage() {
                   <div className="group  rounded-2xl p-4">
                     <div className="relative  rounded-xl overflow-hidden shadow-md w-full  h-[450px]">
                       <video
-                        src={review.videoUrl}
+                        src={review.video_url}
                         className="absolute inset-0 w-full h-full object-cover"
+
                         muted
                         loop
                         playsInline
@@ -1002,21 +1079,24 @@ export default function HomePage() {
               ))}
             </motion.div>
 
-            {/* Pagination Dots */}
-            <div className="flex justify-center gap-2 mt-10">
-              {videoReviews.map((_, i) => (
-                <button
-                  key={`dot-${i}`}
-                  onClick={() => {
-                    setIsVideoTransitioning(true);
-                    setVideoIdx(i);
-                  }}
-                  className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${i === (videoIdx % videoReviews.length) ? "bg-sky-500 w-6" : "bg-slate-200 w-2"
-                    }`}
-                  aria-label={`Go to slide ${i + 1}`}
-                />
-              ))}
-            </div>
+            {videoReviews.length > itemsVisible && (
+              /* Pagination Dots */
+              <div className="flex justify-center gap-2 mt-10">
+                {videoReviews.map((_, i) => (
+                  <button
+                    key={`dot-${i}`}
+                    onClick={() => {
+                      setIsVideoTransitioning(true);
+                      setVideoIdx(i);
+                    }}
+                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${i === (videoIdx % videoReviews.length) ? "bg-sky-500 w-6" : "bg-slate-200 w-2"
+                      }`}
+                    aria-label={`Go to slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+
           </div>
         </div>
 
@@ -1261,7 +1341,7 @@ export default function HomePage() {
                         className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:ring-2 focus:ring-sky-500 text-sm bg-slate-50"
                       >
                         <option value="General Enquiry">General Enquiry</option>
-                        {services.map((service) => (
+                        {servicesData.map((service) => (
                           <option key={service.id} value={service.name}>{service.name}</option>
                         ))}
                       </select>

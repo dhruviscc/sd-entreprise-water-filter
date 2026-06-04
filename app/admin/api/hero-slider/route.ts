@@ -19,8 +19,8 @@ export async function POST(request: Request) {
     const body = await request.json();
 
     // Basic validation to ensure "proper" error reporting
-    if (!body.title || !body.desktopImage || !body.mobileImage) {
-      return NextResponse.json({ error: "Missing required fields: title, desktopImage, or mobileImage" }, { status: 400 });
+    if (!body.title || !body.desktopImage) {
+      return NextResponse.json({ error: "Missing required fields: title, desktopImage" }, { status: 400 });
     }
 
     // Ensure optional fields have defaults if missing in body

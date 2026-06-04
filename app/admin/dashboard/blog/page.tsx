@@ -135,6 +135,7 @@ export default function AdminBlogsPage() {
         setIsUploading(true);
         const uploadData = new FormData();
         uploadData.append('file', file);
+        uploadData.append('bucket', 'blogs');
 
         try {
             const res = await fetch('/admin/api/upload', { method: 'POST', body: uploadData });
@@ -248,40 +249,40 @@ export default function AdminBlogsPage() {
     );
 
     return (
-        <div className="p-[10px] text-slate-800 bg-slate-50 min-h-screen space-y-6">
-            <div className="flex justify-between items-center mb-4">
-
-                <div className="search-center">
-                    <div className="relative w-fit">
+        <div className="space-y-4 sm:space-y-6 bg-slate-50 min-h-screen">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
+                <div className="w-full lg:w-auto">
+                    <div className="relative flex-1 sm:w-80">
                         <input
-                            className="py-[11px] pr-[40px] pl-[16px] w-[320px] rounded-lg border border-gray-200 outline-none bg-white text-sm transition-all focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                            placeholder="Search Blogs..."
+                            className="w-full py-2.5 pr-[40px] pl-[10px] rounded-xl border border-slate-200 outline-none bg-white text-sm transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 shadow-sm"
+                            placeholder="Search FAQs..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                         {searchTerm && (
                             <button
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-none border-none cursor-pointer text-sky flex items-center justify-center p-1 rounded-full transition-all hover:bg-[#f1f5f9] hover:text-[#1e293b]"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                                 onClick={() => setSearchTerm("")}
-                                type="button"
                             >
                                 <X size={16} />
                             </button>
                         )}
                     </div>
                 </div>
-                <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+
+                <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-3">
+
                     <button
-                        onClick={() => { openModal(null); }}
-                        className="px-4 py-2 text-sm border-none  rounded-[10px] bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-semibold cursor-pointer transition-all flex items-center gap-2 whitespace-nowrap hover:bg-sky-700 hover:from-sky-700 via-sky-700 to-slate-700 transform transition duration-300 ease-in-out hover:scale-105"
+                        onClick={() => openModal(null)}
+                        className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
                     >
-                        <Plus size={18} /> Add Blog
+                        <Plus size={18} /> <span>Add Article</span>
                     </button>
                 </div>
-
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+
                 <table className="w-full border-collapse">
                     <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
                         <tr>
@@ -294,7 +295,7 @@ export default function AdminBlogsPage() {
                             <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100">
+                    <tbody>
                         {loading ? (
                             <tr>
                                 <td colSpan={4} className="px-6 py-12 text-center">
@@ -408,21 +409,35 @@ export default function AdminBlogsPage() {
                                         type="text"
                                         value={formData.title}
                                         onChange={handleTitleChange}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
+                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
                                         placeholder="Article title..."
                                     />
                                 </div>
 
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Category *</label>
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Category </label>
                                     <select
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
+                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
                                     >
                                         <option value="Water Quality">Water Quality</option>
                                         <option value="Health">Health</option>
                                         <option value="Maintenance">Maintenance</option>
+                                        <option value="Water Purification">Water Purification</option>
+                                        <option value="RO Systems & Maintenance">RO Systems & Maintenance</option>
+                                        <option value="Domestic Filters">Domestic Filters</option>
+                                        <option value="Industrial Water Treatment">Industrial Water Treatment</option>
+                                        <option value="Water Softeners">Water Softeners</option>
+                                        <option value="Kangen Water">Kangen Water</option>
+                                        <option value="Gas Geysers">Gas Geysers</option>
+                                        <option value="RO + Water Coolers">RO + Water Coolers</option>
+                                        <option value="AMC Services">AMC Services</option>
+                                        <option value="Product Guides">Product Guides</option>
+                                        <option value="Water Quality & Health">Water Quality & Health</option>
+                                        <option value="Installation & Maintenance">Installation & Maintenance</option>
+                                        <option value="Customer Stories">Customer Stories</option>
+                                        <option value="Industry News">Industry News</option>
                                     </select>
                                 </div>
                             </div>
@@ -433,10 +448,10 @@ export default function AdminBlogsPage() {
                                         type="text"
                                         value={formData.image}
                                         onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                        className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
+                                        className="flex-1 px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
                                         placeholder="Image URL or upload..."
                                     />
-                                    <label className="flex items-center gap-2 px-4 py-2 bg-sky-50 text-sky-600 rounded-xl cursor-pointer hover:bg-sky-100 transition-colors font-bold whitespace-nowrap">
+                                    <label className="flex items-center text-sm gap-2 px-4 py-2 bg-sky-50 text-sky-600 rounded-xl cursor-pointer hover:bg-sky-100 transition-colors font-bold whitespace-nowrap">
                                         {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
                                         Upload
                                         <input type="file" className="hidden" onChange={handleImageUpload} accept="image/*" disabled={isUploading} />
@@ -455,22 +470,11 @@ export default function AdminBlogsPage() {
                                 <textarea
                                     value={formData.summary}
                                     onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all min-h-[80px]"
+                                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all min-h-[80px]"
                                     placeholder="Short summary for list pages..."
                                 />
                             </div>
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Status</label>
-                                <select
-                                    value={formData.status}
-                                    onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
-                                >
-                                    <option value="draft">Draft</option>
-                                    <option value="published">Published</option>
-                                    <option value="archived">Archived</option>
-                                </select>
-                            </div>
+
 
 
 
@@ -479,15 +483,17 @@ export default function AdminBlogsPage() {
                                 <textarea
                                     value={formData.content}
                                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all min-h-[250px] font-mono text-sm"
+                                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all min-h-[250px] font-mono text-sm"
                                     placeholder="Main article body..."
                                 />
                             </div>
 
 
                             <div className="flex gap-4 mt-8 pt-4 ">
-                                <button onClick={() => setIsModalOpen(false)} className="flex-1 py-3 px-4 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors">Cancel</button>
-                                <button onClick={handleSave} disabled={isSaving} className="flex-1 py-3 px-4 rounded-xl bg-sky-600 text-white font-bold hover:bg-sky-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-sky-600/20 disabled:opacity-70">
+                                <button onClick={() => setIsModalOpen(false)} className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">Cancel</button>
+                                <button onClick={handleSave} disabled={isSaving}
+                                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
+                                >
                                     {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
                                     {editingBlog ? "Update Post" : "Save Article"}
                                 </button>
@@ -514,8 +520,7 @@ export default function AdminBlogsPage() {
                                 <button
                                     onClick={() => { setIsDeleteModalOpen(false); setBlogToDelete(null); }}
                                     disabled={isDeleting}
-                                    className="flex-1 py-3 px-4 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors disabled:opacity-50"
-                                >
+                                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                                >
                                     Cancel
                                 </button>
                                 <button

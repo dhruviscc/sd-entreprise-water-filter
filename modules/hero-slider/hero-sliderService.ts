@@ -5,7 +5,6 @@ export interface HeroSlider {
   title: string;
   subtitle: string;
   desktopImage: string;
-  mobileImage: string;
   primaryCtaText: string;
   primaryCtaLink: string;
   secondaryCtaText: string;

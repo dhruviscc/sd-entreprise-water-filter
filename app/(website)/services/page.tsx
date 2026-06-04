@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Service } from "@/modules/services/servicesService";
+import { servicesData } from "../data/mockData";
 import { useEnquiry } from "../context/EnquiryContext";
-import BubbleBackground from "@/components/BubbleBackground";
 import ScrollReveal from "@/components/ScrollReveal";
-
 import {
   Home,
   Wrench,
@@ -20,10 +18,11 @@ import {
   PhoneCall,
   CheckCircle,
   Cylinder,
-
+  Circle,
+  GlassWater,
 } from "lucide-react";
 import Image from "next/image";
-
+import BubbleBackground from "@/components/BubbleBackground";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   Home: Home,
@@ -38,35 +37,14 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 
 export default function ServicesPage() {
   const { openEnquiry } = useEnquiry();
-  const [services, setServices] = useState<Service[]>([]);
-  const [selectedServiceId, setSelectedServiceId] = useState<string>("");
+  const [selectedServiceId, setSelectedServiceId] = useState(servicesData[0].id);
   const [expandedFaqIndex, setExpandedFaqIndex] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
+  // Auto scroll to target service if hashtag is provided in URL
   useEffect(() => {
-    const fetchServices = async () => {
-      try {
-        const res = await fetch("/api/services");
-        if (!res.ok) throw new Error("Unable to load services");
-        const data: Service[] = await res.json();
-        setServices(data || []);
-        if (!selectedServiceId && data?.length) {
-          setSelectedServiceId(data[0].id || "");
-        }
-      } catch (error) {
-        console.error("Failed to fetch services:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchServices();
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && window.location.hash && services.length) {
+    if (typeof window !== "undefined" && window.location.hash) {
       const id = window.location.hash.substring(1);
-      const exists = services.some((s) => s.id === id);
+      const exists = servicesData.some((s) => s.id === id);
       if (exists) {
         setSelectedServiceId(id);
         const element = document.getElementById("details-view");
@@ -75,40 +53,10 @@ export default function ServicesPage() {
         }
       }
     }
-  }, [services]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh] py-24">
-        <div className="text-slate-600">Loading services...</div>
-      </div>
-    );
-  }
+  }, []);
 
   const selectedService =
-    services.find((s) => s.id === selectedServiceId) || services[0] || null;
-
-  const selectedServiceImage = selectedService?.image?.trim() || "";
-  const normalizedServiceImage = selectedServiceImage
-    ? selectedServiceImage.startsWith("/") || selectedServiceImage.startsWith("http")
-      ? selectedServiceImage
-      : `/${selectedServiceImage}`
-    : "";
-
-  const selectedServiceFeatures = Array.isArray(selectedService?.features)
-    ? selectedService.features
-    : [];
-  const selectedServiceFaqs = Array.isArray(selectedService?.faqs)
-    ? selectedService.faqs
-    : [];
-
-  if (!selectedService) {
-    return (
-      <div className="flex items-center justify-center min-h-[50vh] py-24">
-        <div className="text-slate-600">No services available at this time.</div>
-      </div>
-    );
-  }
+    servicesData.find((s) => s.id === selectedServiceId) || servicesData[0];
 
   const SelectedIcon = iconMap[selectedService.icon] || Droplets;
 
@@ -205,14 +153,14 @@ export default function ServicesPage() {
                 <ScrollReveal variant="fadeInLeft" duration={800}>
 
                   <div className="space-y-2">
-                    {services.map((service) => {
+                    {servicesData.map((service) => {
                       const Icon = iconMap[service.icon] || Droplets;
                       const isSelected = service.id === selectedServiceId;
                       return (
                         <button
                           key={service.id}
                           onClick={() => {
-                            setSelectedServiceId(service.id ?? "");
+                            setSelectedServiceId(service.id);
                             setExpandedFaqIndex(null);
                             const element = document.getElementById("details-view");
                             if (element && window.innerWidth < 1024) {
@@ -276,19 +224,12 @@ export default function ServicesPage() {
                     {/* Content & Image */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                       <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm">
-                        {normalizedServiceImage ? (
-                          <Image
-                            src={normalizedServiceImage}
-                            alt={selectedService.name}
-                            fill
-                            className="object-cover object-center"
-                            unoptimized
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center text-slate-400">
-                            No image available
-                          </div>
-                        )}
+                        <Image
+                          src={selectedService.image}
+                          alt={selectedService.name}
+                          fill
+                          className="object-cover object-center"
+                        />
                       </div>
                       <div className="space-y-4">
                         <h4 className="text-sm font-bold text-sky-800 uppercase tracking-wider">
@@ -306,7 +247,7 @@ export default function ServicesPage() {
                         What is Included
                       </h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        {selectedServiceFeatures.map((feature, i) => (
+                        {selectedService.features.map((feature, i) => (
                           <div key={i} className="flex items-start gap-2 text-sm text-slate-600">
                             <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                             <span>{feature}</span>
@@ -321,7 +262,7 @@ export default function ServicesPage() {
                         Frequently Asked Questions
                       </h4>
                       <div className="space-y-2">
-                        {selectedServiceFaqs.map((faq, index) => {
+                        {selectedService.faqs.map((faq, index) => {
                           const isOpen = expandedFaqIndex === index;
                           return (
                             <div
@@ -397,7 +338,9 @@ export default function ServicesPage() {
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-300/50 rounded-full blur-3xl -z-0 animate-blobFloat2" />
 
               <div className="max-w-2xl mx-auto space-y-4 relative z-10">
-              
+                <span className="px-3 py-1 rounded-full bg-sky-100 border border-sky-200 text-sky-600 text-xs font-bold uppercase tracking-wider shadow-sm animate-float-3d inline-block">
+                  Need Instant Repair?
+                </span>
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-sky-700 to-blue-900">
                   Get Doorstep Service in 2 Hours
                 </h2>

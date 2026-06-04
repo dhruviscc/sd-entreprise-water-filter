@@ -1,113 +1,102 @@
--- Create product_categories table
-CREATE TABLE IF NOT EXISTS public.product_categories (
+-- ==========================================
+-- BLOG POSTS TABLE SETUP (Migration 4)
+-- ==========================================
+
+-- 1. CREATE BLOG_POSTS TABLE
+CREATE TABLE IF NOT EXISTS public.blog_posts (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
+    title TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
-    description TEXT,
-    is_active BOOLEAN DEFAULT true,
-    sort_order INTEGER DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT now()
+    category TEXT NOT NULL DEFAULT 'Water Quality',
+    summary TEXT,
+    content TEXT,
+    image TEXT,
+    author_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    status TEXT DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
+    published_at TIMESTAMPTZ, 
+   
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Create products table
-CREATE TABLE IF NOT EXISTS public.products (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    category_id UUID NOT NULL REFERENCES public.product_categories(id),
-    name TEXT NOT NULL,
-    slug TEXT NOT NULL UNIQUE,
-    description TEXT,
-    long_description TEXT,
-    specifications JSONB DEFAULT '{}'::jsonb,
-    features TEXT[] DEFAULT '{}',
-    is_active BOOLEAN DEFAULT true,
-    sort_order INTEGER DEFAULT 0,
-    rating NUMERIC(3, 2) DEFAULT 5.0,
-    reviews_count INTEGER DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT now()
-);
+-- 2. ENABLE RLS
+ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
 
--- Create product_variants table
-CREATE TABLE IF NOT EXISTS public.product_variants (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    product_id UUID NOT NULL REFERENCES public.products(id) ON DELETE CASCADE,
-    name TEXT NOT NULL DEFAULT 'Default',
-    color_hex TEXT NOT NULL DEFAULT '#ffffff',
-    images TEXT[] DEFAULT '{}',
-    is_default BOOLEAN DEFAULT false,
-    is_active BOOLEAN DEFAULT true,
-    sort_order INTEGER DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT now()
-);
+-- 3. RLS POLICIES
 
--- Create junction table for related products
-CREATE TABLE IF NOT EXISTS public.product_related_products (
-    product_id UUID REFERENCES public.products(id) ON DELETE CASCADE,
-    related_product_id UUID REFERENCES public.products(id) ON DELETE CASCADE,
-    PRIMARY KEY (product_id, related_product_id)
-);
+-- Allow public to see only published blogs
+DROP POLICY IF EXISTS "Blogs are viewable by everyone" ON public.blog_posts;
+CREATE POLICY "Blogs are viewable by everyone" ON public.blog_posts 
+    FOR SELECT USING (status = 'published');
 
--- Create product_enquiries table
-CREATE TABLE IF NOT EXISTS public.product_enquiries (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    product_id UUID REFERENCES public.products(id) ON DELETE SET NULL,
-    variant_id UUID REFERENCES public.product_variants(id) ON DELETE SET NULL,
-    product_name TEXT NOT NULL, -- Stored as text in case product is deleted
-    name TEXT NOT NULL,
-    email TEXT,
-    mobile TEXT,
-    message TEXT,
-    status TEXT DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'closed')),
-    created_at TIMESTAMPTZ DEFAULT now()
-);
+-- Allow authenticated admins full access (using the profiles table from Migration 1)
+DROP POLICY IF EXISTS "Admins have full access to blogs" ON public.blog_posts;
+CREATE POLICY "Admins have full access to blogs" ON public.blog_posts 
+    FOR ALL TO authenticated 
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+        )
+    )
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+        )
+    );
 
--- Enable Row Level Security (RLS)
-ALTER TABLE public.product_categories ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.product_variants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.product_related_products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.product_enquiries ENABLE ROW LEVEL SECURITY;
+-- 4. UPDATE UPDATED_AT TRIGGER
+-- Uses the function created in Migration 2
+DROP TRIGGER IF EXISTS update_blog_posts_updated_at ON public.blog_posts;
+CREATE TRIGGER update_blog_posts_updated_at
+    BEFORE UPDATE ON public.blog_posts
+    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
--- Policies: Allow public read access to active items
-CREATE POLICY "Allow public read access to active categories" ON public.product_categories
-    FOR SELECT USING (is_active = true);
+-- 5. INDEXING FOR PERFORMANCE
+CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON public.blog_posts(slug);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON public.blog_posts(status);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_author ON public.blog_posts(author_id);
+CREATE INDEX IF NOT EXISTS idx_blog_posts_created_at ON public.blog_posts(created_at DESC);
 
-CREATE POLICY "Allow public read access to active products" ON public.products
-    FOR SELECT USING (is_active = true);
+-- 6. RELOAD SCHEMA
+NOTIFY pgrst, 'reload schema';
 
-CREATE POLICY "Allow public read access to active variants" ON public.product_variants
-    FOR SELECT USING (is_active = true);
+-- COMMENT: This table links to the profiles table. 
+-- Ensure that when creating a blog from the UI, the current user's ID 
+-- is passed as author_id.
 
-CREATE POLICY "Allow public read access to related products" ON public.product_related_products
-    FOR SELECT USING (true);
+-- ==========================================
+-- STORAGE SETUP FOR BLOGS
+-- ==========================================
 
--- Policies: Allow public to insert enquiries
-CREATE POLICY "Allow public to insert enquiries" ON public.product_enquiries
-    FOR INSERT WITH CHECK (true);
+-- 1. Create Bucket
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('blogs', 'blogs', true)
+ON CONFLICT (id) DO NOTHING;
 
--- Policies: Full access for service_role (Admin)
-CREATE POLICY "Service role has full access to categories" ON public.product_categories FOR ALL USING (true);
-CREATE POLICY "Service role has full access to products" ON public.products FOR ALL USING (true);
-CREATE POLICY "Service role has full access to variants" ON public.product_variants FOR ALL USING (true);
-CREATE POLICY "Service role has full access to related products" ON public.product_related_products FOR ALL USING (true);
-CREATE POLICY "Service role has full access to enquiries" ON public.product_enquiries FOR ALL USING (true);
+-- 2. Storage Policies
+-- PUBLIC READ ACCESS
+DROP POLICY IF EXISTS "Public Read Access Blogs" ON storage.objects;
+CREATE POLICY "Public Read Access Blogs" ON storage.objects
+    FOR SELECT USING (bucket_id = 'blogs');
 
--- Insert default categories
-INSERT INTO public.product_categories (name, slug, sort_order)
-VALUES 
-    ('Domestic Filter', 'domestic-filter', 1),
-    ('Industrial Filter', 'industrial-filter', 2),
-    ('RO Systems', 'ro-systems', 3),
-    ('Water Softener', 'water-softener', 4),
-    ('Gas Geyser', 'gas-geyser', 5),
-    ('Kangan Water', 'kangan-water', 6),
-    ('RO + Water Cooler', 'ro-water-cooler', 7),
-    ('Accessories', 'accessories', 8)
-ON CONFLICT (slug) DO NOTHING;
+-- ADMIN FULL ACCESS
+DROP POLICY IF EXISTS "Admin Full Access Blogs" ON storage.objects;
+CREATE POLICY "Admin Full Access Blogs" ON storage.objects
+    FOR ALL TO authenticated
+    USING (
+        bucket_id = 'blogs' AND
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+        )
+    )
+    WITH CHECK (
+        bucket_id = 'blogs' AND
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+        )
+    );
 
--- Add indexing for common queries
-CREATE INDEX idx_products_category ON public.products(category_id);
-CREATE INDEX idx_products_is_active ON public.products(is_active);
-CREATE INDEX idx_variants_product ON public.product_variants(product_id);
-CREATE INDEX idx_enquiries_status ON public.product_enquiries(status);
-CREATE INDEX idx_products_slug ON public.products(slug);
-CREATE INDEX idx_categories_slug ON public.product_categories(slug);

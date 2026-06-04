@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { faqsData } from "../data/mockData";
 import BubbleBackground from "@/components/BubbleBackground";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Search, ChevronDown, ChevronUp, HelpCircle, X, Droplets, Cylinder } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, HelpCircle, X, Droplets, Cylinder, Loader2,  } from "lucide-react";
 import Link from "next/link";
 
 
@@ -15,6 +15,9 @@ export default function FAQPage() {
   const [selectedCategory, setSelectedCategory] = useState("All FAQs");
   const [openFaqIds, setOpenFaqIds] = useState<string[]>([]);
 
+  const [faqs, setFaqs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   // Toggle single FAQ accordion panel
   const toggleFaq = (id: string) => {
     setOpenFaqIds((prev) =>
@@ -23,7 +26,7 @@ export default function FAQPage() {
   };
 
   // Expand all active questions
-  const expandAll = (faqsToExpand: typeof faqsData) => {
+  const expandAll = (faqsToExpand: any[]) => {
     setOpenFaqIds(faqsToExpand.map((faq) => faq.id));
   };
 
@@ -32,9 +35,25 @@ export default function FAQPage() {
     setOpenFaqIds([]);
   };
 
+  // Fetch FAQs from API
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const res = await fetch('/api/faq');
+        const data = await res.json();
+        setFaqs(data || []);
+      } catch (error) {
+        console.error("Failed to fetch faqs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaqs();
+  }, []);
+
   // Filter FAQs based on search input and active category
   const filteredFaqs = useMemo(() => {
-    return faqsData.filter((faq) => {
+    return faqs.filter((faq) => {
       const matchesSearch =
         faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
         faq.answer.toLowerCase().includes(searchTerm.toLowerCase());
@@ -44,7 +63,7 @@ export default function FAQPage() {
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, faqs]);
 
   return (
     <div className="bg-white min-h-screen overflow-hidden">
@@ -177,9 +196,13 @@ export default function FAQPage() {
         </ScrollReveal>
 
 
-        {/* Accordion Lists */}
         <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-          {filteredFaqs.length === 0 ? (
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader2 className="w-10 h-10 text-sky-500 animate-spin" />
+              <p className="mt-4 text-slate-500 font-medium">Refreshing our knowledge base...</p>
+            </div>
+          ) : filteredFaqs.length === 0 ? (
             <ScrollReveal variant="scaleUp" duration={500}>
               <div className="bg-white rounded-xl border border-slate-100 p-16 text-center shadow-sm space-y-3">
                 <span className="block text-4xl">❓</span>

@@ -53,7 +53,6 @@ const emptyForm = () => ({
     features: [""],
     specifications: [{ key: "", value: "" }] as SpecRow[],
     product_variants: [emptyVariant()],
-    related_product_ids: [] as string[],
     is_active: true,
 
 });
@@ -147,7 +146,6 @@ export default function AdminProductPage() {
                 features: product.features?.length ? product.features : [""],
                 specifications: Object.entries(product.specifications || {}).map(([key, value]) => ({ key, value })) || [{ key: "", value: "" }],
                 product_variants: product.product_variants?.length ? product.product_variants : [emptyVariant()],
-                related_product_ids: product.related_product_ids || [],
                 is_active: product.is_active ?? true,
 
             });
@@ -267,6 +265,7 @@ export default function AdminProductPage() {
         setUploadingKey(key);
         const uploadData = new FormData();
         uploadData.append("file", file);
+        uploadData.append("bucket", "products");
 
         try {
             const res = await fetch("/admin/api/upload", { method: "POST", body: uploadData });
@@ -301,7 +300,8 @@ export default function AdminProductPage() {
     if (loading) return <div className="p-8 text-slate-600">Loading product data...</div>;
 
     return (
-        <div className="min-h-screen bg-slate-50 p-[10px] text-slate-800 space-y-4">
+        <div className="space-y-4 sm:space-y-6 bg-slate-50 min-h-screen">
+
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
                     {(["products", "enquiries"] as const).map((tab) => (
@@ -327,22 +327,23 @@ export default function AdminProductPage() {
 
             {activeTab === "products" && (
                 <>
-                    <div className="flex flex-wrap gap-3 rounded-[16px] border border-slate-200  p-4 shadow-sm">
-                        <div className="relative w-fit">
+                    <div className="flex flex-col sm:flex-row gap-3 w-full">
+                        <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                             <input
                                 value={searchTerm}
                                 onChange={(event) => setSearchTerm(event.target.value)}
                                 placeholder="Search products..."
-                                className="w-[320px] rounded-lg border border-gray-200 py-[11px] pl-10 pr-3 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white"
+                                className="w-full rounded-lg border border-gray-200 py-[11px] pl-10 pr-3 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white"
                             />
                         </div>
-                        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="rounded-lg border border-gray-200 px-3 py-[11px] text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white">
+                        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full sm:w-auto rounded-lg border border-gray-200 px-3 py-[11px] text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white">
                             <option value="all">All Status</option>
                             <option value="true">Enabled</option>
                             <option value="false">Disabled</option>
                         </select>
                     </div>
+
 
                     <div className="overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-sm overflow-x-auto">
                         <table className="w-full border-collapse">
@@ -373,7 +374,7 @@ export default function AdminProductPage() {
                                             </td>
                                             <td className="px-4 py-4 text-sm text-slate-600">{product.product_variants?.length || 0}</td>
                                             <td className="px-4 py-4">
-                                                <button onClick={() => toggleProduct(product)} className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${product.is_active ?'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>
+                                                <button onClick={() => toggleProduct(product)} className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${product.is_active ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>
                                                     {product.is_active ?? true ? "Enabled" : "Disabled"}
                                                 </button>
                                             </td>
@@ -439,20 +440,7 @@ export default function AdminProductPage() {
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-2">
-                            <div className="flex flex-col gap-2 mb-4">
-                                <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Product Name *</label>
-                                <select value={formData.name} onChange={(event) => updateProductName(event.target.value)} className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10">
-                                    <option value="">Select product name</option>
-                                    {PRODUCT_CATEGORY_NAMES.map((name) => (
-                                        <option key={name} value={name}>
-                                            {name}
-                                        </option>
-                                    ))}
-                                    {formData.name && !PRODUCT_CATEGORY_NAMES.includes(formData.name) && (
-                                        <option value={formData.name}>{formData.name}</option>
-                                    )}
-                                </select>
-                            </div>
+
 
                             <div className="flex flex-col gap-2 mb-4">
                                 <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Category *</label>
@@ -467,6 +455,16 @@ export default function AdminProductPage() {
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
                                 </select>
+                            </div>
+                            <div className="flex flex-col gap-2 mb-4">
+                                <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Product Name *</label>
+                                <input
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={(event) => updateProductName(event.target.value)}
+                                    placeholder="Enter product name"
+                                    className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white"
+                                />
                             </div>
                         </div>
 
@@ -565,9 +563,7 @@ export default function AdminProductPage() {
                                     <div className="grid gap-3 md:grid-cols-[1fr_140px_auto_auto]">
                                         <input value={variant.name} onChange={(event) => updateVariant(index, { name: event.target.value })} className="rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600" placeholder="Variant name, e.g. White" />
                                         <input type="color" value={variant.color_hex} onChange={(event) => updateVariant(index, { color_hex: event.target.value })} className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2 cursor-pointer" />
-                                        <button type="button" onClick={() => selectDefaultVariant(index)} className={`flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition-all ${variant.is_default ? "bg-green-100 text-green-700 ring-1 ring-green-600/20" : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"}`}>
-                                            <Check size={16} /> Default
-                                        </button>
+
                                         <button type="button" onClick={() => setFormData({ ...formData, product_variants: formData.product_variants.filter((_, idx) => idx !== index) })} className="rounded-lg bg-white border border-slate-200 px-3 text-red-500 hover:bg-red-50 transition-colors"><Trash2 size={16} /></button>
                                     </div>
 
@@ -652,41 +648,11 @@ export default function AdminProductPage() {
                             ))}
                         </div>
 
-                        <SectionTitle title="Related Products" />
-                        <div className="grid max-h-40 gap-2 overflow-y-auto rounded-xl border border-slate-200 p-3 md:grid-cols-3 bg-slate-50/50">
-                            {products.filter((product) => product.id !== editingProduct?.id).map((product) => (
-                                <label key={product.id} className="flex items-center gap-2 rounded-lg p-2 text-sm hover:bg-white hover:shadow-sm cursor-pointer transition-all">
-                                    <input
-                                        type="checkbox"
-                                        checked={formData.related_product_ids.includes(product.id || "")}
-                                        onChange={(event) => {
-                                            const id = product.id || "";
-                                            setFormData({
-                                                ...formData,
-                                                related_product_ids: event.target.checked
-                                                    ? [...formData.related_product_ids, id]
-                                                    : formData.related_product_ids.filter((item) => item !== id),
-                                            });
-                                        }}
-                                    />
-                                    <span className="truncate">{product.name}</span>
-                                </label>
-                            ))}
-                        </div>
-
-                        <div className="mt-6 flex items-center justify-between gap-3 border-t border-slate-100 pt-5">
-                            <label className="flex items-center gap-2 text-sm font-semibold text-slate-700">
-                                <input type="checkbox" checked={formData.is_active} onChange={(event) => setFormData({ ...formData, is_active: event.target.checked })} />
-                                Enable product
-                            </label>
-
-                        </div>
                         <div className="flex gap-3 mt-6">
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"
-                            >
+                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
                                 Cancel
                             </button>
 

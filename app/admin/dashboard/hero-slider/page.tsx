@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, Fragment } from "react";
-import { Plus, Pencil, Trash2, X, AlertCircle, CheckCircle, CheckCircle2, MoveVertical, Edit, Info, Upload, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Edit, Upload, Loader2 } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -15,8 +15,7 @@ export default function HeroSliderAdmin() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [sliderToDelete, setSliderToDelete] = useState<any>(null);
-    const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-    const [selectedSlider, setSelectedSlider] = useState<any>(null);
+   
     const [search, setSearch] = useState("");
     const [isUploading, setIsUploading] = useState(false);
 
@@ -25,7 +24,7 @@ export default function HeroSliderAdmin() {
         title: "",
         subtitle: "",
         desktopImage: "",
-        mobileImage: "",
+       
         primaryCtaText: "",
         primaryCtaLink: "",
         secondaryCtaText: "",
@@ -42,7 +41,7 @@ export default function HeroSliderAdmin() {
                 title: currentSlider.title || "",
                 subtitle: currentSlider.subtitle || "",
                 desktopImage: currentSlider.desktopImage || "",
-                mobileImage: currentSlider.mobileImage || "",
+                
                 primaryCtaText: currentSlider.primaryCtaText || "",
                 primaryCtaLink: currentSlider.primaryCtaLink || "",
                 secondaryCtaText: currentSlider.secondaryCtaText || "",
@@ -57,7 +56,7 @@ export default function HeroSliderAdmin() {
                 title: "",
                 subtitle: "",
                 desktopImage: "",
-                mobileImage: "",
+               
                 primaryCtaText: "",
                 primaryCtaLink: "",
                 secondaryCtaText: "",
@@ -119,7 +118,7 @@ export default function HeroSliderAdmin() {
             title: slider.title || "",
             subtitle: slider.subtitle || "",
             desktopImage: slider.desktopImage || "",
-            mobileImage: slider.mobileImage || "",
+           
             primaryCtaText: slider.primaryCtaText || "",
             primaryCtaLink: slider.primaryCtaLink || "",
             secondaryCtaText: slider.secondaryCtaText || "",
@@ -182,6 +181,7 @@ export default function HeroSliderAdmin() {
         setIsUploading(true);
         const uploadData = new FormData();
         uploadData.append('file', file);
+        uploadData.append('bucket', 'hero-slider');
 
         try {
             const res = await fetch('/admin/api/upload', { method: 'POST', body: uploadData });
@@ -239,7 +239,6 @@ export default function HeroSliderAdmin() {
                 title: "",
                 subtitle: "",
                 desktopImage: "",
-                mobileImage: "",
                 primaryCtaText: "",
                 primaryCtaLink: "",
                 secondaryCtaText: "",
@@ -266,36 +265,40 @@ export default function HeroSliderAdmin() {
     );
 
     return (
-        <div className="p-[10px] text-slate-800 bg-slate-50 min-h-screen space-y-6">
-            <div className="flex justify-between items-center mb-4">
-                <div className="search-center">
-                    <div className="relative w-fit">
+        <div className="space-y-4 sm:space-y-6 bg-slate-50 min-h-screen">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
+                <div className="w-full lg:w-auto">
+                    <div className="relative flex-1 sm:w-80">
                         <input
-                            className="py-[11px] pr-[40px] pl-[16px] w-[320px] rounded-lg border border-gray-200 outline-none bg-white text-sm transition-all focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                            className="w-full py-2.5 pr-[40px] pl-[16px] rounded-xl border border-slate-200 outline-none bg-white text-sm transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 shadow-sm"
                             placeholder="Search Slider..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                         />
-                        {search && (
+                        {search ? (
                             <button
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-none border-none cursor-pointer text-sky flex items-center justify-center p-1 rounded-full transition-all hover:bg-[#f1f5f9] hover:text-[#1e293b]"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
                                 onClick={() => setSearch("")}
-                                type="button"
                             >
                                 <X size={16} />
                             </button>
+                        ) : (
+                            <X className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 w-4 h-4 hidden" />
                         )}
                     </div>
                 </div>
-                <div style={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
+
+                <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-3">
+                  
                     <button
                         onClick={() => { setCurrentSlider(null); setIsModalOpen(true); }}
-                        className="px-4 py-2 text-sm border-none  rounded-[10px] bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-semibold cursor-pointer transition-all flex items-center gap-2 whitespace-nowrap hover:bg-sky-700 hover:from-sky-700 via-sky-700 to-slate-700 transform transition duration-300 ease-in-out hover:scale-105"
+                        className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
                     >
-                        <Plus size={18} /> Add New Slide
+                        <Plus size={18} /> <span>Add New Slide</span>
                     </button>
                 </div>
             </div>
+
 
             {isLoading ? (
                 <div className="text-center py-20">Loading sliders...</div>
@@ -347,19 +350,8 @@ export default function HeroSliderAdmin() {
                                         </td>
                                         <td className="px-4 py-[14px] border-b border-[#e2e8f0]">
                                             <div className="flex items-center gap-2">
-                                                {/* <div className="text-sm text-[#475569] line-clamp-1 max-w-[150px]">{slider.subtitle}</div> */}
-                                                {slider.subtitle && (
-                                                    <button
-                                                        onClick={() => {
-                                                            setSelectedSlider(slider);
-                                                            setIsDetailModalOpen(true);
-                                                        }}
-                                                        className="p-1 rounded-full hover:bg-sky-50 text-sky-500 transition-colors cursor-pointer border-none bg-transparent flex items-center justify-center"
-                                                        title="View Subtitle Details"
-                                                    >
-                                                        <Info size={20} />
-                                                    </button>
-                                                )}
+                                             <div className="text-sm text-[#475569] line-clamp-1 ">{slider.subtitle}</div>
+                                            
                                             </div>
                                         </td>
                                         <td className="px-4 py-[14px] whitespace-nowrap text-sm text-[#475569] border-b border-[#e2e8f0]">
@@ -412,7 +404,7 @@ export default function HeroSliderAdmin() {
                             <button onClick={() => setIsModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
                         </div>
                         <form className="flex flex-col gap-3.5" onSubmit={handleSave}>
-                            <div className="grid grid-cols-2 gap-4">
+                          
                                 <div className="flex flex-col gap-[5px]">
                                     <label htmlFor="desktopImage" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Desktop Image URL *</label>
                                     <div className="flex gap-2">
@@ -437,31 +429,7 @@ export default function HeroSliderAdmin() {
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex flex-col gap-[5px]">
-                                    <label htmlFor="mobileImage" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Mobile Image URL *</label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            id="mobileImage"
-                                            name="mobileImage"
-                                            className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                                            value={formState.mobileImage}
-                                            onChange={handleFormChange}
-                                            required
-                                        />
-                                        <label className="flex items-center gap-1 px-3 py-2 bg-sky-50 text-sky-600 rounded-lg cursor-pointer hover:bg-sky-100 h-fit self-center">
-                                            {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-                                            <span className="text-xs font-bold">Upload</span>
-                                            <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, 'mobileImage')} accept="image/*" disabled={isUploading} />
-                                        </label>
-                                    </div>
-                                    {formState.mobileImage && (
-                                        <div className="mt-2 w-10 h-16 relative rounded border overflow-hidden mx-auto">
-                                            <Image src={formState.mobileImage} alt="Mobile Preview" fill className="object-cover" unoptimized />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                           
                             <div className="flex flex-col gap-[5px]">
                                 <label htmlFor="title" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Title *</label>
                                 <input
@@ -567,10 +535,12 @@ export default function HeroSliderAdmin() {
                             </div>
 
                             <div className="flex gap-3 mt-6">
-                                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">
+                                <button type="button" onClick={() => setIsModalOpen(false)} 
+                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">
                                     Cancel
                                 </button>
-                                <button type="submit" disabled={isSaving} className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none">
+                                <button type="submit" disabled={isSaving} 
+                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none">
                                     {isSaving ? "Saving..." : currentSlider ? "Update Slide" : "Add Slide"}
                                 </button>
                             </div>
@@ -607,31 +577,7 @@ export default function HeroSliderAdmin() {
                 </div>
             )}
 
-            {/* Table Subtitle Detail Modal */}
-            {isDetailModalOpen && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-md max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300">
-                        <div className="flex justify-between items-center mb-5">
-                            <h3 className="text-lg font-bold text-sky-600">Subtitle Details</h3>
-                            <button
-                                onClick={() => { setIsDetailModalOpen(false); setSelectedSlider(null); }}
-                                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"                            >
-                                <X size={20} />
-
-
-                            </button>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                                <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
-                                    {selectedSlider?.subtitle || "No subtitle provided."}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
+        
         </div>
 
 

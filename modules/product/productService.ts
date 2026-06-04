@@ -59,11 +59,9 @@ export interface Product {
     reviews_count?: number;
     product_categories?: ProductCategory;
     product_variants?: ProductVariant[];
-    related_product_ids?: string[];
 }
 
 type ProductRow = Product & {
-    product_related_products?: { related_product_id: string }[];
 };
 
 const slugify = (value: string) =>
@@ -158,8 +156,7 @@ export const productService = {
             .select(`
                 *,
                 product_categories (*),
-                product_variants (*),
-                product_related_products!product_related_products_product_id_fkey (related_product_id)
+                product_variants (*)
             `)
             .order("sort_order", { ascending: true })
             .order("created_at", { ascending: false });
@@ -174,7 +171,6 @@ export const productService = {
         return ((data || []) as ProductRow[]).map((product) => ({
             ...product,
             product_variants: (product.product_variants || []),
-            related_product_ids: (product.product_related_products || []).map((item) => item.related_product_id),
         })) as Product[];
     },
 
@@ -184,8 +180,7 @@ export const productService = {
             .select(`
                 *,
                 product_categories (*),
-                product_variants (*),
-                product_related_products!product_related_products_product_id_fkey (related_product_id)
+                product_variants (*)
             `)
             .eq("id", id)
             .single();
@@ -193,12 +188,11 @@ export const productService = {
         return {
             ...data,
             product_variants: (data.product_variants || []),
-            related_product_ids: ((data as ProductRow).product_related_products || []).map((item) => item.related_product_id),
         } as Product;
     },
 
     async create(product: Product) {
-        const { product_variants = [], related_product_ids = [], ...productData } = product;
+        const { product_variants = [],...productData } = product;
         const { data, error } = await supabase
             .from("products")
             .insert([normalizeProduct(productData as Product)])
@@ -207,12 +201,11 @@ export const productService = {
         if (error) throw error;
 
         await this.replaceVariants(data.id, product_variants);
-        await this.replaceRelatedProducts(data.id, related_product_ids);
         return this.getById(data.id);
     },
 
     async update(id: string, product: Partial<Product>) {
-        const { product_variants, related_product_ids, ...productData } = product;
+        const { product_variants, ...productData } = product;
         delete productData.product_categories;
         const payload = {
             ...productData,
@@ -224,10 +217,6 @@ export const productService = {
 
         if (product_variants) {
             await this.replaceVariants(id, product_variants);
-        }
-
-        if (related_product_ids) {
-            await this.replaceRelatedProducts(id, related_product_ids);
         }
 
         return this.getById(id);
@@ -255,20 +244,7 @@ export const productService = {
         return true;
     },
 
-    async replaceRelatedProducts(productId: string, relatedIds: string[]) {
-        await supabase.from("product_related_products").delete().eq("product_id", productId);
-        const cleanIds = Array.from(new Set(relatedIds.filter((id) => id && id !== productId)));
-        if (!cleanIds.length) return true;
 
-        const { error } = await supabase.from("product_related_products").insert(
-            cleanIds.map((relatedId) => ({
-                product_id: productId,
-                related_product_id: relatedId,
-            }))
-        );
-        if (error) throw error;
-        return true;
-    },
 
     async getEnquiries() {
         const { data, error } = await supabase

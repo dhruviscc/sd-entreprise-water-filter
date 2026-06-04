@@ -32,11 +32,13 @@ export default function ProductDetailPage() {
 
         setProduct(data);
 
-        // Fetch all products to filter related ones
+        // Fetch all products to filter related ones by category
         const allRes = await fetch("/admin/api/product");
         const allData = await allRes.json();
         if (allRes.ok) {
-          setRelatedProducts(allData.filter((p: any) => data.related_product_ids?.includes(p.id)));
+          setRelatedProducts(allData.filter((p: any) => 
+            p.category_id === data.category_id && p.id !== data.id
+          ));
         }
 
         const defaultIdx = data.product_variants?.findIndex((v: any) => v.is_default);

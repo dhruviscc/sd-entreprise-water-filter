@@ -4,10 +4,10 @@ import React, { useState, useEffect } from "react";
 
 import { X, Send, CheckCircle2 } from "lucide-react";
 import { useEnquiry } from "@/app/(website)/context/EnquiryContext";
-import { Service } from "@/modules/services/servicesService";
-
+import { Service } from "@/app/(website)/data/mockData";
+ 
 export default function EnquiryModal() {
-  const { isOpen, interestName, interestType, closeEnquiry } = useEnquiry();
+  const { isOpen, interestName, closeEnquiry } = useEnquiry();
   const [formData, setFormData] = useState({
     fullName: "",
     mobileNumber: "",
@@ -196,7 +196,7 @@ export default function EnquiryModal() {
 
               <div>
                 <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-                  Service / Product Interest <span className="text-red-500">*</span>
+                  Product Interest <span className="text-red-500">*</span>
                 </label>
                 <select
                   name="serviceInterest"
@@ -205,12 +205,7 @@ export default function EnquiryModal() {
                   onChange={handleChange}
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 text-sm bg-slate-50 hover:bg-white transition-all"
                 >
-                  <option value="General Enquiry">General Enquiry</option>
-                  <optgroup label="Services">
-                    {services.map((service) => (
-                      <option key={service.id} value={service.name}>{service.name}</option>
-                    ))}
-                  </optgroup>
+                 
                   <optgroup label="Products">
                     {products.map((product) => (
                       <option key={product.id} value={product.name}>{product.name}</option>

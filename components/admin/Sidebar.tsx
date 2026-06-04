@@ -20,7 +20,10 @@ import {
   Droplet,
   Cog,
   BookOpen,
+  MessageCircle,
+  Star,
 } from "lucide-react";
+
 
 
 import Link from "next/link";
@@ -39,9 +42,13 @@ type UserProfile = {
 export default function Sidebar({
   collapsed,
   setCollapsed,
+  mobileOpen,
+  setMobileOpen,
 }: {
   collapsed: boolean;
   setCollapsed: (val: boolean) => void;
+  mobileOpen?: boolean;
+  setMobileOpen?: (val: boolean) => void;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -49,6 +56,11 @@ export default function Sidebar({
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showLogout, setShowLogout] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+
+  useEffect(() => {
+    // Close mobile sidebar on route change
+    if (setMobileOpen) setMobileOpen(false);
+  }, [pathname, setMobileOpen]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -86,20 +98,27 @@ export default function Sidebar({
   const navItems = [
     { id: "dashboard", label: "Dashboard", Icon: BarChart3, href: "/admin/dashboard" },
     { id: "hero-slider", label: "Hero Slider", Icon: List, href: "/admin/dashboard/hero-slider" },
-    { id: "services", label: "Services", Icon: Cog, href: "/admin/dashboard/services" },
     { id: "product", label: "Products", Icon: Package, href: "/admin/dashboard/product" },
     { id: "blog", label: "Blog", Icon: BookOpen, href: "/admin/dashboard/blog" },
+    { id: "faq", label: "FAQ", Icon: MessageCircle, href: "/admin/dashboard/faq" },
+    { id: "review", label: "Review", Icon: Star, href: "/admin/dashboard/review" },
+    { id: "contact", label: "Contact", Icon: Inbox, href: "/admin/dashboard/contact" },
     { id: "users", label: "Users", Icon: Users, href: "/admin/dashboard/users" },
-
-
-
   ];
 
   return (
-    <aside
-      className={`sticky top-0 rounded-r-4xl bg-gradient-to-br from-sky-900 via-sky-900 to-slate-900 text-white flex h-screen flex-col border-r border-slate-200 shadow-xl transition-all duration-300 ease-in-out ${collapsed ? "w-20 overflow-visible" : "w-72 overflow-y-auto"
-        }`}
-    >
+    <>
+      {/* Backdrop for mobile */}
+      <div 
+        className={`fixed inset-0 z-[100] bg-slate-950/50 lg:hidden transition-opacity duration-300 ${mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        onClick={() => setMobileOpen?.(false)}
+      />
+
+      <aside
+        className={`fixed lg:sticky top-0 left-0 z-[110] rounded-r-4xl bg-gradient-to-br from-sky-900 via-sky-900 to-slate-900 text-white flex h-screen flex-col border-r border-slate-200 shadow-xl transition-all duration-300 ease-in-out ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        } ${collapsed ? "w-20 overflow-visible" : "w-72 overflow-y-auto"}`}
+      >
       {/* ===== HEADER ===== */}
       <div className="flex h-16 items-center justify-between border-b border-white/10 px-2">
         <div className="flex items-center gap- 3 overflow-hidden">
@@ -277,5 +296,6 @@ export default function Sidebar({
         </div>
       )}
     </aside>
+    </>
   );
 }

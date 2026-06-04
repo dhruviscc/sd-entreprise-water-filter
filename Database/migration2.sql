@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS public.hero_sliders (
     "title" TEXT NOT NULL,
     "subtitle" TEXT,
     "desktopImage" TEXT NOT NULL,
-    "mobileImage" TEXT NOT NULL,
     "primaryCtaText" TEXT,
     "primaryCtaLink" TEXT,
     "secondaryCtaText" TEXT,
@@ -54,3 +53,38 @@ DROP TRIGGER IF EXISTS update_hero_sliders_updated_at ON public.hero_sliders;
 CREATE TRIGGER update_hero_sliders_updated_at
     BEFORE UPDATE ON public.hero_sliders
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+-- ==========================================
+-- STORAGE SETUP FOR HERO SLIDER
+-- ==========================================
+
+-- 1. Create Bucket
+INSERT INTO storage.buckets (id, name, public) 
+VALUES ('hero-slider', 'hero-slider', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- 2. Storage Policies
+-- PUBLIC READ ACCESS
+DROP POLICY IF EXISTS "Public Read Access Hero Slider" ON storage.objects;
+CREATE POLICY "Public Read Access Hero Slider" ON storage.objects
+    FOR SELECT USING (bucket_id = 'hero-slider');
+
+-- ADMIN FULL ACCESS
+DROP POLICY IF EXISTS "Admin Full Access Hero Slider" ON storage.objects;
+CREATE POLICY "Admin Full Access Hero Slider" ON storage.objects
+    FOR ALL TO authenticated
+    USING (
+        bucket_id = 'hero-slider' AND
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+        )
+    )
+    WITH CHECK (
+        bucket_id = 'hero-slider' AND
+        EXISTS (
+            SELECT 1 FROM public.profiles 
+            WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
+        )
+    );
+
