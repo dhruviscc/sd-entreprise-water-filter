@@ -409,29 +409,13 @@ export default function AdminServicesPage() {
 
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-2xl max-h-[80vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
+                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[80vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                            <h3 className="text-lg font-bold text-sky-600" style={{ marginBottom: 0 }}>
+                            <h3 className="text-lg font-bold text-slate-700" style={{ marginBottom: 0 }}>
                                 {editingService ? "Edit Service" : "Add New Service"}
                             </h3>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                style={{
-                                    width: "36px",
-                                    height: "36px",
-                                    border: "none",
-                                    borderRadius: "8px",
-                                    cursor: "pointer",
-                                    color: "#ffffff",
-                                    backgroundColor: "#6a9fdbff",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    transition: "all 0.2s ease",
-                                }}
-                            >
-                                <X size={18} />
-                            </button>
+                            <button onClick={() => setIsModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
+
                         </div>
 
                         <div className="flex flex-col gap-4">
@@ -542,7 +526,7 @@ export default function AdminServicesPage() {
                                 )}
                             </div>
                             <div className="grid grid-cols-2 gap-4">
-                               
+
                                 <div className="flex flex-col gap-[5px]">
                                     <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Short Description</label>
                                     <textarea
@@ -553,7 +537,7 @@ export default function AdminServicesPage() {
                                         placeholder="Short description of the service..."
                                     />
                                 </div>
-                                 <div className="flex flex-col gap-[5px]">
+                                <div className="flex flex-col gap-[5px]">
                                     <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Description</label>
                                     <textarea
                                         value={formData.description}
@@ -642,7 +626,7 @@ export default function AdminServicesPage() {
                             <h3 className="text-lg font-bold text-sky-600">Service Description</h3>
                             <button
                                 onClick={() => { setIsDetailModalOpen(false); setSelectedServiceForDetail(null); }}
-                                className="bg-transparent border-none p-0 cursor-pointer text-gray-500 hover:text-gray-700"
+                                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"
                             >
                                 <X size={20} />
                             </button>
@@ -694,21 +678,15 @@ export default function AdminServicesPage() {
                     onClick={() => setActiveShortService(null)}
                 >
                     <div
-                        className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative animate-in zoom-in-95 duration-300 border border-slate-100"
+                        className="bg-white rounded-2xl shadow-2xl  max-w-md w-full p-6 relative animate-in zoom-in-95 duration-300 border border-slate-100"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <button
-                            onClick={() => setActiveShortService(null)}
-                            className="absolute top-4 right-4 p-1 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-
-                        <div className="flex items-center gap-3 mb-4">
-
+                        <div className="flex justify-between items-center mb-5">
                             <h3 className="text-lg font-bold text-sky-600 tracking-tight">{activeShortService.name}</h3>
-                        </div>
+                            <button onClick={() => setActiveShortService(null)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100" >  <X size={18} /></button>
 
+
+                        </div>
                         <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
                             <p className="text-slate-600 text-sm leading-relaxed">
                                 {activeShortService.short_description}

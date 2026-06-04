@@ -327,7 +327,7 @@ export default function AdminProductPage() {
 
             {activeTab === "products" && (
                 <>
-                    <div className="flex flex-wrap gap-3 rounded-[16px] border border-slate-200 bg-white p-4 shadow-sm">
+                    <div className="flex flex-wrap gap-3 rounded-[16px] border border-slate-200  p-4 shadow-sm">
                         <div className="relative w-fit">
                             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
                             <input
@@ -373,7 +373,7 @@ export default function AdminProductPage() {
                                             </td>
                                             <td className="px-4 py-4 text-sm text-slate-600">{product.product_variants?.length || 0}</td>
                                             <td className="px-4 py-4">
-                                                <button onClick={() => toggleProduct(product)} className={`rounded-lg px-3 py-1.5 text-[11px] font-bold transition-all ${product.is_active ?? true ? "bg-[#dcfce7] text-[#166534] hover:bg-[#bbf7d0]" : "bg-[#fee2e2] text-[#991b1b] hover:bg-[#fecaca]"}`}>
+                                                <button onClick={() => toggleProduct(product)} className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${product.is_active ?'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>
                                                     {product.is_active ?? true ? "Enabled" : "Disabled"}
                                                 </button>
                                             </td>
@@ -679,13 +679,34 @@ export default function AdminProductPage() {
                                 <input type="checkbox" checked={formData.is_active} onChange={(event) => setFormData({ ...formData, is_active: event.target.checked })} />
                                 Enable product
                             </label>
-                            <div className="flex gap-3">
-                                <button onClick={() => setIsModalOpen(false)} className="rounded-lg border border-slate-200 px-5 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 transition-colors">Cancel</button>
-                                <button onClick={saveProduct} disabled={saving} className="flex items-center gap-2 rounded-lg bg-sky-600 px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-sky-600/20 hover:bg-sky-700 transition-all disabled:opacity-60">
-                                    {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save size={16} />}
-                                    Save Product
-                                </button>
-                            </div>
+
+                        </div>
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                onClick={saveProduct}
+                                disabled={saving}
+                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
+                            >
+                                {saving ? (
+                                    <>
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                        Saving...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Save size={16} />
+                                        Save Product
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </div>

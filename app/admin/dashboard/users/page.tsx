@@ -255,8 +255,8 @@ export default function UsersPage() {
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
                     <div className="bg-white p-[28px]  rounded-[16px] w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-lg animate-in slide-in-from-bottom-2 duration-200">
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                            <h3 className="text-lg font-bold mb-5 text-sky-600" style={{ marginBottom: 0 }}>Create New User</h3>
-                            <button onClick={() => setIsAddModalOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: "var(--text-muted)" }}>✕</button>
+                            <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>Create New User</h3>
+                            <button onClick={() => setIsAddModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
                         </div>
                         <form className="flex flex-col gap-3.5" style={{ flexDirection: "column" }} onSubmit={handleAddUser}>
                             <div className="grid grid-cols-2 gap-4">
@@ -446,8 +446,8 @@ export default function UsersPage() {
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
                     <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-lg animate-in slide-in-from-bottom-2 duration-200">
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                            <h3 className="text-lg font-bold mb-5 text-sky-600" style={{ marginBottom: 0 }}>Edit User</h3>
-                            <button onClick={() => setIsEditModalOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: "var(--text-muted)" }}>✕</button>
+                            <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>Edit User</h3>
+                            <button onClick={() => setIsEditModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
                         </div>
                         <div className="flex flex-col gap-3.5" style={{ flexDirection: "column" }}>
                             <div className="grid grid-cols-2 gap-4">
@@ -516,10 +516,12 @@ export default function UsersPage() {
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
                     <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[460px] max-h-[90vh] overflow-y-auto shadow-lg animate-in slide-in-from-bottom-2 duration-200">
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                            <h3 className="text-lg font-bold mb-5 text-sky-600" style={{ marginBottom: 0 }}>
+                            <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>
                                 Reset Password for {resetUser.name}
                             </h3>
-                            <button onClick={() => setIsResetModalOpen(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "20px", color: "var(--text-muted)" }}>✕</button>
+                            <button onClick={() => setIsResetModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100">
+                                <X size={18} />
+                                </button>
                         </div>
                         <div className="flex flex-col gap-3.5" style={{ flexDirection: "column" }}>
                             <div className="flex flex-col gap-[5px]">

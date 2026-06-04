@@ -32,7 +32,7 @@ export default function HeroSliderAdmin() {
         secondaryCtaLink: "",
         secondaryInterest: "",
         secondaryType: "service" as "service" | "product" | "general",
-    
+
         isActive: true,
     });
 
@@ -49,7 +49,7 @@ export default function HeroSliderAdmin() {
                 secondaryCtaLink: currentSlider.secondaryCtaLink || "",
                 secondaryInterest: currentSlider.secondaryInterest || "",
                 secondaryType: currentSlider.secondaryType || "service",
-               
+
                 isActive: currentSlider.isActive,
             });
         } else {
@@ -126,7 +126,7 @@ export default function HeroSliderAdmin() {
             secondaryCtaLink: slider.secondaryCtaLink || "",
             secondaryInterest: slider.secondaryInterest || "",
             secondaryType: slider.secondaryType || "service",
-           
+
             isActive: slider.isActive,
         });
         setIsModalOpen(true);
@@ -246,7 +246,7 @@ export default function HeroSliderAdmin() {
                 secondaryCtaLink: "",
                 secondaryInterest: "",
                 secondaryType: "service",
-               
+
                 isActive: true,
             });
 
@@ -321,11 +321,9 @@ export default function HeroSliderAdmin() {
                                         Secondary CTA
                                     </th>
                                     <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">
-                                        Active
+                                        Status
                                     </th>
-                                    <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">
-                                        ReOrder
-                                    </th>
+
                                     <th scope="col" className="px-4 py-[14px] text-right text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">
                                         Actions
                                     </th>
@@ -379,12 +377,7 @@ export default function HeroSliderAdmin() {
                                                 {slider.isActive ? 'Enable' : 'Disable'}
                                             </button>
                                         </td>
-                                        <td className="px-4 py-[14px] whitespace-nowrap text-sm text-[#475569] border-b border-[#e2e8f0]">
-                                            <div className="flex items-center gap-2">
-                                                <MoveVertical size={18} className="text-[#94a3b8] cursor-grab" />
-                                                <span>{slider.order}</span>
-                                            </div>
-                                        </td>
+                                     
                                         <td className="px-4 py-[14px] whitespace-nowrap text-right text-sm font-medium border-b border-[#e2e8f0]">
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
@@ -413,29 +406,11 @@ export default function HeroSliderAdmin() {
 
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
+                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                            <h3 className="text-lg font-bold mb-5 text-sky-600" style={{ marginBottom: 0 }}>{currentSlider ? "Edit Slide" : "Add New Slide"}</h3>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                style={{
-                                    width: "36px",
-                                    height: "36px",
-                                    border: "none",
-                                    borderRadius: "8px",
-                                    cursor: "pointer",
-                                    fontSize: "18px",
-                                    fontWeight: "600",
-                                    color: "#ffffff",
-                                    backgroundColor: "#6a9fdbff",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    transition: "all 0.2s ease",
-                                }}
-                            >
-                                ✕
-                            </button>                        </div>
+                            <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>{currentSlider ? "Edit Slide" : "Add New Slide"}</h3>
+                            <button onClick={() => setIsModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
+                        </div>
                         <form className="flex flex-col gap-3.5" onSubmit={handleSave}>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col gap-[5px]">
@@ -602,15 +577,7 @@ export default function HeroSliderAdmin() {
                         </form>
                     </div>
                 </div>
-
-
-
-
             )}
-
-
-
-
 
             {isDeleteModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
@@ -648,9 +615,10 @@ export default function HeroSliderAdmin() {
                             <h3 className="text-lg font-bold text-sky-600">Subtitle Details</h3>
                             <button
                                 onClick={() => { setIsDetailModalOpen(false); setSelectedSlider(null); }}
-                                className="bg-transparent border-none p-0 cursor-pointer text-gray-500 hover:text-gray-700"
-                            >
+                                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"                            >
                                 <X size={20} />
+
+
                             </button>
                         </div>
                         <div className="space-y-4">
@@ -663,7 +631,6 @@ export default function HeroSliderAdmin() {
                     </div>
                 </div>
             )}
-
 
         </div>
 

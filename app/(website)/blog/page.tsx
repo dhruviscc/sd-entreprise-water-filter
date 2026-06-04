@@ -1,23 +1,38 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { blogPostsData } from "../data/mockData";
+import React, { useState, useMemo, useEffect } from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import BubbleBackground from "@/components/BubbleBackground";
-import { Search, Clock, ArrowRight, BookOpen, X, Droplets, Cylinder } from "lucide-react";
+import { Search, Clock, ArrowRight, BookOpen, X, Droplets, Cylinder, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-
 
 const categories = ["All Topics", "Health", "Water Quality", "Maintenance"];
 
 export default function BlogListingPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Topics");
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await fetch("/admin/api/blog?active=true");
+        const data = await res.json();
+        setBlogs(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error("Error fetching blogs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlogs();
+  }, []);
 
   // Filter blogs based on search term & category selection
   const filteredBlogs = useMemo(() => {
-    return blogPostsData.filter((post) => {
+    return blogs.filter((post) => {
       const matchesSearch =
         post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         post.summary.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,7 +43,7 @@ export default function BlogListingPage() {
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchTerm, selectedCategory]);
+  }, [searchTerm, selectedCategory, blogs]);
 
   return (
     <div className="space-y-10 pb-16 overflow-hidden">
@@ -126,90 +141,83 @@ export default function BlogListingPage() {
           </div>
 
         </div>
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-          {filteredBlogs.length === 0 ? (
-          <ScrollReveal variant="scaleUp" duration={600}>
-            <div className="bg-white rounded-xl border border-slate-100 p-16 text-center shadow-sm space-y-3">
-              <span className="block text-4xl">📚</span>
-              <h3 className="text-lg font-bold text-slate-800">No Articles Found</h3>
-              <p className="text-sm text-slate-500 max-w-sm mx-auto">
-                We couldn't find any blog posts matching your search. Try resetting filters or using simpler keywords.
-              </p>
-              <button
-                onClick={() => {
-                  setSearchTerm("");
-                  setSelectedCategory("All Topics");
-                }}
-                className="mt-2 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold rounded-lg shadow cursor-pointer"
-              >
-                Reset Filters
-              </button>
+        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-sky-500" />
             </div>
-          </ScrollReveal>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredBlogs.map((post, index) => (
-              <ScrollReveal
-                key={post.id}
-                variant="fadeInUp"
-                delay={(index % 3) * 120}
-                duration={700}
-              >
-                <div className="bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-2 border border-slate-200 hover:border-sky-200 overflow-hidden flex flex-col justify-between h-full transition-all duration-300 group cursor-pointer">
-                  {/* Blog Image */}
-                  <div className="relative h-52 bg-slate-100 overflow-hidden">
-                    <Image
-                      src={post.image}
-                      alt={post.title}
-                      fill
-                      className="object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                    />
-                    <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-[10px] font-extrabold text-sky-700 uppercase tracking-wider shadow-sm">
-                      {post.category}
-                    </div>
-                  </div>
-
-                  {/* Content area */}
-                  <div className="p-6 flex-grow flex flex-col justify-between space-y-4 relative z-10 bg-white">
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3 text-xs text-slate-500 font-semibold">
-                        <span className="flex items-center gap-1.5 bg-slate-50 px-2 py-1 rounded-md">
-                          <Clock className="w-3.5 h-3.5 text-sky-500" />
-                          {post.readTime}
-                        </span>
-                        <span>•</span>
-                        <span>{post.date}</span>
+          ) : filteredBlogs.length === 0 ? (
+            <ScrollReveal variant="scaleUp" duration={600}>
+              <div className="bg-white rounded-xl border border-slate-100 p-16 text-center shadow-sm space-y-3">
+                <span className="block text-4xl">📚</span>
+                <h3 className="text-lg font-bold text-slate-800">No Articles Found</h3>
+                <p className="text-sm text-slate-500 max-w-sm mx-auto">
+                  We couldn't find any blog posts matching your search. Try resetting filters or using simpler keywords.
+                </p>
+                <button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setSelectedCategory("All Topics");
+                  }}
+                  className="mt-2 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white text-xs font-bold rounded-lg shadow cursor-pointer"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            </ScrollReveal>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredBlogs.map((post, index) => (
+                <ScrollReveal
+                  key={post.id}
+                  variant="fadeInUp"
+                  delay={(index % 3) * 120}
+                  duration={700}
+                >
+                  <div className="bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-2 border border-slate-200 hover:border-sky-200 overflow-hidden flex flex-col justify-between h-full transition-all duration-300 group cursor-pointer">
+                    {/* Blog Image */}
+                    <div className="relative h-52 bg-slate-100 overflow-hidden">
+                      <Image
+                        src={post.image}
+                        alt={post.title}
+                        fill
+                        unoptimized
+                        className="object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                      />
+                      <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-[10px] font-extrabold text-sky-700 uppercase tracking-wider shadow-sm">
+                        {post.category}
                       </div>
-                      <h3 className="text-lg font-bold text-slate-900 group-hover:text-sky-600 transition-colors line-clamp-2 leading-snug">
-                        {post.title}
-                      </h3>
-                      <p className="text-sm text-slate-600 leading-relaxed line-clamp-3 font-medium">
-                        {post.summary}
-                      </p>
                     </div>
 
-                    <div className="flex items-center justify-between pt-5 mt-auto border-t border-slate-100">
-                      <span className="text-xs text-slate-500 font-bold flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-sky-100 flex items-center justify-center text-sky-700 font-bold uppercase text-[10px]">
-                          {post.author.charAt(0)}
-                        </div>
-                        {post.author}
-                      </span>
-                      <Link
-                        href={`/blog/${post.id}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 group-hover:text-sky-700 transition-colors bg-sky-50 hover:bg-sky-100 px-3 py-1.5 rounded-lg"
-                      >
-                        <span>Read</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                      </Link>
+                    {/* Content area */}
+                    <div className="p-6 flex-grow flex flex-col justify-between space-y-4 relative z-10 bg-white">
+                      <div className="space-y-3">
+
+                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-sky-600 transition-colors line-clamp-2 leading-snug">
+                          {post.title}
+                        </h3>
+                        <p className="text-sm text-slate-600 leading-relaxed line-clamp-3 font-medium">
+                          {post.summary}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-5 mt-auto border-t border-slate-100">
+
+                        <Link
+                          href={`/blog/${post.id}`}
+                          className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 group-hover:text-sky-700 transition-colors bg-sky-50 hover:bg-sky-100 px-3 py-1.5 rounded-lg"
+                        >
+                          <span>Read</span>
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-        )}
-      </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

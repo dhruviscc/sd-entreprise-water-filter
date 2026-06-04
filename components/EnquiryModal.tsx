@@ -106,7 +106,7 @@ export default function EnquiryModal() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value}));
   };
 
   return (
@@ -171,6 +171,7 @@ export default function EnquiryModal() {
                     name="mobileNumber"
                     required
                     pattern="[0-9]{10}"
+                    min={10}
                     placeholder="10-digit mobile number"
                     value={formData.mobileNumber}
                     onChange={handleChange}

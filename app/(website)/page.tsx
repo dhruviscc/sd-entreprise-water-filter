@@ -35,6 +35,7 @@ import {
   Search,
   Circle,
   Cylinder,
+  Loader2,
 } from "lucide-react";
 import BubbleBackground from "@/components/BubbleBackground";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -115,6 +116,9 @@ export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
   const [isProductsLoading, setIsProductsLoading] = useState(true);
 
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [isBlogsLoading, setIsBlogsLoading] = useState(true);
+
   const normalizeAdminProduct = (product: any) => ({
     id: product.id,
     name: product.name || product.title || "Product",
@@ -180,6 +184,24 @@ export default function HomePage() {
       }
     };
     fetchHeroBanners();
+  }, []);
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const res = await fetch("/admin/api/blog?active=true");
+        if (!res.ok) throw new Error("Failed to fetch blogs");
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setBlogs(data);
+        }
+      } catch (err) {
+        console.error("Error fetching blogs:", err);
+      } finally {
+        setIsBlogsLoading(false);
+      }
+    };
+    fetchBlogs();
   }, []);
 
   useEffect(() => {
@@ -395,7 +417,7 @@ export default function HomePage() {
     if (isReviewPaused) return;
     const timer = setInterval(() => {
       nextReview();
-    }, 5000); 
+    }, 5000);
 
     return () => clearInterval(timer);
   }, [isReviewPaused]);
@@ -1044,7 +1066,11 @@ export default function HomePage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            {blogPostsData.map((post, index) => (
+            {isBlogsLoading ? (
+              <div className="col-span-full flex justify-center py-12">
+                <Loader2 className="w-10 h-10 animate-spin text-sky-500" />
+              </div>
+            ) : (blogs.length > 0 ? blogs.slice(0, 3) : blogPostsData.slice(0, 3)).map((post, index) => (
               <ScrollReveal key={post.id} variant="fadeInUp" delay={index * 150}>
                 <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col justify-between h-full hover:shadow-md transition-all group">
                   {/* Blog Image */}
@@ -1053,6 +1079,7 @@ export default function HomePage() {
                       src={post.image}
                       alt={post.title}
                       fill
+                      unoptimized
                       className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />
                     <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-slate-900/80 backdrop-blur-sm text-[10px] font-bold text-sky-400 uppercase tracking-wider">
@@ -1063,14 +1090,7 @@ export default function HomePage() {
                   {/* Content */}
                   <div className="p-4 sm:p-5 flex-grow flex flex-col justify-between space-y-3 sm:space-y-4">
                     <div className="space-y-2">
-                      <div className="flex items-center gap-3 text-xs text-slate-400 font-semibold">
-                        <span>{post.date}</span>
-                        <span>•</span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3.5 h-3.5" />
-                          {post.readTime}
-                        </span>
-                      </div>
+
                       <h3 className="text-sm sm:text-base font-bold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-2">
                         {post.title}
                       </h3>

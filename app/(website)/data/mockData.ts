@@ -36,10 +36,8 @@ export interface BlogPost {
   summary: string;
   content: string;
   image: string;
-  date: string;
+  status?: "draft" | "published" | "archived";
   category: string;
-  author: string;
-  readTime: string;
 }
 
 export interface Review {
@@ -284,7 +282,7 @@ export const productsData: Product[] = [
     name: "SD Aqua Sparkle Alkaline RO",
     category: "RO Systems",
 
-    
+
     description: "Premium Domestic RO Purifier with Alkaline & Active Copper technology, providing pure and pH-balanced water.",
     long_description: "The SD Aqua Sparkle is our flagship domestic water purifier. It features an advanced 10-stage purification system that combines Reverse Osmosis (RO), Ultra Violet (UV) sterilization, Ultra Filtration (UF), and an Alkaline Mineralizer. This model is specially engineered to treat borewell, tanker, and municipal water, lowering high TDS levels and converting acidic tap water into life-giving, mineral-rich alkaline water (pH 8.5+). It features a sleek glassmorphic front panel, a food-grade ABS 10-liter water storage tank, and smart indicators for tank full, UV fail, and filter replacement.",
     features: [
@@ -328,7 +326,7 @@ export const productsData: Product[] = [
     id: "sd-crystal-clear-domestic",
     name: "SD Crystal Clear Domestic",
     category: "Domestic Filter",
-  
+
 
     description: "Compact 8-stage RO purifier ideal for municipal and low TDS water sources, focusing on chemical and odor removal.",
     long_description: "Perfect for urban apartments, the SD Crystal Clear domestic filter is a compact, highly reliable water purifier that focuses on removing municipal chlorine, toxic heavy metals, pesticide residues, and bad odor. Using an eco-friendly multi-barrier system, it keeps the water sweet, clean, and perfectly safe for cooking and drinking, all while occupying minimal kitchen space.",
@@ -366,7 +364,7 @@ export const productsData: Product[] = [
     id: "sd-industrial-ro-250",
     name: "SD Industrial RO-250 LPH",
     category: "Industrial Filter",
-  
+
 
     description: "Heavy-duty 250 Liters Per Hour industrial RO system designed for commercial buildings, factories, and schools.",
     long_description: "The SD Industrial RO-250 LPH is a high-performance, skid-mounted water purification plant engineered to deliver safe drinking water in high-volume settings. Supported by a robust Stainless Steel 304 frame, it features dual high-pressure vertical pumps, automated sand and carbon media pre-filters, and twin 4040 thin-film composite RO membranes. It is built to run 24/7 with minimal operator supervision, offering digital meters to monitor flow rates, pressure gauges, and input/output TDS levels.",
@@ -399,7 +397,7 @@ export const productsData: Product[] = [
     id: "sd-industrial-ro-500",
     name: "SD Industrial RO-500 LPH",
     category: "Industrial Filter",
-  
+
 
     description: "High-capacity commercial purification system for large-scale pharmaceutical, manufacturing, and bottling projects.",
     long_description: "Built for intensive applications, the SD Industrial RO-500 LPH delivers up to 500 liters of purified water every hour. It features advanced membrane technology, auto-flushing cycles to enhance membrane lifespan, and a state-of-the-art PLC electrical panel. Ideal for large production lines, schools with 1000+ students, and centralized hospital labs.",
@@ -431,7 +429,7 @@ export const productsData: Product[] = [
     id: "sd-water-softener-home",
     name: "SD Soft-Home Ionizer",
     category: "Water Softener",
- 
+
 
     description: "Point-of-entry Ion-Exchange Water Softener for apartments and villas, preventing scaling in pipes and appliances.",
     long_description: "Say goodbye to chalky white scale deposits in your bathroom and dry, frizzy hair. The SD Soft-Home Ionizer is a compact, point-of-entry water softening system containing high-capacity cation exchange resin. It connects to your main water overhead supply line and removes hardness-causing Calcium and Magnesium. It requires minimal maintenance, and has an easy-to-use manual multiport valve for effortless backwash and salt regeneration.",
@@ -468,7 +466,7 @@ export const productsData: Product[] = [
     id: "sd-water-softener-industrial",
     name: "SD Soft-Max Commercial Softener",
     category: "Water Softener",
-    
+
 
     description: "High-flow industrial water softener for hotels, boilers, cooling towers, and apartment complexes.",
     long_description: "The SD Soft-Max is a high-volume water softener designed for industrial boilers, cooling towers, hotels, and multi-story apartment complexes. Utilizing premium grade strong-acid cation resin, it ensures scale-free water flow at high volumes, avoiding heavy plumbing replacement costs and optimizing thermal efficiency in heat transfer processes.",
@@ -499,7 +497,7 @@ export const productsData: Product[] = [
     id: "sd-eco-gas-geyser-6l",
     name: "SD Eco-Warm Instant Gas Geyser (6L)",
     category: "Gas Geyser",
-  
+
 
     description: "Instant 6-Liter LPG Gas Geyser with multi-safety protections and battery ignition, highly energy efficient.",
     long_description: "Get piping hot water in seconds with the SD Eco-Warm 6-liter Gas Geyser. Running on LPG cylinder gas, it cuts down electricity consumption by up to 60%. It features a heavy copper heat exchanger, an oxygen depletion safety system, a child lock, and dual solenoid valves. The geyser ignites automatically when water flows through, making it perfect for homes with low municipal water pressure or high electricity rates.",
@@ -537,7 +535,7 @@ export const productsData: Product[] = [
     id: "sd-kangan-classic-ionizer",
     name: "SD Kangan Life Alkaline Ionizer",
     category: "Kangan Water",
-   
+
 
     description: "Premium Alkaline Water Ionizer featuring 7 Platinum-plated Titanium plates, creating healthy micro-clustered water.",
     long_description: "The SD Kangan Life is our top-tier medical-grade water ionizer. Fitted with 7 solid platinum-coated titanium plates, it splits regular water into alkaline and acidic streams. It produces water with pH values ranging from 2.5 (strong sanitizer) up to 11.5 (solvent water to wash pesticides off vegetables). It generates powerful antioxidants with ORP levels exceeding -800mV, combating oxidative stress inside the human body while promoting faster cellular hydration.",
@@ -576,7 +574,7 @@ export const productsData: Product[] = [
     id: "sd-cooler-ro-100",
     name: "SD Chill-Purify RO + Cooler (100L)",
     category: "RO + Water Cooler",
-   
+
 
     description: "Commercial stainless steel water cooler with an integrated 100 Liter storage tank and inline RO purification.",
     long_description: "Ensure that employees, clients, or students have access to ice-cold, purified drinking water. The SD Chill-Purify is a fully integrated commercial station combining a heavy-duty cooling compressor and an internal multi-stage RO filter. The entire tank, panels, and internal plumbing are crafted from premium SS-304 food-grade stainless steel to ensure absolute hygiene and prevent corrosion.",
@@ -609,7 +607,7 @@ export const productsData: Product[] = [
     id: "sd-ro-accessories-kit",
     name: "SD Premium RO Maintenance Kit",
     category: "Accessories",
-   
+
     description: "Complete filter cartridge replacement kit containing sediment, carbon, pre-filter, and dynamic mineral cartridges.",
     long_description: "Keep your RO water purifier performing at its peak. This complete maintenance kit contains everything you need for an annual filter overhaul: 1 high-density Spun Pre-Filter, 1 inline Sediment Filter, 1 Activated Carbon Filter, and a Mineral/Alkaline Enhancer Cartridge. Compatible with Kent, Aquaguard, and all standard 10-inch RO cabinets.",
     features: [
@@ -662,10 +660,8 @@ If your water source has a TDS reading higher than 500 PPM, a standard gravity f
 Our premium **SD Aqua Sparkle RO** features an adjustable **TDS Controller**. If your input water is 1500 PPM, the RO reduces it to 80 PPM. The controller allows our technician to mix in purified active mineral water to raise it to a healthy 120 PPM, ensuring you get both safety and taste.`,
 
     image: "https://www.frizzlife.com/cdn/shop/articles/what_should_my_tds_be_for_drinking_water-main.webp?v=1778213412&width=1600",
-    date: "May 15, 2024",
-    category: "Water Quality",
-    author: "Mehul Patel",
-    readTime: "5 min read"
+    status: "published",
+    category: "Water Quality", // Assigned category
   },
   {
     id: "kangan-water-health-benefits",
@@ -690,11 +686,9 @@ A Kangan Ionizer is not just for drinking water. By choosing different pH levels
 - **pH 6.0 (Beauty Water):** Acts as an astringent toner for glowing skin.
 - **pH 2.5 (Strong Acidic):** Eco-friendly hand and counter sanitizer that kills bacteria on contact.`,
     image: "https://image.made-in-china.com/202f0j00pTQvgkbPRtcL/Alkaline-Water-Machine-Price.webp",
-    date: "May 10, 2024",
+    status: "published",
     category: "Health",
-    author: "Dr. A. K. Sharma",
-    readTime: "7 min read"
-  },
+  }, // Assigned category
   {
     id: "signs-your-ro-needs-service",
     title: "5 Warning Signs That Your RO Water Purifier Needs Urgent Service",
@@ -721,11 +715,9 @@ A loud vibrating noise or clicking sound indicates a struggling booster pump or 
 ### The Solution
 Regular maintenance is key. Sign up for our **SD AMC RO Contract** to get regular filter changes, TDS checks, and breakdown coverage automatically.`,
     image: "https://images.bhaskarassets.com/web2images/1884/2025/12/11/slide1_1765420469.gif",
-    date: "May 02, 2024",
+    status: "published",
     category: "Maintenance",
-    author: "Rajesh Vaghela",
-    readTime: "4 min read"
-  }
+  } // Assigned category
 ];
 
 export const reviewsData: Review[] = [
