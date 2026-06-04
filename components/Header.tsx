@@ -100,7 +100,7 @@ export default function Header() {
         {/* TOP WAVE */}
         <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180 opacity-140">
           <svg
-            className="relative block w-[245%] h-[80px] sm:h-[120px]"
+            className="relative block w-[500%] h-[90px] sm:w-[245%] sm:h-[120px]"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 2400 120"
             preserveAspectRatio="none"

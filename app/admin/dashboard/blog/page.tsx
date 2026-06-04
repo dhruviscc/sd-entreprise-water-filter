@@ -479,7 +479,7 @@ export default function AdminBlogsPage() {
 
 
                             <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Content (Markdown/HTML supported)</label>
+                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Content</label>
                                 <textarea
                                     value={formData.content}
                                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}

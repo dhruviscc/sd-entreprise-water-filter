@@ -162,7 +162,7 @@ export default function EnquiryPage() {
                     <div className="relative flex-1 sm:w-80">
                         <input
                             className="w-full py-2.5 pr-[40px] pl-[10px] rounded-xl border border-slate-200 outline-none bg-white text-sm transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 shadow-sm"
-                            placeholder="Search FAQs..."
+                            placeholder="Search Contact..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -254,8 +254,8 @@ export default function EnquiryPage() {
                                         <td>
                                             <div>
                                                 <span className={`text-[13px] px-1.5 py-0.5 rounded font-black uppercase tracking-wider ${(enquiry as any).source === 'Product Enquiry'
-                                                    ? 'bg-purple-50 text-purple-600 border border-purple-100'
-                                                    : 'bg-sky-50 text-sky-600 border border-sky-100'
+                                                    ? ' text-purple-600 '
+                                                    : ' text-sky-800 '
                                                     }`}>
                                                     {(enquiry as any).source || 'Lead'}
                                                 </span>
@@ -282,7 +282,7 @@ export default function EnquiryPage() {
                                         </td>
 
                                         <td className="px-6 py-4">
-                                            <span className="px-2 py-1 rounded-md bg-sky-50 text-sky-700 text-[11px] font-bold uppercase tracking-wider border border-sky-100">
+                                            <span className="px-2 py-1 rounded-md  text-sky-700 text-[11px] font-bold uppercase tracking-wider ">
                                                 {enquiry.service_interest}
                                             </span>
                                         </td>

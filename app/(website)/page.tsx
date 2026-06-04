@@ -552,9 +552,10 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col w-full">
+
       {/* ================= HERO SECTION ================= */}
       <section
-        className="relative h-[85vh] min-h-[500px] sm:h-[700px] lg:h-[890px] overflow-hidden bg-slate-100 touch-pan-y"
+        className="relative h-[80vh] min-h-[500px] sm:h-[700px] lg:h-[890px] overflow-hidden bg-slate-100 touch-pan-y"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -600,13 +601,13 @@ export default function HomePage() {
                       alt={banner.title}
                       fill
                       priority={index === 1}
+
                     />
                   </motion.div>
                 </div>
 
                 {/* Slide Content */}
                 <div className="absolute inset-0 flex items-center justify-center sm:justify-start z-20">
-                  {/* Changed from mx-auto max-w-7xl to full width with custom left padding to push content left */}
                   <div className="w-full px-6 sm:px-12 lg:px-24 xl:px-32 pt-12 sm:pt-0">
                     <motion.div
                       className="max-w-xl md:max-w-2xl space-y-5 sm:space-y-6 text-center sm:text-left"
@@ -619,7 +620,7 @@ export default function HomePage() {
                           y: 0,
                           transition: {
                             duration: 0.8,
-                            ease: [0.16, 1, 0.3, 1], // easeOutExpo
+                            ease: [0.16, 1, 0.3, 1], 
                             staggerChildren: 0.12,
                             delayChildren: 0.1
                           }
@@ -715,8 +716,9 @@ export default function HomePage() {
         </div>
       </section>
 
+
       {/* ================= SERVICES SECTION ================= */}
-      <section className="w-full bg-sky-50 pt-20 sm:pt-24 lg:pt-20 relative">
+      <section className="w-full bg-sky-50 pt-45 sm:pt-24 lg:pt-20 relative">
         {/* Decorative background vectors */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[10%] right-[10%] text-sky-500/10 animate-float-3d">
@@ -812,7 +814,7 @@ export default function HomePage() {
                       </div>
                     </div>
 
-                    <div className="relative z-10 grid grid-cols-2 gap-2 sm:gap-3 mt-5 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-50">
+                    {/* <div className="relative z-10 grid grid-cols-2 gap-2 sm:gap-3 mt-5 sm:mt-8 pt-4 sm:pt-6 border-t border-slate-50">
                       <Link
                         href={`/services#${service.id}`}
                         className="flex items-center justify-center py-2 sm:py-3 rounded-xl sm:rounded-2xl text-xs font-bold text-slate-400 hover:text-sky-600 hover:bg-sky-50 transition-all"
@@ -825,7 +827,7 @@ export default function HomePage() {
                       >
                         Enquiry
                       </button>
-                    </div>
+                    </div> */}
                   </div>
                 </ScrollReveal>
               );
@@ -1081,7 +1083,7 @@ export default function HomePage() {
 
             {videoReviews.length > itemsVisible && (
               /* Pagination Dots */
-              <div className="flex justify-center gap-2 mt-10">
+              <div className="flex flex-wrap justify-center items-center gap-2 mt-10 sm:mt-10 lg:mt-10 px-4">
                 {videoReviews.map((_, i) => (
                   <button
                     key={`dot-${i}`}
@@ -1089,7 +1091,9 @@ export default function HomePage() {
                       setIsVideoTransitioning(true);
                       setVideoIdx(i);
                     }}
-                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${i === (videoIdx % videoReviews.length) ? "bg-sky-500 w-6" : "bg-slate-200 w-2"
+                    className={`rounded-full transition-all duration-300 cursor-pointer ${i === videoIdx % videoReviews.length
+                        ? "bg-sky-500 w-6 h-2"
+                        : "bg-slate-300 w-2 h-2"
                       }`}
                     aria-label={`Go to slide ${i + 1}`}
                   />
