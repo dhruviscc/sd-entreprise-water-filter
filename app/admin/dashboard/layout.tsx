@@ -3,8 +3,8 @@
 import { ReactNode, useEffect, useState } from 'react';
 import Sidebar from '@/components/admin/Sidebar';
 import { useRouter } from 'next/navigation';
-import { getCurrentUser } from '@/modules/auth/sessionService';
-import { Menu, Droplet } from 'lucide-react';
+import { getCurrentUser, logoutUser } from '@/modules/auth/sessionService';
+import { Menu, Droplet, LogOut } from 'lucide-react';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -13,6 +13,7 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -39,6 +40,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (loading) return null;
 
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+    setLogoutDialogOpen(false);
+    router.push('/login');
+  };
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar 
@@ -46,6 +57,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         setCollapsed={setCollapsed} 
         mobileOpen={mobileOpen}
         setMobileOpen={setMobileOpen}
+        onLogoutRequest={() => setLogoutDialogOpen(true)}
       />
 
       <div className="flex flex-col flex-1 min-w-0">
@@ -71,6 +83,40 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
         </main>
       </div>
+
+      {logoutDialogOpen && (
+        <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
+            onClick={() => setLogoutDialogOpen(false)}
+          />
+          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
+            <div className="space-y-4 text-center">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600">
+                <LogOut size={28} />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900">Confirm Logout</h2>
+              <p className="text-sm text-slate-600">
+                Are you sure you want to sign out? You will be redirected to the login page.
+              </p>
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                <button
+                  onClick={() => setLogoutDialogOpen(false)}
+                  className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="rounded-2xl bg-red-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-red-700"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

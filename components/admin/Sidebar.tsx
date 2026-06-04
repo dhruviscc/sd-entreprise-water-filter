@@ -29,7 +29,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getCurrentUser, logoutUser } from '@/modules/auth/sessionService';
+import { getCurrentUser } from '@/modules/auth/sessionService';
 
 
 
@@ -44,18 +44,19 @@ export default function Sidebar({
   setCollapsed,
   mobileOpen,
   setMobileOpen,
+  onLogoutRequest,
 }: {
   collapsed: boolean;
   setCollapsed: (val: boolean) => void;
   mobileOpen?: boolean;
   setMobileOpen?: (val: boolean) => void;
+  onLogoutRequest?: () => void;
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showLogout, setShowLogout] = useState(false);
-  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
   useEffect(() => {
     // Close mobile sidebar on route change
@@ -82,18 +83,6 @@ export default function Sidebar({
     };
     fetchProfile();
   }, []);
-
-  const logout = async () => {
-    try {
-      await logoutUser();
-    } catch (error) {
-      console.error("Logout failed", error);
-    }
-
-    setIsLogoutDialogOpen(false);
-    setShowLogout(false);
-    router.push("/login");
-  };
 
   const navItems = [
     { id: "dashboard", label: "Dashboard", Icon: BarChart3, href: "/admin/dashboard" },
@@ -235,7 +224,7 @@ export default function Sidebar({
             }`}
         >
           <button
-            onClick={() => setIsLogoutDialogOpen(true)}
+            onClick={() => onLogoutRequest ? onLogoutRequest() : setShowLogout(true)}
             className={`flex w-full items-center gap-3 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-400 transition-all duration-300 hover:bg-red-500/20 hover:text-red-300 ${collapsed ? "justify-center" : ""
               }`}
           >
@@ -245,56 +234,6 @@ export default function Sidebar({
           </button>
         </div>
       </div>
-
-      {/* ===== LOGOUT MODAL ===== */}
-      {isLogoutDialogOpen && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-slate-950/10 "
-            onClick={() => setIsLogoutDialogOpen(false)}
-          />
-
-          {/* Modal */}
-          <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex flex-col items-center text-center">
-              {/* Icon */}
-              <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-3xl bg-red-500/10 text-red-500">
-                <LogOut size={34} strokeWidth={2.5} />
-              </div>
-
-              {/* Content */}
-              <h3 className="text-2xl font-bold text-slate-900">
-                Logout Confirmation
-              </h3>
-
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                Are you sure you want to logout from your account?
-                You’ll need to sign in again to access the admin dashboard.
-              </p>
-
-              {/* Actions */}
-              <div className="mt-6 flex w-full gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsLogoutDialogOpen(false)}
-                  className="flex-1 rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-700 transition-all duration-200 hover:bg-slate-200"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="button"
-                  onClick={logout}
-                  className="flex-1 rounded-2xl bg-gradient-to-r from-red-500 to-rose-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-red-500/20 transition-all duration-200 hover:from-red-600 hover:to-rose-600"
-                >
-                  Confirm Logout
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </aside>
     </>
   );
