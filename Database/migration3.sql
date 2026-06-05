@@ -25,8 +25,6 @@ CREATE TABLE IF NOT EXISTS public.products (
     features TEXT[] DEFAULT '{}',
     is_active BOOLEAN DEFAULT true,
     sort_order INTEGER DEFAULT 0,
-    rating NUMERIC(3, 2) DEFAULT 5.0,
-    reviews_count INTEGER DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 

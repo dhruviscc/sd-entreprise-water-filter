@@ -60,7 +60,7 @@ const emptyForm = () => ({
 export default function AdminProductPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<ProductCategory[]>([]);
-    const [enquiries, setEnquiries] = useState<ProductEnquiry[]>([]);
+
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -97,7 +97,7 @@ export default function AdminProductPage() {
 
             setProducts(productData);
             setCategories(categoryData);
-            setEnquiries(enquiryData);
+
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Failed to load product data");
         } finally {
@@ -297,139 +297,97 @@ export default function AdminProductPage() {
         }
     };
 
-    if (loading) return <div className="p-8 text-slate-600">Loading product data...</div>;
 
     return (
         <div className="space-y-4 sm:space-y-6 bg-slate-50 min-h-screen">
-
-            <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex rounded-lg border border-slate-200 bg-white p-1 shadow-sm">
-                    {(["products", "enquiries"] as const).map((tab) => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`px-5 py-2 text-sm font-bold capitalize rounded-md transition-all ${activeTab === tab ? "bg-sky-600 text-white shadow-md" : "text-slate-600 hover:bg-slate-50"}`}
-                        >
-                            {tab}
-                        </button>
-                    ))}
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
+                <div className="w-full lg:w-auto">
+                    <div className="relative flex-1 sm:w-80">
+                        <input
+                            className="w-full py-2.5 pr-[40px] pl-[10px] rounded-xl border border-slate-200 outline-none bg-white text-sm transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 shadow-sm"
+                            placeholder="Search Products..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        {searchTerm && (
+                            <button
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                                onClick={() => setSearchTerm("")}
+                            >
+                                <X size={16} />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
-                {activeTab === "products" && (
+                <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-3">
+                    <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full sm:w-auto rounded-lg border border-gray-200 px-3 py-[11px] text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white">
+                        <option value="all">All Status</option>
+                        <option value="true">Enabled</option>
+                        <option value="false">Disabled</option>
+                    </select>
                     <button
                         onClick={() => openProductModal(null)}
-                        className="flex items-center gap-2 rounded-[10px] bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 px-5 py-2 text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-lg active:scale-95"
+                        className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
                     >
-                        <Plus size={18} /> Add Product
+                        <Plus size={18} /> <span>Add Product</span>
                     </button>
-                )}
+                </div>
             </div>
 
-            {activeTab === "products" && (
-                <>
-                    <div className="flex flex-col sm:flex-row gap-3 w-full">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                            <input
-                                value={searchTerm}
-                                onChange={(event) => setSearchTerm(event.target.value)}
-                                placeholder="Search products..."
-                                className="w-full rounded-lg border border-gray-200 py-[11px] pl-10 pr-3 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white"
-                            />
-                        </div>
-                        <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)} className="w-full sm:w-auto rounded-lg border border-gray-200 px-3 py-[11px] text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white">
-                            <option value="all">All Status</option>
-                            <option value="true">Enabled</option>
-                            <option value="false">Disabled</option>
-                        </select>
-                    </div>
+
+            <>
 
 
-                    <div className="overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-sm overflow-x-auto">
-                        <table className="w-full border-collapse">
-                            <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
-                                <tr>
-                                    {["#", "Image", "Product", "Variants", "Status", "Actions"].map((head) => (
-                                        <th key={head} className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">{head}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                                {filteredProducts.map((product, index) => {
-                                    const defaultVariant = product.product_variants?.find((variant) => variant.is_default) || product.product_variants?.[0];
-                                    const firstImage = defaultVariant?.images?.[0];
-                                    return (
-                                        <tr key={product.id} className="hover:bg-[#f1f5f9] transition-colors">
-                                            <td className="px-4 py-4 text-sm text-slate-400">{index + 1}</td>
-                                            <td className="px-4 py-4">
-                                                <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-100 shadow-inner">
-                                                    {firstImage ? <Image src={firstImage} alt={product.name} fill className="object-cover" unoptimized /> : <ImageIcon className="h-5 w-5 text-slate-400" />}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-4">
-                                                <div className="text-sm font-bold text-[#1e293b]">{product.name}</div>
-                                                <div className="max-w-[280px] truncate text-[11px] text-slate-500 uppercase font-sm tracking-wide">
-                                                    {categories.find(c => c.id === product.category_id)?.name || 'Uncategorized'}
-                                                </div>
-                                            </td>
-                                            <td className="px-4 py-4 text-sm text-slate-600">{product.product_variants?.length || 0}</td>
-                                            <td className="px-4 py-4">
-                                                <button onClick={() => toggleProduct(product)} className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${product.is_active ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>
-                                                    {product.is_active ?? true ? "Enabled" : "Disabled"}
-                                                </button>
-                                            </td>
-                                            <td className="px-4 py-4">
-                                                <div className="flex gap-2">
-                                                    <button onClick={() => setDetailProduct(product)} title="View" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f8fafc] text-slate-700 hover:bg-[#e2e8f0] transition-all"><Eye size={16} /></button>
-                                                    <button onClick={() => openProductModal(product)} title="Edit" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#eff6ff] text-sky-600 hover:bg-[#dbeafe] transition-all"><Edit size={16} /></button>
-                                                    <button onClick={() => product.id && deleteItem(product.id, "product", product.name)} title="Delete" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fef2f2] text-red-500 hover:bg-[#fee2e2] transition-all"><Trash2 size={16} /></button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                </>
-            )}
 
-            {activeTab === "enquiries" && (
-                <div className="overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-sm overflow-x-auto">
                     <table className="w-full border-collapse">
                         <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
                             <tr>
-                                {["Product", "Customer", "Message", "Status", "Date", "Actions"].map((head) => (
+                                {["#", "Image", "Product", "Variants", "Status", "Actions"].map((head) => (
                                     <th key={head} className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">{head}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {enquiries.map((enquiry) => (
-                                <tr key={enquiry.id} className="hover:bg-slate-50">
-                                    <td className="px-4 py-4 text-sm font-semibold text-slate-800">{enquiry.product_name}</td>
-                                    <td className="px-4 py-4 text-sm text-slate-600">
-                                        <div>{enquiry.name}</div>
-                                        <div className="text-xs text-slate-400">{enquiry.mobile || enquiry.email || "-"}</div>
-                                    </td>
-                                    <td className="px-4 py-4 max-w-[320px] truncate text-sm text-slate-600">{enquiry.message || "-"}</td>
-                                    <td className="px-4 py-4">
-                                        <select value={enquiry.status || "new"} onChange={(event) => updateEnquiryStatus(enquiry, event.target.value as ProductEnquiry["status"])} className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-bold capitalize">
-                                            <option value="new">New</option>
-                                            <option value="contacted">Contacted</option>
-                                            <option value="closed">Closed</option>
-                                        </select>
-                                    </td>
-                                    <td className="px-4 py-4 text-xs text-slate-500">{(mounted && enquiry.created_at) ? new Date(enquiry.created_at).toLocaleDateString() : "-"}</td>
-                                    <td className="px-4 py-4">
-                                        <button onClick={() => enquiry.id && deleteItem(enquiry.id, "enquiry", enquiry.product_name)} className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-500 hover:bg-red-100"><Trash2 size={16} /></button>
-                                    </td>
-                                </tr>
-                            ))}
+                            {filteredProducts.map((product, index) => {
+                                const defaultVariant = product.product_variants?.find((variant) => variant.is_default) || product.product_variants?.[0];
+                                const firstImage = defaultVariant?.images?.[0];
+                                return (
+                                    <tr key={product.id} className="hover:bg-[#f1f5f9] transition-colors">
+                                        <td className="px-4 py-4 text-sm text-slate-400">{index + 1}</td>
+                                        <td className="px-4 py-4">
+                                            <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-100 shadow-inner">
+                                                {firstImage ? <Image src={firstImage} alt={product.name} fill className="object-cover" unoptimized /> : <ImageIcon className="h-5 w-5 text-slate-400" />}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-4">
+                                            <div className="text-sm font-bold text-[#1e293b]">{product.name}</div>
+                                            <div className="max-w-[280px] truncate text-[11px] text-slate-500 uppercase font-sm tracking-wide">
+                                                {categories.find(c => c.id === product.category_id)?.name || 'Uncategorized'}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-4 text-sm text-slate-600">{product.product_variants?.length || 0}</td>
+                                        <td className="px-4 py-4">
+                                            <button onClick={() => toggleProduct(product)} className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${product.is_active ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>
+                                                {product.is_active ?? true ? "Enabled" : "Disabled"}
+                                            </button>
+                                        </td>
+                                        <td className="px-4 py-4">
+                                            <div className="flex gap-2">
+                                                <button onClick={() => setDetailProduct(product)} title="View" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f8fafc] text-slate-700 hover:bg-[#e2e8f0] transition-all"><Eye size={16} /></button>
+                                                <button onClick={() => openProductModal(product)} title="Edit" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#eff6ff] text-sky-600 hover:bg-[#dbeafe] transition-all"><Edit size={16} /></button>
+                                                <button onClick={() => product.id && deleteItem(product.id, "product", product.name)} title="Delete" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fef2f2] text-red-500 hover:bg-[#fee2e2] transition-all"><Trash2 size={16} /></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
-            )}
+            </>
+
 
             {isModalOpen && (
                 <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[4px] animate-in fade-in duration-200">
@@ -570,36 +528,7 @@ export default function AdminProductPage() {
                                     <div className="mt-4 space-y-3">
                                         <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Variant Images</label>
                                         <div className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                placeholder="Paste Image URL and press Enter"
-                                                className="flex-1 px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm focus:outline-none focus:border-[#083574] transition-all"
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') {
-                                                        e.preventDefault();
-                                                        const input = e.target as HTMLInputElement;
-                                                        const val = input.value.trim();
-                                                        if (val && !variant.images?.includes(val)) {
-                                                            const v = formData.product_variants[index];
-                                                            const currentImages = Array.isArray(v.images) ? v.images : [];
-                                                            updateVariant(index, { images: [...currentImages, val] });
-                                                            input.value = '';
-                                                            toast.success("Image URL added");
-                                                        }
-                                                    }
-                                                }}
-                                                onBlur={(e) => {
-                                                    const input = e.target as HTMLInputElement;
-                                                    const val = input.value.trim();
-                                                    if (val && !variant.images?.includes(val)) {
-                                                        const v = formData.product_variants[index];
-                                                        const currentImages = Array.isArray(v.images) ? v.images : [];
-                                                        updateVariant(index, { images: [...currentImages, val] });
-                                                        input.value = '';
-                                                        toast.success("Image URL added");
-                                                    }
-                                                }}
-                                            />
+
                                             <label className="flex items-center gap-1 px-3 py-2 bg-sky-50 text-sky-600 rounded-lg cursor-pointer hover:bg-sky-100 whitespace-nowrap">
                                                 {uploadingKey.startsWith(`${index}-`) ? (
                                                     <Loader2 size={16} className="animate-spin" />

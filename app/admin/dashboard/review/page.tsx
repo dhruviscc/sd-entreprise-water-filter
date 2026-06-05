@@ -198,7 +198,7 @@ export default function AdminReviewPage() {
                     <div className="relative flex-1 sm:w-80">
                         <input
                             type="text"
-                            placeholder="Search reviews..."
+                            placeholder="Search Reviews..."
                             className="w-full py-2.5 pr-[40px] pl-[16px] rounded-xl border border-slate-200 outline-none bg-white text-sm transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 shadow-sm"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}

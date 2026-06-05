@@ -1,7 +1,14 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import Image from 'next/image';
+
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import LinkExtension from '@tiptap/extension-link';
+import TiptapImage from '@tiptap/extension-image';
+import Underline from '@tiptap/extension-underline';
+
 
 import {
     Plus,
@@ -17,7 +24,12 @@ import {
     Save,
     Upload,
     Image as ImageIcon,
-    PlusCircle
+    PlusCircle,
+    Bold,
+    Italic,
+    Underline as UnderlineIcon,
+    Link,
+    Quote,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getCurrentUser } from '@/modules/auth/sessionService';
@@ -151,6 +163,51 @@ export default function AdminBlogsPage() {
         }
     };
 
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            LinkExtension.configure({
+                openOnClick: false,
+                linkOnPaste: true,
+            }),
+            TiptapImage,
+            Underline,
+        ],
+        content: formData.content || '',
+        editorProps: {
+            attributes: {
+                class: 'min-h-[250px] prose prose-slate focus:outline-none p-4 rounded-xl border border-gray-200 bg-white text-sm sm:text-base',
+            },
+        },
+        onUpdate: ({ editor }) => {
+            setFormData((prev) => ({ ...prev, content: editor.getHTML() }));
+        },
+    });
+
+    useEffect(() => {
+        if (!editor) return;
+        const currentHtml = editor.getHTML();
+        if (formData.content && formData.content !== currentHtml) {
+            editor.commands.setContent(formData.content);
+        }
+    }, [editor, formData.content]);
+
+    const addLink = () => {
+        if (!editor) return;
+        const url = window.prompt('Enter the URL');
+        if (url) {
+            editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+        }
+    };
+
+    const addImageToEditor = () => {
+        if (!editor) return;
+        const url = window.prompt('Enter image URL');
+        if (url) {
+            editor.chain().focus().setImage({ src: url }).run();
+        }
+    };
+
     const handleSave = async () => {
         if (!formData.title) {
             toast.error("Title is required");
@@ -255,7 +312,7 @@ export default function AdminBlogsPage() {
                     <div className="relative flex-1 sm:w-80">
                         <input
                             className="w-full py-2.5 pr-[40px] pl-[10px] rounded-xl border border-slate-200 outline-none bg-white text-sm transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 shadow-sm"
-                            placeholder="Search FAQs..."
+                            placeholder="Search Blogs..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -441,53 +498,114 @@ export default function AdminBlogsPage() {
                                     </select>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Featured Image</label>
-                                <div className="flex gap-3">
-                                    <input
-                                        type="text"
-                                        value={formData.image}
-                                        onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                                        className="flex-1 px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
-                                        placeholder="Image URL or upload..."
-                                    />
-                                    <label className="flex items-center text-sm gap-2 px-4 py-2 bg-sky-50 text-sky-600 rounded-xl cursor-pointer hover:bg-sky-100 transition-colors font-bold whitespace-nowrap">
-                                        {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
-                                        Upload
-                                        <input type="file" className="hidden" onChange={handleImageUpload} accept="image/*" disabled={isUploading} />
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
+                                        Featured Image
+                                    </label>
+
+                                    <label className="relative w-85 h-50 border-2 border-dashed border-sky-300 rounded-xl overflow-hidden cursor-pointer hover:border-sky-500 transition-all">
+
+                                        {formData.image ? (
+                                            <>
+                                                <Image
+                                                    src={formData.image}
+                                                    alt="Featured Preview"
+                                                    fill
+                                                    className="object-cover"
+                                                    unoptimized
+                                                />
+
+                                                <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <span className="text-white text-xs font-bold">
+                                                        Change Image
+                                                    </span>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center bg-sky-50">
+                                                {isUploading ? (
+                                                    <Loader2 size={24} className="animate-spin text-sky-600" />
+                                                ) : (
+                                                    <>
+                                                        <Upload size={24} className="text-sky-600 mb-2" />
+                                                        <span className="text-xs font-bold text-sky-600 text-center px-2">
+                                                            Upload Image
+                                                        </span>
+                                                    </>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            onChange={handleImageUpload}
+                                            accept="image/*"
+                                            disabled={isUploading}
+                                        />
                                     </label>
                                 </div>
-                                {formData.image && (
-                                    <div className="mt-2 w-32 h-20 relative rounded-lg overflow-hidden border border-gray-100">
-                                        <Image src={formData.image} alt="Preview" fill className="object-cover" unoptimized />
-                                    </div>
-                                )}
+
+
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Excerpt</label>
+                                    <textarea
+                                        value={formData.summary}
+                                        onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                                        rows={9}
+                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all "
+                                        placeholder="Short summary for list pages..."
+                                    />
+                                </div>
+
+
                             </div>
-
-
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Excerpt</label>
-                                <textarea
-                                    value={formData.summary}
-                                    onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all min-h-[80px]"
-                                    placeholder="Short summary for list pages..."
-                                />
-                            </div>
-
-
-
 
                             <div className="flex flex-col gap-1.5">
                                 <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Content</label>
-                                <textarea
-                                    value={formData.content}
-                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all min-h-[250px] font-mono text-sm"
-                                    placeholder="Main article body..."
-                                />
-                            </div>
+                                <div className="rounded-2xl border border-gray-200 bg-slate-50 p-3">
+                                    <div className="mb-3 flex flex-wrap gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().toggleBold().run()}
+                                            className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('bold') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
+                                        >
+                                            <Bold size={14} className="inline mr-1" /> Bold
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().toggleItalic().run()}
+                                            className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('italic') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
+                                        >
+                                            <Italic size={14} className="inline mr-1" /> Italic
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().toggleUnderline().run()}
+                                            className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('underline') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
+                                        >
+                                            <UnderlineIcon size={14} className="inline mr-1" /> Underline
+                                        </button>
 
+                                        <button
+                                            type="button"
+                                            onClick={addImageToEditor}
+                                            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
+                                            title="Insert Image"
+                                        >
+                                            <ImageIcon size={14} className="inline mr-1" /> Image
+                                        </button>
+                                    </div>
+                                    <div className="rounded-xl border border-gray-200 bg-white">
+                                        {editor ? (
+                                            <EditorContent editor={editor} />
+                                        ) : (
+                                            <div className="min-h-[250px] p-4 text-sm text-slate-500">Loading editor...</div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
 
                             <div className="flex gap-4 mt-8 pt-4 ">
                                 <button onClick={() => setIsModalOpen(false)} className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">Cancel</button>

@@ -54,9 +54,7 @@ export interface Product {
     specifications: Record<string, string>;
     features: string[];
     is_active?: boolean;
-    sort_order?: number;
-    rating?: number;
-    reviews_count?: number;
+ 
     product_categories?: ProductCategory;
     product_variants?: ProductVariant[];
 }
@@ -80,9 +78,6 @@ const normalizeProduct = (product: Product) => ({
     specifications: product.specifications || {},
     features: product.features || [],
     is_active: product.is_active ?? true,
-    sort_order: product.sort_order ?? 0,
-    rating: product.rating ?? 5,
-    reviews_count: product.reviews_count ?? 0,
 });
 
 const normalizeCategory = (category: ProductCategory) => ({

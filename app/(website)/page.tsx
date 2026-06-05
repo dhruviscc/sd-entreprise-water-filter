@@ -567,7 +567,7 @@ export default function HomePage() {
 
       {/* ================= HERO SECTION ================= */}
       <section
-        className="relative h-[80vh] min-h-[500px] sm:h-[700px] lg:h-[890px] overflow-hidden bg-slate-100 touch-pan-y"
+        className="relative h-[10vh] min-h-[580px] max-h-[780px]  sm:h-[700px] sm:max-h-none lg:h-[890px] overflow-hidden bg-slate-100 touch-pan-y"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
@@ -595,34 +595,51 @@ export default function HomePage() {
                 className="relative h-full flex-shrink-0"
                 style={{ width: `${100 / extendedBanners.length}%` }}
               >
-                {/* Light gradient overlay for text readability over images */}
-                <div className="absolute inset-0 bg-slate-900/50 sm:bg-white/20 backdrop-blur-[0.2px] z-10" />
 
                 {/* Background image container with scale animation */}
                 <div className="absolute inset-0 overflow-hidden">
                   <motion.div
                     className="relative w-full h-full"
-                    animate={isVisuallyActive ? { scale: 1.08 } : { scale: 1 }}
+                    animate={isVisuallyActive ? { scale: 1.05 } : { scale: 1 }}
                     transition={{
                       duration: isVisuallyActive ? 5 : 0.3,
                       ease: isVisuallyActive ? "linear" : "easeIn"
                     }}
                   >
+
                     <Image
                       src={banner.image}
                       alt={banner.title}
                       fill
                       priority={index === 1}
-
                     />
+
                   </motion.div>
                 </div>
 
                 {/* Slide Content */}
                 <div className="absolute inset-0 flex items-center justify-center sm:justify-start z-20">
-                  <div className="w-full px-6 sm:px-12 lg:px-24 xl:px-32 pt-12 sm:pt-0">
+                  <div className="w-full px-5 sm:px-12 lg:px-24 xl:px-32 pb-16 sm:pb-0">
                     <motion.div
-                      className="max-w-xl md:max-w-2xl space-y-5 sm:space-y-6 text-center sm:text-left"
+                      className="
+                                max-w-sm mx-auto sm:mx-0 sm:max-w-xl md:max-w-3xl
+                                space-y-4 sm:space-y-6
+                                text-center sm:text-left
+
+                                rounded-3xl
+                                p-6 sm:p-8 lg:p-10
+
+                                backdrop-blur-xl
+                                bg-white/30
+                                sm:bg-white/40
+
+                                border border-white/20
+                                sm:border-white/50
+
+                                shadow-[0_8px_40px_rgba(0,0,0,0.12)]
+
+                                transition-all duration-500
+  "
                       initial="hidden"
                       animate={isVisuallyActive ? "visible" : "hidden"}
                       variants={{
@@ -632,21 +649,20 @@ export default function HomePage() {
                           y: 0,
                           transition: {
                             duration: 0.8,
-                            ease: [0.16, 1, 0.3, 1], 
+                            ease: [0.16, 1, 0.3, 1],
                             staggerChildren: 0.12,
-                            delayChildren: 0.1
-                          }
-                        }
+                            delayChildren: 0.1,
+                          },
+                        },
                       }}
                     >
-
 
                       <motion.h1
                         variants={{
                           hidden: { opacity: 0, y: 20 },
                           visible: { opacity: 1, y: 0 }
                         }}
-                        className="text-4xl sm:text-5xl lg:text-5xl font-black text-white sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700 leading-[1.1]"
+                        className="text-[1.6rem] leading-[1.2] sm:text-4xl lg:text-5xl font-black text-white sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700"
                       >
                         {banner.title}
                       </motion.h1>
@@ -656,7 +672,7 @@ export default function HomePage() {
                           hidden: { opacity: 0, y: 20 },
                           visible: { opacity: 1, y: 0 }
                         }}
-                        className="text-sm sm:text-md text-slate-200 sm:text-slate-700 font-semibold leading-relaxed max-w-lg mx-auto sm:mx-0 px-4 sm:px-0"
+                        className="text-xs sm:text-sm lg:text-base text-slate-100 sm:text-slate-800 font-medium leading-relaxed"
                       >
                         {banner.subtitle}
                       </motion.p>
@@ -666,16 +682,16 @@ export default function HomePage() {
                           hidden: { opacity: 0, y: 20 },
                           visible: { opacity: 1, y: 0 }
                         }}
-                        className="flex flex-wrap gap-3 pt-2 justify-center sm:justify-start"
+                        className="flex flex-wrap gap-3 pt-1 justify-center sm:justify-start"
                       >
                         <Link
                           href={banner.primaryUrl}
-                          className="px-6 py-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
+                          className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
                         >
                           {banner.primaryText}
                         </Link>
                         <button
-                          className="px-4 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-bold text-sm sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
+                          className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-bold text-sm sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
                           onClick={() =>
                             openEnquiry(banner.secondaryInterest, banner.secondaryType)
                           }
@@ -708,12 +724,12 @@ export default function HomePage() {
         </button>
 
         {/* Hero Slide Indicators */}
-        <div className="absolute bottom-16 sm:bottom-20 lg:bottom-10 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        <div className="absolute bottom-[4.5rem] sm:bottom-20 lg:bottom-14 left-1/2 -translate-x-1/2 z-30 flex gap-2 items-center">
           {heroBanners.map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 cursor-pointer ${index === currentSlide ? "bg-sky-500 w-8" : "bg-white/40"
+              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${index === currentSlide ? "bg-sky-400 w-7" : "bg-white/50 w-2.5"
                 }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -721,8 +737,8 @@ export default function HomePage() {
         </div>
 
         {/* Wave Divider */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20 transform translate-y-1">
-          <svg className="relative block w-[300%] max-w-none h-[10px] sm:h-[15px] lg:h-[50px] animate-[waveAnimation_60s_linear_infinite]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 120" preserveAspectRatio="none">
+        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20">
+          <svg className="relative block w-[300%] max-w-none h-[50px] sm:h-[60px] lg:h-[70px] animate-[waveAnimation_60s_linear_infinite]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 120" preserveAspectRatio="none">
             <path d="M0,60 C37.5,120 112.5,0 150,60 C187.5,120 262.5,0 300,60 C337.5,120 412.5,0 450,60 C487.5,120 562.5,0 600,60 C637.5,120 712.5,0 750,60 C787.5,120 862.5,0 900,60 C937.5,120 1012.5,0 1050,60 C1087.5,120 1162.5,0 1200,60 C1237.5,120 1312.5,0 1350,60 C1387.5,120 1462.5,0 1500,60 C1537.5,120 1612.5,0 1650,60 C1687.5,120 1762.5,0 1800,60 C1837.5,120 1912.5,0 1950,60 C1987.5,120 2062.5,0 2100,60 C2137.5,120 2212.5,0 2250,60 C2287.5,120 2362.5,0 2400,60 L2400,120 L0,120 Z" className="fill-sky-50"></path>
           </svg>
         </div>
@@ -730,7 +746,7 @@ export default function HomePage() {
 
 
       {/* ================= SERVICES SECTION ================= */}
-      <section className="w-full bg-sky-50 pt-45 sm:pt-24 lg:pt-20 relative">
+      <section className="w-full bg-sky-50 pt-10 sm:pt-20 lg:pt-20 relative">
         {/* Decorative background vectors */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[10%] right-[10%] text-sky-500/10 animate-float-3d">
@@ -756,7 +772,7 @@ export default function HomePage() {
 
         </div>
 
-        <div className="relative z-30 -mt-40 sm:-mt-30 lg:-mt-10 px-4 sm:px-6 lg:px-8">
+        <div className="relative z-30 -mt-8 sm:-mt-20 lg:-mt-10 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto ">
             <ScrollReveal variant="scaleUp" duration={800}>
               <motion.div
@@ -1109,7 +1125,7 @@ export default function HomePage() {
             </div>
 
           </div>
-          
+
         </div>
 
       </section>

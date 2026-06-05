@@ -15,7 +15,7 @@ export default function HeroSliderAdmin() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [sliderToDelete, setSliderToDelete] = useState<any>(null);
-   
+
     const [search, setSearch] = useState("");
     const [isUploading, setIsUploading] = useState(false);
 
@@ -24,7 +24,7 @@ export default function HeroSliderAdmin() {
         title: "",
         subtitle: "",
         desktopImage: "",
-       
+
         primaryCtaText: "",
         primaryCtaLink: "",
         secondaryCtaText: "",
@@ -41,7 +41,7 @@ export default function HeroSliderAdmin() {
                 title: currentSlider.title || "",
                 subtitle: currentSlider.subtitle || "",
                 desktopImage: currentSlider.desktopImage || "",
-                
+
                 primaryCtaText: currentSlider.primaryCtaText || "",
                 primaryCtaLink: currentSlider.primaryCtaLink || "",
                 secondaryCtaText: currentSlider.secondaryCtaText || "",
@@ -56,7 +56,7 @@ export default function HeroSliderAdmin() {
                 title: "",
                 subtitle: "",
                 desktopImage: "",
-               
+
                 primaryCtaText: "",
                 primaryCtaLink: "",
                 secondaryCtaText: "",
@@ -118,7 +118,7 @@ export default function HeroSliderAdmin() {
             title: slider.title || "",
             subtitle: slider.subtitle || "",
             desktopImage: slider.desktopImage || "",
-           
+
             primaryCtaText: slider.primaryCtaText || "",
             primaryCtaLink: slider.primaryCtaLink || "",
             secondaryCtaText: slider.secondaryCtaText || "",
@@ -289,7 +289,7 @@ export default function HeroSliderAdmin() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-3">
-                  
+
                     <button
                         onClick={() => { setCurrentSlider(null); setIsModalOpen(true); }}
                         className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
@@ -350,8 +350,8 @@ export default function HeroSliderAdmin() {
                                         </td>
                                         <td className="px-4 py-[14px] border-b border-[#e2e8f0]">
                                             <div className="flex items-center gap-2">
-                                             <div className="text-sm text-[#475569] line-clamp-1 ">{slider.subtitle}</div>
-                                            
+                                                <div className="text-sm text-[#475569] line-clamp-1 ">{slider.subtitle}</div>
+
                                             </div>
                                         </td>
                                         <td className="px-4 py-[14px] whitespace-nowrap text-sm text-[#475569] border-b border-[#e2e8f0]">
@@ -369,7 +369,7 @@ export default function HeroSliderAdmin() {
                                                 {slider.isActive ? 'Enable' : 'Disable'}
                                             </button>
                                         </td>
-                                     
+
                                         <td className="px-4 py-[14px] whitespace-nowrap text-right text-sm font-medium border-b border-[#e2e8f0]">
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
@@ -404,32 +404,55 @@ export default function HeroSliderAdmin() {
                             <button onClick={() => setIsModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
                         </div>
                         <form className="flex flex-col gap-3.5" onSubmit={handleSave}>
-                          
-                                <div className="flex flex-col gap-[5px]">
-                                    <label htmlFor="desktopImage" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Desktop Image URL *</label>
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            id="desktopImage"
-                                            name="desktopImage"
-                                            className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                                            value={formState.desktopImage}
-                                            onChange={handleFormChange}
-                                            required
-                                        />
-                                        <label className="flex items-center gap-1 px-3 py-2 bg-sky-50 text-sky-600 rounded-lg cursor-pointer hover:bg-sky-100 h-fit self-center">
-                                            {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
-                                            <span className="text-xs font-bold">Upload</span>
-                                            <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, 'desktopImage')} accept="image/*" disabled={isUploading} />
-                                        </label>
-                                    </div>
-                                    {formState.desktopImage && (
-                                        <div className="mt-2 w-16 h-10 relative rounded border overflow-hidden">
-                                            <Image src={formState.desktopImage} alt="Desktop Preview" fill className="object-cover" unoptimized />
+
+                            <div className="flex flex-col gap-[5px]">
+                                <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">
+                                    Desktop Image *
+                                </label>
+
+                                <label className="relative w-50 h-50 border-2 border-dashed border-sky-300 rounded-xl overflow-hidden cursor-pointer hover:border-sky-500 transition-all">
+
+                                    {formState.desktopImage ? (
+                                        <>
+                                            <Image
+                                                src={formState.desktopImage}
+                                                alt="Desktop Preview"
+                                                fill
+                                                className="object-cover"
+                                                unoptimized
+                                            />
+
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                <span className="text-white text-xs font-bold">
+                                                    Change Image
+                                                </span>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="w-full h-full flex flex-col items-center justify-center bg-sky-50">
+                                            {isUploading ? (
+                                                <Loader2 size={24} className="animate-spin text-sky-600" />
+                                            ) : (
+                                                <>
+                                                    <Upload size={24} className="text-sky-600 mb-2" />
+                                                    <span className="text-xs font-bold text-sky-600">
+                                                        Upload Image
+                                                    </span>
+                                                </>
+                                            )}
                                         </div>
                                     )}
-                                </div>
-                           
+
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        accept="image/*"
+                                        onChange={(e) => handleImageUpload(e, "desktopImage")}
+                                        disabled={isUploading}
+                                    />
+                                </label>
+                            </div>
+
                             <div className="flex flex-col gap-[5px]">
                                 <label htmlFor="title" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Title *</label>
                                 <input
@@ -535,12 +558,12 @@ export default function HeroSliderAdmin() {
                             </div>
 
                             <div className="flex gap-3 mt-6">
-                                <button type="button" onClick={() => setIsModalOpen(false)} 
-                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">
+                                <button type="button" onClick={() => setIsModalOpen(false)}
+                                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">
                                     Cancel
                                 </button>
-                                <button type="submit" disabled={isSaving} 
-                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none">
+                                <button type="submit" disabled={isSaving}
+                                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none">
                                     {isSaving ? "Saving..." : currentSlider ? "Update Slide" : "Add Slide"}
                                 </button>
                             </div>
@@ -577,7 +600,7 @@ export default function HeroSliderAdmin() {
                 </div>
             )}
 
-        
+
         </div>
 
 
