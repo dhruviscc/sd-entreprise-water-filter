@@ -70,9 +70,9 @@ export default function DashboardPage() {
     return (
         <div className="space-y-4 sm:space-y-8 bg-slate-50 min-h-screen">
 
-          
+
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"> 
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {statCards.map((card, idx) => (
                     <Link key={idx} href={card.link} className="group ">
                         <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:border-sky-200 group-hover:-translate-y-1">
@@ -104,9 +104,9 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-slate-50/50 border-b border-slate-100">
+                        <div className="">
+                            <table className="w-full text-left block md:table">
+                                <thead className="hidden md:table-header-group bg-slate-50/50 border-b border-slate-100">
                                     <tr>
                                         <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</th>
                                         <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Interest</th>
@@ -114,38 +114,48 @@ export default function DashboardPage() {
                                         <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-50">
+                                <tbody className="block md:table-row-group divide-y divide-slate-50">
                                     {recentEnquiries.length === 0 ? (
                                         <tr>
-                                            <td colSpan={4} className="px-6 py-12 text-center text-slate-400 font-medium italic">
+                                            <td colSpan={4} className="px-6 py-12 text-center text-slate-400 font-medium italic block w-full">
                                                 No recent enquiries found
                                             </td>
                                         </tr>
                                     ) : (
                                         recentEnquiries.map((enquiry) => (
-                                            <tr key={enquiry.id} className="hover:bg-slate-50/30 transition-colors">
-                                                <td className="px-6 py-4">
-                                                    <div className="flex flex-col">
-                                                        <span className="font-bold text-slate-800 text-sm">{enquiry.full_name}</span>
-                                                        <span className="text-[10px] text-slate-500">{enquiry.mobile_number}</span>
+                                            <tr key={enquiry.id} className="block md:table-row hover:bg-slate-50/30 transition-colors p-4 md:p-0">
+                                                <td className="block md:table-cell px-0 md:px-6 py-2 md:py-4">
+                                                    <div className="flex justify-between items-center md:flex-col md:items-start">
+                                                        <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Customer</span>
+                                                        <div className="flex flex-col text-right md:text-left">
+                                                            <span className="font-bold text-slate-800 text-sm">{enquiry.full_name}</span>
+                                                            <span className="text-[10px] text-slate-500">{enquiry.mobile_number}</span>
+                                                        </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4">
-                                                    <span className="px-2 py-0.5 rounded-full bg-sky-50 text-sky-600 text-[10px] font-bold uppercase tracking-wider border border-sky-100/50">
-                                                        {enquiry.service_interest}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
-                                                        <Clock size={12} className="text-slate-300" />
-                                                        {new Date(enquiry.created_at).toLocaleDateString()}
+                                                <td className="block md:table-cell px-0 md:px-6 py-2 md:py-4">
+                                                    <div className="flex justify-between items-center md:block">
+                                                        <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Interest</span>
+                                                        <span className="px-2 py-0.5 rounded-full bg-sky-50 text-sky-600 text-[10px] font-bold uppercase tracking-wider border border-sky-100/50">
+                                                            {enquiry.service_interest}
+                                                        </span>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex justify-center">
+                                                <td className="block md:table-cell px-0 md:px-6 py-2 md:py-4">
+                                                    <div className="flex justify-between items-center md:block">
+                                                        <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Date</span>
+                                                        <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
+                                                            <Clock size={12} className="text-slate-300" />
+                                                            {new Date(enquiry.created_at).toLocaleDateString()}
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td className="block md:table-cell px-0 md:px-6 py-2 md:py-4">
+                                                    <div className="flex justify-between items-center md:justify-center">
+                                                        <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</span>
                                                         <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-sm border ${enquiry.status === 'new' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                                                enquiry.status === 'contacted' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                                                                    'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                                            enquiry.status === 'contacted' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                                                'bg-emerald-50 text-emerald-600 border-emerald-100'
                                                             }`}>
                                                             {enquiry.status}
                                                         </span>

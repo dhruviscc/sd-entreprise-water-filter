@@ -11,7 +11,7 @@ import { toast } from "sonner";
 
 
 export default function UsersPage() {
-  
+
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
@@ -105,7 +105,7 @@ export default function UsersPage() {
 
 
 
-   
+
     // Add User
     useEffect(() => {
         if (!isResetModalOpen) {
@@ -229,7 +229,7 @@ export default function UsersPage() {
                     </div>
                 </div>
 
-             <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-3">
+                <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-3">
 
                     <button
                         onClick={() => setIsAddModalOpen(true)}
@@ -240,10 +240,10 @@ export default function UsersPage() {
                 </div>
             </div>
 
-      {/* Users Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
-                  <table className="w-full border-collapse">
-                    <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
+            {/* Users Table */}
+            <div className="bg-transparent md:bg-white md:rounded-xl md:shadow-sm md:border md:border-slate-200 overflow-hidden">
+                <table className="w-full border-separate border-spacing-y-4 md:border-spacing-0 md:border-collapse block md:table">
+                    <thead className="hidden md:table-header-group bg-[#f8fafc] border-b border-[#e2e8f0]">
                         <tr>
                             <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">#</th>
                             <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Name</th>
@@ -254,70 +254,98 @@ export default function UsersPage() {
                             <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="block md:table-row-group">
                         {loading ? (
                             <tr>
-                                <td colSpan={7} className="text-center p-[48px] text-sky-600">
+                                <td colSpan={7} className="text-center p-[48px] text-sky-600 block w-full">
                                     Loading users...
                                 </td>
                             </tr>
                         ) : users.length === 0 ? (
                             <tr>
-                                <td colSpan={7} className="text-center p-[48px] text-sky-600">
+                                <td colSpan={7} className="text-center p-[48px] text-sky-600 block w-full">
                                     No users found. Start by adding one above.
                                 </td>
                             </tr>
                         ) : (
                             users.map((user, index) => (
-                                <tr key={user.id} className="hover:bg-[#f1f5f9]">
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{index + 1}</td>
-
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]" style={{ fontWeight: 500 }}>{user.name}</td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{user.email}</td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">{user.mobile || "-"}</td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">
-                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-semibold bg-[#f1f5f9] text-[#475569]">{user.role}</span>
+                                <tr key={user.id} className="block md:table-row hover:bg-[#f1f5f9] p-5 md:p-0 bg-white rounded-2xl border border-slate-200 md:border-0 md:rounded-none shadow-sm md:shadow-none mb-4 md:mb-0 transition-all">
+                                    <td className="block md:table-cell px-0 md:px-4 py-1.5 md:py-[14px] text-sm text-[#1e293b] border-b border-slate-50 md:border-0">
+                                        <div className="flex justify-between items-center md:block">
+                                            <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">#</span>
+                                            <span>{index + 1}</span>
+                                        </div>
                                     </td>
-                                    <td className="px-4 py-[14px] text-sm border-b border-[#e2e8f0] text-[#1e293b]">
-                                        <button
-                                            className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${user.status === 'active' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}
-                                            onClick={() => isAdmin && handleToggleStatus(user.id, user.status)}
-                                            style={{ cursor: isAdmin ? 'pointer' : 'default' }}
-                                        >
-                                            {user.status === 'active' ? 'Active' : 'Inactive'}
-                                        </button>
+
+                                    <td className="block md:table-cell px-0 md:px-4 py-1.5 md:py-[14px] text-sm text-[#1e293b] border-b border-slate-50 md:border-0" style={{ fontWeight: 500 }}>
+                                        <div className="flex justify-between items-center md:block">
+                                            <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Name</span>
+                                            <span className="font-medium">{user.name}</span>
+                                        </div>
                                     </td>
-                                    <td className="px-4 py-[14px] text-sm  border-b border-[#e2e8f0] text-[#1e293b] flex gap-2">
+                                    <td className="block md:table-cell px-0 md:px-4 py-1.5 md:py-[14px] text-sm text-[#1e293b] border-b border-slate-50 md:border-0">
+                                        <div className="flex justify-between items-center md:block text-right md:text-left">
+                                            <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Email</span>
+                                            <span className="truncate max-w-[200px] md:max-w-none">{user.email}</span>
+                                        </div>
+                                    </td>
+                                    <td className="block md:table-cell px-0 md:px-4 py-1.5 md:py-[14px] text-sm text-[#1e293b] border-b border-slate-50 md:border-0">
+                                        <div className="flex justify-between items-center md:block">
+                                            <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Mobile</span>
+                                            <span>{user.mobile || "-"}</span>
+                                        </div>
+                                    </td>
+                                    <td className="block md:table-cell px-0 md:px-4 py-1.5 md:py-[14px] text-sm text-[#1e293b] border-b border-slate-50 md:border-0">
+                                        <div className="flex justify-between items-center md:block">
+                                            <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Role</span>
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-[12px] font-semibold bg-[#f1f5f9] text-[#475569]">{user.role}</span>
+                                        </div>
+                                    </td>
+                                    <td className="block md:table-cell px-0 md:px-4 py-1.5 md:py-[14px] text-sm text-[#1e293b] border-b border-slate-50 md:border-0">
+                                        <div className="flex justify-between items-center md:block">
+                                            <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</span>
+                                            <button
+                                                className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${user.status === 'active' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}
+                                                onClick={() => isAdmin && handleToggleStatus(user.id, user.status)}
+                                                style={{ cursor: isAdmin ? 'pointer' : 'default' }}
+                                            >
+                                                {user.status === 'active' ? 'Active' : 'Inactive'}
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td className="block md:table-cell px-0 md:px-4 py-3 md:py-[14px] text-sm text-[#1e293b]">
+                                        <div className="flex justify-between items-center md:justify-start gap-2">
+                                            <span className="md:hidden text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</span>
+                                            <div className="flex gap-2">
 
-                                        <>
-                                            <button
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-slate-700 bg-[#f8fafc] hover:bg-[#e2e8f0] cursor-pointer transition-all"
-                                                title="Reset Password"
-                                                onClick={() => {
-                                                    setResetUser(user);
-                                                    setResetPassword("");
-                                                    setResetConfirmPassword("");
-                                                    setIsResetModalOpen(true);
-                                                }}
-                                            >
-                                                <Key size={16} />
-                                            </button>
-                                            <button
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-sky-600 bg-[#eff6ff] hover:bg-[#dbeafe] cursor-pointer transition-all"
-                                                title="Edit User"
-                                                onClick={() => openEditModal(user)}
-                                            >
-                                                <Edit size={16} />
-                                            </button>
-                                            <button
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-[#ef4444] bg-[#fef2f2] hover:bg-[#fee2e2] cursor-pointer transition-all"
-                                                title="Delete User"
-                                                onClick={() => openDeleteModal(user)}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </>
-
+                                                <button
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-slate-700 bg-[#f8fafc] hover:bg-[#e2e8f0] cursor-pointer transition-all"
+                                                    title="Reset Password"
+                                                    onClick={() => {
+                                                        setResetUser(user);
+                                                        setResetPassword("");
+                                                        setResetConfirmPassword("");
+                                                        setIsResetModalOpen(true);
+                                                    }}
+                                                >
+                                                    <Key size={16} />
+                                                </button>
+                                                <button
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-sky-600 bg-[#eff6ff] hover:bg-[#dbeafe] cursor-pointer transition-all"
+                                                    title="Edit User"
+                                                    onClick={() => openEditModal(user)}
+                                                >
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-[#ef4444] bg-[#fef2f2] hover:bg-[#fee2e2] cursor-pointer transition-all"
+                                                    title="Delete User"
+                                                    onClick={() => openDeleteModal(user)}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             ))
@@ -330,7 +358,7 @@ export default function UsersPage() {
 
             {/* Add User Modal */}
             {isAddModalOpen && (
-                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
                     <div className="bg-white p-6 rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-xl animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-slate-800">Create New User</h3>
@@ -410,7 +438,7 @@ export default function UsersPage() {
                 </div>
             )}
 
-      
+
 
             {/* Edit Modal */}
             {isEditModalOpen && (
