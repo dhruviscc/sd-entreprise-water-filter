@@ -119,7 +119,7 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen bg-slate-50/50 pb-16 overflow-hidden">
       {/* Header Banner */}
-      <section className="relative flex flex-col items-center justify-center px-4 pt-24 pb-12 sm:pt-32 sm:pb-16 md:pt-44 md:pb-20 text-slate-800 text-center border-b border-slate-200 overflow-hidden bg-white">
+      <section className="relative flex flex-col items-center justify-center px-4 pt-24 pb-12 sm:pt-25 sm:pb-16  md:pb-20 text-slate-800 text-center border-b border-slate-200 overflow-hidden bg-white">
         <BubbleBackground />
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <div className="absolute bottom-[15%] right-[10%] animate-float-3d ">

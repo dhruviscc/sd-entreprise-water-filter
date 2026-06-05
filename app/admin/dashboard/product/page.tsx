@@ -344,9 +344,13 @@ export default function AdminProductPage() {
                     <table className="w-full border-collapse">
                         <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
                             <tr>
-                                {["#", "Image", "Product", "Variants", "Status", "Actions"].map((head) => (
-                                    <th key={head} className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">{head}</th>
-                                ))}
+
+                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">#</th>
+                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Image</th>
+                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Product</th>
+                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Variants</th>
+                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Status</th>
+                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -398,7 +402,6 @@ export default function AdminProductPage() {
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-2">
-
 
                             <div className="flex flex-col gap-2 mb-4">
                                 <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Category *</label>
@@ -527,19 +530,39 @@ export default function AdminProductPage() {
 
                                     <div className="mt-4 space-y-3">
                                         <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Variant Images</label>
-                                        <div className="flex gap-2">
-
-                                            <label className="flex items-center gap-1 px-3 py-2 bg-sky-50 text-sky-600 rounded-lg cursor-pointer hover:bg-sky-100 whitespace-nowrap">
+                                        <div className="flex">
+                                            <label
+                                                className="
+      w-25 h-25
+      border-2 border-dashed border-sky-300
+      rounded-2xl
+      bg-slate-100
+      flex flex-col items-center justify-center
+      gap-3
+      cursor-pointer
+      transition-all duration-200
+      hover:border-sky-500
+      hover:bg-sky-50
+    "
+                                            >
                                                 {uploadingKey.startsWith(`${index}-`) ? (
-                                                    <Loader2 size={16} className="animate-spin" />
+                                                    <Loader2 size={24} className="animate-spin text-sky-600" />
+
                                                 ) : (
-                                                    <Upload size={16} />
+                                                    <>
+                                                        <Upload size={24} className="text-sky-600 mb-2" />
+                                                        <span className="text-xs font-bold text-sky-600 text-center px-2">
+                                                            Upload Image
+                                                        </span>
+                                                    </>
                                                 )}
-                                                <span className="text-xs font-bold">Upload</span>
+
                                                 <input
                                                     type="file"
                                                     className="hidden"
-                                                    onChange={(e) => uploadVariantImage(e.target.files?.[0], index)}
+                                                    onChange={(e) =>
+                                                        uploadVariantImage(e.target.files?.[0], index)
+                                                    }
                                                     accept="image/*"
                                                 />
                                             </label>
@@ -610,26 +633,127 @@ export default function AdminProductPage() {
 
 
             {detailProduct && (
-                <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm" onClick={() => setDetailProduct(null)}>
-                    <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl" onClick={(event) => event.stopPropagation()}>
-                        <div className="mb-4 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-sky-600">{detailProduct.name}</h3>
-                            <button onClick={() => setDetailProduct(null)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
-                        </div>
-                        <p className="whitespace-pre-wrap text-sm leading-relaxed text-slate-600">{detailProduct.description || "No description added."}</p>
-                        <div className="mt-5 grid gap-4 md:grid-cols-2">
+                <div
+                    className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-md p-4"
+                    onClick={() => setDetailProduct(null)}
+                >
+                    <div
+                        className="w-full max-w-3xl max-h-[90vh] overflow-hidden rounded-3xl bg-white shadow-[0_25px_80px_rgba(0,0,0,0.25)]"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/95 px-6 py-5 backdrop-blur-xl">
                             <div>
-                                <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">Features</h4>
-                                <ul className="space-y-2 text-sm text-slate-600">
-                                    {(detailProduct.features || []).map((feature) => <li key={feature}>- {feature}</li>)}
-                                </ul>
+                                <h3 className="text-2xl font-bold text-sky-600">
+                                    {detailProduct.name}
+                                </h3>
+                                <p className="text-sm text-slate-500">
+                                    Product Information
+                                </p>
                             </div>
-                            <div>
-                                <h4 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">Specifications</h4>
-                                <div className="space-y-2 text-sm text-slate-600">
-                                    {Object.entries(detailProduct.specifications || {}).map(([key, value]) => <div key={key}><b>{key}:</b> {value}</div>)}
+
+                            <button
+                                onClick={() => setDetailProduct(null)}
+                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-all "
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="max-h-[calc(90vh-90px)] overflow-y-auto px-6 py-6">
+                            {/* Description */}
+                            <div className="mb-6 rounded-2xl bg-slate-50 p-5">
+                                <h4 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">
+                                    Description
+                                </h4>
+
+                                <p className="whitespace-pre-wrap leading-7 text-slate-600">
+                                    {detailProduct.description || "No description added."}
+                                </p>
+                            </div>
+
+                            {/* Features + Specifications */}
+                            <div className="grid gap-5 md:grid-cols-2">
+                                {/* Features */}
+                                <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                                    <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-600">
+                                        Features
+                                    </h4>
+
+                                    <ul className="space-y-3">
+                                        {(detailProduct.features || []).map((feature) => (
+                                            <li
+                                                key={feature}
+                                                className="flex items-start gap-3 text-sm text-slate-600"
+                                            >
+                                                <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
+                                                {feature}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                {/* Specifications */}
+                                <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                                    <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-600">
+                                        Specifications
+                                    </h4>
+
+                                    <div className="space-y-3">
+                                        {Object.entries(
+                                            detailProduct.specifications || {}
+                                        ).map(([key, value]) => (
+                                            <div
+                                                key={key}
+                                                className="flex justify-between gap-4 border-b border-slate-100 pb-2"
+                                            >
+                                                <span className="font-medium text-slate-500">
+                                                    {key}
+                                                </span>
+
+                                                <span className="text-right text-slate-700">
+                                                    {value}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
+
+                            {/* Variants */}
+
+                            <div className="mt-6">
+                                <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-600">
+                                    Product Variants ({detailProduct.product_variants?.length})
+                                </h4>
+
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                    {detailProduct.product_variants?.map((variant) => (
+                                        <div
+                                            key={variant.id}
+                                            className="group flex items-center gap-4 rounded-2xl border border-slate-100 p-3 transition-all hover:border-sky-200 hover:bg-sky-50/50 hover:shadow-md"
+                                        >
+                                            <img
+                                                src={variant.images?.[0]}
+                                                alt={variant.name}
+                                                className="h-16 w-16 rounded-xl object-cover"
+                                            />
+
+                                            <div>
+                                                <h5 className="font-semibold text-slate-800 group-hover:text-sky-600">
+                                                    {variant.name}
+                                                </h5>
+
+                                                <p className="text-xs text-slate-500">
+                                                    Available Variant
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>

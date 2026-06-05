@@ -68,7 +68,7 @@ export default function FAQPage() {
   return (
     <div className="bg-white min-h-screen overflow-hidden">
       {/* Banner */}
-      <section className="relative flex flex-col items-center justify-center px-4 pt-24 pb-12 sm:pt-32 sm:pb-16 md:pt-44 md:pb-20 text-center border-b border-slate-200 overflow-hidden bg-white">
+      <section className="relative flex flex-col items-center justify-center px-4 pt-24 pb-12 sm:pt-25 sm:pb-16  md:pb-20 text-slate-800 text-center border-b border-slate-200 overflow-hidden bg-white">
         <BubbleBackground />
         {/* Decorative background vectors */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">

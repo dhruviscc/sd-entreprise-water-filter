@@ -241,19 +241,15 @@ export default function AdminFAQPage() {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 uppercase tracking-wide">
+                                        <span className="px-3 py-[5px] rounded-lg text-[12px] bg-gray-100 text-gray-900 font-medium cursor-pointer border border-transparent transition-all">
                                             {faq.category}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-center">
-                                        <button
-                                            onClick={() => toggleStatus(faq.id, faq.status)}
-                                            className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all border ${faq.status === 'published'
-                                                ? 'bg-green-50 text-green-600 border-green-100 hover:bg-green-100'
-                                                : 'bg-amber-50 text-amber-600 border-amber-100 hover:bg-amber-100'
-                                                }`}
-                                        >
-                                            {faq.status.charAt(0).toUpperCase() + faq.status.slice(1)}
+                                   
+                                    <td className="px-4 py-4">
+                                        <button onClick={() => toggleStatus(faq.id, faq.status)} className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${faq.status === 'published' ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>
+                                            {faq.status === 'published' ? "Enable" : "Disable"}
+                                               {/* {faq.status.charAt(0).toUpperCase() + faq.status.slice(1)} */}
                                         </button>
                                     </td>
                                     <td className="px-6 py-4">

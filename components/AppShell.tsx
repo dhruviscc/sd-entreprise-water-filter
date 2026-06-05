@@ -27,7 +27,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <BubbleCursor />
       <EnquiryProvider>
         <Header />
-        <main className="flex-grow">
+        <main className="flex-grow pt-[5rem] lg:pt-[6rem]">
           {children}
         </main>
         <Footer />

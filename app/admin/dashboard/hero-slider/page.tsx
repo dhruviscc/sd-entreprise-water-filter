@@ -309,6 +309,9 @@ export default function HeroSliderAdmin() {
                             <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
                                 <tr>
                                     <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">
+                                        #
+                                    </th>
+                                    <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">
                                         Image
                                     </th>
                                     <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider whitespace-nowrap">
@@ -332,10 +335,16 @@ export default function HeroSliderAdmin() {
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                {filteredSliders.map((slider) => (
+                            <tbody className="divide-y divide-slate-100">
+                                {filteredSliders.map((slider, index) => (
                                     <tr key={slider.id} className={`hover:bg-[#f1f5f9] ${!slider.isActive ? 'bg-slate-50 opacity-70' : ''}`}>
-                                        <td className="px-4 py-[14px] whitespace-nowrap border-b border-[#e2e8f0]">
+
+                                        <td className=" py-4">
+                                            <div className="flex items-center justify-center text-slate-400 text-xs">
+                                                {index + 1}
+                                            </div>
+                                        </td>
+                                        <td className="px-4 py-[14px] whitespace-nowrap ">
                                             <div className="relative w-20 h-12 rounded-md overflow-hidden bg-slate-100">
                                                 <Image
                                                     src={slider.desktopImage}
@@ -345,22 +354,22 @@ export default function HeroSliderAdmin() {
                                                 />
                                             </div>
                                         </td>
-                                        <td className="px-4 py-[14px] border-b border-[#e2e8f0]">
-                                            <div className="text-sm font-medium text-[#1e293b] line-clamp-1">{slider.title}</div>
+                                        <td className="px-4 py-[14px]">
+                                            <div className="text-sm font-medium text-[#1e293b] line-clamp-2">{slider.title}</div>
                                         </td>
-                                        <td className="px-4 py-[14px] border-b border-[#e2e8f0]">
+                                        <td className="px-4 py-[14px] ">
                                             <div className="flex items-center gap-2">
-                                                <div className="text-sm text-[#475569] line-clamp-1 ">{slider.subtitle}</div>
+                                                <div className="text-sm text-[#475569] line-clamp-2 ">{slider.subtitle}</div>
 
                                             </div>
                                         </td>
-                                        <td className="px-4 py-[14px] whitespace-nowrap text-sm text-[#475569] border-b border-[#e2e8f0]">
+                                        <td className="px-4 py-[14px] whitespace-nowrap text-sm text-[#475569]">
                                             {slider.primaryCtaText}
                                         </td>
-                                        <td className="px-4 py-[14px] whitespace-nowrap text-sm text-[#475569] border-b border-[#e2e8f0]">
+                                        <td className="px-4 py-[14px] whitespace-nowrap text-sm text-[#475569]">
                                             {slider.secondaryCtaText}
                                         </td>
-                                        <td className="px-4 py-[14px] whitespace-nowrap border-b border-[#e2e8f0]">
+                                        <td className="px-4 py-[14px] whitespace-nowrap">
                                             <button
                                                 onClick={() => handleToggle(slider.id, slider.isActive)}
                                                 className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${slider.isActive ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}
@@ -370,7 +379,7 @@ export default function HeroSliderAdmin() {
                                             </button>
                                         </td>
 
-                                        <td className="px-4 py-[14px] whitespace-nowrap text-right text-sm font-medium border-b border-[#e2e8f0]">
+                                        <td className="px-4 py-[14px] whitespace-nowrap text-right text-sm font-medium ">
                                             <div className="flex items-center justify-end gap-2">
                                                 <button
                                                     onClick={() => openEditModal(slider)}

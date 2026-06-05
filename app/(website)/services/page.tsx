@@ -68,7 +68,7 @@ export default function ServicesPage() {
     <div className="flex flex-col w-full">
 
       {/* Banner */}
-      <section className="relative flex flex-col items-center justify-center px-4 pt-24 pb-12 sm:pt-32 sm:pb-16 md:pt-44 md:pb-20 text-slate-800 text-center border-b border-slate-200 overflow-hidden bg-white">
+      <section className="relative flex flex-col items-center justify-center px-4 pt-24 pb-12 sm:pt-25 sm:pb-16  md:pb-20 text-slate-800 text-center border-b border-slate-200 overflow-hidden bg-white">
         {/* Decorative background vectors */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           <div className="absolute top-[10%] right-[10%] text-sky-500/10 animate-float-3d scale-75 sm:scale-100">

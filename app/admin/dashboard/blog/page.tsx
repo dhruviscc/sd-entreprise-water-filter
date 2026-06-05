@@ -333,7 +333,7 @@ export default function AdminBlogsPage() {
                         onClick={() => openModal(null)}
                         className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
                     >
-                        <Plus size={18} /> <span>Add Article</span>
+                        <Plus size={18} /> <span>Add Blog</span>
                     </button>
                 </div>
             </div>
@@ -344,7 +344,7 @@ export default function AdminBlogsPage() {
                     <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
                         <tr>
                             <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">#</th>
-                            <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Article</th>
+                            <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Blog Title</th>
 
                             <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Category</th>
                             <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Status</th>
@@ -352,7 +352,7 @@ export default function AdminBlogsPage() {
                             <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                        <tbody className="divide-y divide-slate-100">
                         {loading ? (
                             <tr>
                                 <td colSpan={4} className="px-6 py-12 text-center">
@@ -368,13 +368,13 @@ export default function AdminBlogsPage() {
                         ) : (
                             filteredBlogs.map((blog, index) => (
                                 <tr key={blog.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-400">
+                                    <td className="px-3 py-4 text-sm font-medium text-gray-400">
                                         {index + 1}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
                                             {blog.image && (
-                                                <div className="w-15 h-15 relative rounded overflow-hidden border">
+                                                <div className="w-15 h-15 relative rounded overflow-hidden ">
                                                     <Image
                                                         src={blog.image}
                                                         alt=""
@@ -384,8 +384,8 @@ export default function AdminBlogsPage() {
                                                     />
                                                 </div>
                                             )}
-                                            <div className="max-w-xs truncate">
-                                                <div className="font-sm text-sm text-gray-900 truncate">{blog.title}</div>
+                                            <div className="max-w-xs ">
+                                                <div className="font-sm text-sm text-gray-900 ">{blog.title}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -467,7 +467,7 @@ export default function AdminBlogsPage() {
                                         value={formData.title}
                                         onChange={handleTitleChange}
                                         className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
-                                        placeholder="Article title..."
+                                        placeholder="Blog title..."
                                     />
                                 </div>
 

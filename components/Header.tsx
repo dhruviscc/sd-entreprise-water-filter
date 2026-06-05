@@ -92,26 +92,12 @@ export default function Header() {
       ))}
 
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${isScrolled
-          ? "py-3"
-          : "py-4"
+        className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-sky-100   ${isScrolled
+          ? "py-4 bg-sky-100/100"
+          : "py-5 bg-sky-80/100"
           }`}
       >
-        {/* TOP WAVE */}
-        <div className="absolute top-0 left-0 w-full overflow-hidden leading-none rotate-180 opacity-140">
-          <svg
-            className="relative block w-[500%] h-[90px] sm:w-[245%] sm:h-[120px]"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 2400 120"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0,40 C80,90 160,0 240,40 C320,90 400,0 480,40 C560,90 640,0 720,40 C800,90 880,0 960,40 C1040,90 1120,0 1200,40 C1280,90 1360,0 1440,40 C1520,90 1600,0 1680,40 C1760,90 1840,0 1920,40 C2000,90 2080,0 2160,40 C2240,90 2320,0 2400,40 L2400,120 L0,120 Z"
-              className="fill-sky-100 transition-all duration-500"
-            />
-          </svg>
-        </div>
-
+      
         {/* HEADER CONTENT */}
         <div className="relative z-20 max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">

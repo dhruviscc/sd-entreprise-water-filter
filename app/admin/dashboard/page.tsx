@@ -1,27 +1,28 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { 
-    Package, 
-    Cog, 
-    BookOpen, 
-    MessageSquare, 
-    Star, 
-    Clock, 
-    ArrowRight, 
+import {
+    Package,
+    Cog,
+    BookOpen,
+    MessageSquare,
+    Star,
+    Clock,
+    ArrowRight,
     Loader2,
     TrendingUp,
-    Users,
+    // Users, // Not used in this file
+    LayoutDashboard, // Added for dashboard icon
     ChevronRight
 } from 'lucide-react';
 import Link from 'next/link';
 
 interface DashboardStats {
-  productsCount: number;
-  servicesCount: number;
-  blogCount: number;
-  enquiriesCount: number;
-  reviewsCount: number;
+    productsCount: number;
+    servicesCount: number;
+    blogCount: number;
+    enquiriesCount: number;
+    reviewsCount: number;
 }
 
 export default function DashboardPage() {
@@ -53,7 +54,6 @@ export default function DashboardPage() {
 
     const statCards = [
         { label: 'Total Products', value: stats?.productsCount || 0, icon: Package, color: 'text-blue-600', bg: 'bg-blue-50', link: '/admin/dashboard/product' },
-        { label: 'Total Services', value: stats?.servicesCount || 0, icon: Cog, color: 'text-emerald-600', bg: 'bg-emerald-50', link: '/admin/dashboard/services' },
         { label: 'Total Blogs', value: stats?.blogCount || 0, icon: BookOpen, color: 'text-purple-600', bg: 'bg-purple-50', link: '/admin/dashboard/blog' },
         { label: 'Total Enquiries', value: stats?.enquiriesCount || 0, icon: MessageSquare, color: 'text-amber-600', bg: 'bg-amber-50', link: '/admin/dashboard/contact' },
         { label: 'Total Reviews', value: stats?.reviewsCount || 0, icon: Star, color: 'text-rose-600', bg: 'bg-rose-50', link: '/admin/dashboard/review' },
@@ -70,25 +70,12 @@ export default function DashboardPage() {
     return (
         <div className="space-y-4 sm:space-y-8 bg-slate-50 min-h-screen">
 
-            {/* Greeting */}
-            <div className="flex flex-col md:flex-row justify-end items-start md:items-center gap-4">
-                
-                <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100">
-                    <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center">
-                        <TrendingUp size={20} className="text-sky-600" />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Business Health</p>
-                        <p className="text-sm font-black text-emerald-600">Growth Active</p>
-                    </div>
-                </div>
-            </div>
-
+          
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"> 
                 {statCards.map((card, idx) => (
-                    <Link key={idx} href={card.link} className="group">
-                        <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:border-sky-200 group-hover:-translate-y-1">
+                    <Link key={idx} href={card.link} className="group ">
+                        <div className="bg-white p-4 rounded-3xl shadow-sm border border-slate-100 transition-all duration-300 hover:shadow-xl hover:shadow-slate-200/50 hover:border-sky-200 group-hover:-translate-y-1">
                             <div className="flex justify-between items-start mb-4">
                                 <div className={`${card.bg} p-3 rounded-2xl transition-colors group-hover:scale-110 duration-500`}>
                                     <card.icon size={24} className={card.color} />
@@ -156,11 +143,10 @@ export default function DashboardPage() {
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex justify-center">
-                                                        <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-sm border ${
-                                                            enquiry.status === 'new' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                                            enquiry.status === 'contacted' ? 'bg-amber-50 text-amber-600 border-amber-100' :
-                                                            'bg-emerald-50 text-emerald-600 border-emerald-100'
-                                                        }`}>
+                                                        <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded-sm border ${enquiry.status === 'new' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                                                enquiry.status === 'contacted' ? 'bg-amber-50 text-amber-600 border-amber-100' :
+                                                                    'bg-emerald-50 text-emerald-600 border-emerald-100'
+                                                            }`}>
                                                             {enquiry.status}
                                                         </span>
                                                     </div>
@@ -213,7 +199,6 @@ export default function DashboardPage() {
                         </Link>
                     </div>
 
-                 
                 </div>
             </div>
         </div>

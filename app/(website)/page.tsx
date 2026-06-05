@@ -563,17 +563,18 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full h-full">
 
       {/* ================= HERO SECTION ================= */}
       <section
-        className="relative h-[10vh] min-h-[580px] max-h-[780px]  sm:h-[700px] sm:max-h-none lg:h-[890px] overflow-hidden bg-slate-100 touch-pan-y"
+        className="relative h-[80vh] min-h-[520px] max-h-[650px] sm:h-[700px] sm:max-h-none lg:h-[890px]  overflow-hidden bg-slate-100 touch-pan-y"
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
+       
         {/* Slider Track */}
         <div
           className="absolute inset-0 flex h-full"
@@ -583,6 +584,7 @@ export default function HomePage() {
             width: `${extendedBanners.length * 100}%`
           }}
         >
+          
           {extendedBanners.map((banner, index) => {
             const isVisuallyActive =
               (index === slideIndex) ||
@@ -597,7 +599,7 @@ export default function HomePage() {
               >
 
                 {/* Background image container with scale animation */}
-                <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden bg-sky-50">
                   <motion.div
                     className="relative w-full h-full"
                     animate={isVisuallyActive ? { scale: 1.05 } : { scale: 1 }}
@@ -612,57 +614,63 @@ export default function HomePage() {
                       alt={banner.title}
                       fill
                       priority={index === 1}
+                      className="object-cover"
                     />
 
                   </motion.div>
                 </div>
 
                 {/* Slide Content */}
-                <div className="absolute inset-0 flex items-center justify-center sm:justify-start z-20">
-                  <div className="w-full px-5 sm:px-12 lg:px-24 xl:px-32 pb-16 sm:pb-0">
+                <div className="absolute inset-0 flex items-end sm:items-center justify-center sm:justify-start z-20">
+                  <div className="w-full px-4 sm:px-12 lg:px-24 xl:px-32 pb-20 sm:pb-0">
                     <motion.div
                       className="
-                                max-w-sm mx-auto sm:mx-0 sm:max-w-xl md:max-w-3xl
-                                space-y-4 sm:space-y-6
-                                text-center sm:text-left
+    w-full sm:w-auto
+    max-w-none sm:max-w-xl md:max-w-3xl
 
-                                rounded-3xl
-                                p-6 sm:p-8 lg:p-10
+    space-y-3 sm:space-y-6
+    text-center sm:text-left
 
-                                backdrop-blur-xl
-                                bg-white/30
-                                sm:bg-white/40
+    rounded-2xl sm:rounded-3xl
+    p-4 sm:p-8 lg:p-10
 
-                                border border-white/20
-                                sm:border-white/50
+    backdrop-blur-xl
+    bg-white/60 sm:bg-white/10
 
-                                shadow-[0_8px_40px_rgba(0,0,0,0.12)]
+    border border-white/30
 
-                                transition-all duration-500
+    shadow-[0_8px_40px_rgba(0,0,0,0.18)]
+
+    z-20
   "
-                      initial="hidden"
-                      animate={isVisuallyActive ? "visible" : "hidden"}
-                      variants={{
-                        hidden: { opacity: 0, y: 30 },
-                        visible: {
-                          opacity: 1,
-                          y: 0,
-                          transition: {
-                            duration: 0.8,
-                            ease: [0.16, 1, 0.3, 1],
-                            staggerChildren: 0.12,
-                            delayChildren: 0.1,
-                          },
+                      initial={{ opacity: 0, x: -40, scale: 0.98 }}
+                      animate={
+                        isVisuallyActive
+                          ? {
+                            opacity: 1,
+                            x: 0,
+                            y: [0, -10, 0],
+                            scale: 1,
+                          }
+                          : { opacity: 0, x: -40, scale: 0.98 }
+                      }
+                      transition={{
+                        opacity: { duration: 0.6 },
+                        scale: { duration: 0.6 },
+                        x: { duration: 0.5 },
+                        y: {
+                          duration: 4,
+                          repeat: Infinity,
+                          ease: "easeInOut",
                         },
                       }}
                     >
-
                       <motion.h1
                         variants={{
                           hidden: { opacity: 0, y: 20 },
                           visible: { opacity: 1, y: 0 }
                         }}
-                        className="text-[1.6rem] leading-[1.2] sm:text-4xl lg:text-5xl font-black text-white sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700"
+                        className="text-lg leading-snug sm:text-4xl lg:text-5xl font-black text-slate-900 sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700"
                       >
                         {banner.title}
                       </motion.h1>
@@ -672,7 +680,7 @@ export default function HomePage() {
                           hidden: { opacity: 0, y: 20 },
                           visible: { opacity: 1, y: 0 }
                         }}
-                        className="text-xs sm:text-sm lg:text-base text-slate-100 sm:text-slate-800 font-medium leading-relaxed"
+                        className="text-[11px] leading-relaxed sm:text-sm lg:text-base text-slate-700 sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700 font-medium line-clamp-3 sm:line-clamp-none"
                       >
                         {banner.subtitle}
                       </motion.p>
@@ -682,16 +690,16 @@ export default function HomePage() {
                           hidden: { opacity: 0, y: 20 },
                           visible: { opacity: 1, y: 0 }
                         }}
-                        className="flex flex-wrap gap-3 pt-1 justify-center sm:justify-start"
+                        className="flex flex-wrap gap-2 sm:gap-3 pt-1 justify-center sm:justify-start"
                       >
                         <Link
                           href={banner.primaryUrl}
-                          className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
+                          className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
                         >
                           {banner.primaryText}
                         </Link>
                         <button
-                          className="px-5 py-2.5 sm:px-6 sm:py-3 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-bold text-sm sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
+                          className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
                           onClick={() =>
                             openEnquiry(banner.secondaryInterest, banner.secondaryType)
                           }
@@ -724,7 +732,7 @@ export default function HomePage() {
         </button>
 
         {/* Hero Slide Indicators */}
-        <div className="absolute bottom-[4.5rem] sm:bottom-20 lg:bottom-14 left-1/2 -translate-x-1/2 z-30 flex gap-2 items-center">
+        <div className="absolute bottom-4 sm:bottom-20 lg:bottom-14 left-1/2 -translate-x-1/2 z-30 flex gap-2 items-center">
           {heroBanners.map((_, index) => (
             <button
               key={index}
@@ -916,34 +924,34 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 lg:gap-6">
             {(featuredProducts.length > 0 ? featuredProducts : productsData.slice(0, 4)).map((product, index) => (
               <ScrollReveal key={product.id} variant="fadeInUp" delay={index * 100}>
                 <div className="card-3d-wrapper">
-                  <div className="glass-3d rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col justify-between h-full hover:shadow-xl sm:hover:-translate-y-2 transition-all group card-3d-inner animate-float-3d relative z-10">
+                  <div className="glass-3d rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-row sm:flex-col justify-between h-full hover:shadow-xl sm:hover:-translate-y-2 transition-all group card-3d-inner animate-float-3d relative z-10">
 
                     {/* Product Image */}
-                    <div className="relative aspect-square sm:aspect-[4/3] bg-white/50 border-b border-slate-200 overflow-hidden">
+                    <div className="relative w-[120px] min-h-[130px] sm:w-full sm:aspect-[4/3] bg-white/50 border-r sm:border-r-0 sm:border-b border-slate-200 overflow-hidden shrink-0">
                       <Image
                         src={product.images[0]}
                         alt={product.name}
                         fill
 
-                        className="object-contain p-4 object-center group-hover:scale-105 transition-transform duration-500"
+                        className="object-contain p-3 sm:p-4 object-center group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded glass-3d text-[9px] sm:text-[10px] font-bold text-slate-800 uppercase tracking-wider shadow-sm animate-float-3d">
+                      <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded glass-3d text-[8px] sm:text-[10px] font-bold text-slate-800 uppercase tracking-wider shadow-sm animate-float-3d">
                         {product.category}
                       </div>
                     </div>
 
                     {/* Card Details */}
-                    <div className="p-2.5 sm:p-4 space-y-2 sm:space-y-3 flex-grow flex flex-col justify-between">
+                    <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 flex-grow flex flex-col justify-between min-w-0">
                       <div className="space-y-1.5">
 
-                        <h3 className="text-xs sm:text-sm font-bold text-slate-800 tracking-wide line-clamp-1 group-hover:text-blue-600 transition-colors">
+                        <h3 className="text-sm sm:text-sm font-bold text-slate-800 tracking-wide line-clamp-2 sm:line-clamp-1 group-hover:text-blue-600 transition-colors">
                           {product.name}
                         </h3>
-                        <p className="text-[10px] sm:text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                        <p className="text-xs sm:text-xs text-slate-500 line-clamp-2 leading-relaxed">
                           {product.description}
                         </p>
                       </div>

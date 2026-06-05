@@ -226,7 +226,7 @@ export default function AdminReviewPage() {
             </div>
 
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+            <div className="overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-sm overflow-x-auto">
 
 
 
@@ -241,7 +241,7 @@ export default function AdminReviewPage() {
                             <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Actions</th>
                         </tr>
                     </thead>
-                    <tbody >
+                    <tbody className="divide-y divide-slate-100">
                         {loading ? (
                             <tr>
                                 <td colSpan={6} className="px-6 py-12">
@@ -260,8 +260,8 @@ export default function AdminReviewPage() {
                         ) : (
                             filteredReviews.map((review, index) => (
                                 <tr key={review.id} className="hover:bg-slate-50/50 transition-colors group">
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center justify-center text-slate-400 font-mono text-xs">
+                                    <td className=" px-5 py-4">
+                                        <div className="flex  text-slate-400 font-mono text-xs">
                                             {index + 1}
                                         </div>
                                     </td>
@@ -308,16 +308,14 @@ export default function AdminReviewPage() {
                                             ))}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 ">
+                                   
+                                    <td className="px-4 py-[14px] whitespace-nowrap">
                                         <button
                                             onClick={() => toggleStatus(review.id, review.is_active)}
-                                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${review.is_active
-                                                ? "bg-green-100 text-green-700 hover:bg-green-200"
-                                                : "bg-red-100 text-red-700 hover:bg-red-200"
-                                                }`}
-                                            title={review.is_active ? "Disable Review" : "Enable Review"}
+                                            className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${review.is_active ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}
+                                            title={review.is_active ? "Disable" : "Enable"}
                                         >
-                                            {review.is_active ? "Disable" : "Enable"}
+                                            {review.is_active ? 'Enable' : 'Disable'}
                                         </button>
                                     </td>
                                     <td className="px-6 py-4">
@@ -348,134 +346,133 @@ export default function AdminReviewPage() {
 
             {/* Review Form Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center z-[100] p-4 animate-in fade-in duration-200">
-                    <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
-                        <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50 shrink-0">
+                <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[4px] animate-in fade-in duration-200">
+                    <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-7 shadow-2xl animate-in slide-in-from-bottom-2 duration-300">
+                        <div className="mb-5 flex items-center justify-between">
                             <div>
                                 <h3 className="text-xl font-bold text-slate-900">
                                     {editingReview ? "Edit Review" : "Add New Review"}
                                 </h3>
-                                <p className="text-sm text-slate-500">Share what your customers are saying</p>
+
                             </div>
                             <button
                                 onClick={() => setIsModalOpen(false)}
-                                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-white rounded-xl transition-all"
-                            >
+                                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"                            >
                                 <X size={20} />
                             </button>
                         </div>
 
-                        <div className="p-8 space-y-6 overflow-y-auto">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Type Selection */}
-                                <div className="space-y-1.5 md:col-span-2">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Review Type</label>
-                                    <div className="flex gap-4">
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, type: 'text' })}
-                                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${formData.type === 'text'
-                                                ? 'border-sky-600 bg-sky-50 text-sky-600 shadow-sm'
-                                                : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200'
-                                                }`}
-                                        >
-                                            <Type size={18} />
-                                            <span className="font-bold text-sm">Text Review</span>
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, type: 'video' })}
-                                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${formData.type === 'video'
-                                                ? 'border-sky-600 bg-sky-50 text-sky-600 shadow-sm'
-                                                : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200'
-                                                }`}
-                                        >
-                                            <Video size={18} />
-                                            <span className="font-bold text-sm">Video Review</span>
-                                        </button>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Type Selection */}
+                            <div className="space-y-1.5 md:col-span-2">
+                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Review Type</label>
+                                <div className="flex gap-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, type: 'text' })}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${formData.type === 'text'
+                                            ? 'border-sky-600 bg-sky-50 text-sky-600 shadow-sm'
+                                            : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200'
+                                            }`}
+                                    >
+                                        <Type size={18} />
+                                        <span className="font-bold text-sm">Text Review</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setFormData({ ...formData, type: 'video' })}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${formData.type === 'video'
+                                            ? 'border-sky-600 bg-sky-50 text-sky-600 shadow-sm'
+                                            : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200'
+                                            }`}
+                                    >
+                                        <Video size={18} />
+                                        <span className="font-bold text-sm">Video Review</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Customer Name */}
+                            {formData.type === 'text' && (
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Customer Name</label>
+                                    <input
+                                        type="text"
+                                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
+                                        placeholder="e.g. Rahul Sharma"
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                    />
+                                </div>
+                            )}
+
+                            {/* Location/Role */}
+                            {formData.type === 'text' && (
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Location / Role</label>
+                                    <input
+                                        type="text"
+                                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
+                                        placeholder="e.g. Ahmedabad, Resident"
+                                        value={formData.location}
+                                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                    />
+                                </div>
+                            )}
+
+                            {/* Rating */}
+                            {formData.type === 'text' && (
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Rating (1-5)</label>
+                                    <div className="flex gap-2">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <button
+                                                key={star}
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, rating: star })}
+                                                className={`p-2 rounded-lg transition-all ${formData.rating >= star ? 'text-amber-400' : 'text-slate-200'}`}
+                                            >
+                                                <Star size={24} fill={formData.rating >= star ? "currentColor" : "none"} />
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
+                            )}
 
-                                {/* Customer Name */}
-                                {formData.type === 'text' && (
-                                    <div className="space-y-1.5">
-                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Customer Name</label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
-                                            placeholder="e.g. Rahul Sharma"
-                                            value={formData.name}
-                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        />
-                                    </div>
-                                )}
+                            {/* Review Text Content (Only for text type) */}
+                            {formData.type === 'text' && (
+                                <div className="space-y-1.5 md:col-span-2">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
+                                        Review Content
+                                    </label>
+                                    <textarea
+                                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white min-h-[100px] resize-none"
+                                        placeholder="Write the customer's feedback here..."
+                                        value={formData.content}
+                                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                    />
+                                </div>
+                            )}
 
-                                {/* Location/Role */}
-                                {formData.type === 'text' && (
-                                    <div className="space-y-1.5">
-                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Location / Role</label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
-                                            placeholder="e.g. Ahmedabad, Resident"
-                                            value={formData.location}
-                                            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                        />
-                                    </div>
-                                )}
+                            {/* Video URL (Only for video type) */}
+                            {formData.type === 'video' && (
+                                <div className="space-y-1.5 md:col-span-2">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Video URL (Direct link to .mp4 or YouTube)</label>
+                                    <input
+                                        type="text"
+                                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
+                                        placeholder="https://example.com/video.mp4"
+                                        value={formData.video_url}
+                                        onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                                    />
+                                </div>
+                            )}
 
-                                {/* Rating */}
-                                {formData.type === 'text' && (
-                                    <div className="space-y-1.5">
-                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Rating (1-5)</label>
-                                        <div className="flex gap-2">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <button
-                                                    key={star}
-                                                    type="button"
-                                                    onClick={() => setFormData({ ...formData, rating: star })}
-                                                    className={`p-2 rounded-lg transition-all ${formData.rating >= star ? 'text-amber-400' : 'text-slate-200'}`}
-                                                >
-                                                    <Star size={24} fill={formData.rating >= star ? "currentColor" : "none"} />
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Review Text Content (Only for text type) */}
-                                {formData.type === 'text' && (
-                                    <div className="space-y-1.5 md:col-span-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                                            Review Content
-                                        </label>
-                                        <textarea
-                                            className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white min-h-[100px] resize-none"
-                                            placeholder="Write the customer's feedback here..."
-                                            value={formData.content}
-                                            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                        />
-                                    </div>
-                                )}
-
-                                {/* Video URL (Only for video type) */}
-                                {formData.type === 'video' && (
-                                    <div className="space-y-1.5 md:col-span-2">
-                                        <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Video URL (Direct link to .mp4 or YouTube)</label>
-                                        <input
-                                            type="text"
-                                            className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
-                                            placeholder="https://example.com/video.mp4"
-                                            value={formData.video_url}
-                                            onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
-                                        />
-                                    </div>
-                                )}
-
-                            </div>
                         </div>
 
-                        <div className="p-8 border-t border-slate-100 flex gap-3 shrink-0">
+
+                        <div className="flex gap-3 mt-6">
                             <button
                                 onClick={() => setIsModalOpen(false)}
                                 className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
