@@ -88,7 +88,7 @@ export default function ProductDetailPage() {
 
   return (
     <div className="bg-slate-50/50 min-h-screen pb-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 overflow-hidden pt-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 overflow-hidden pt-10">
         {/* Breadcrumb & Back button */}
         <div className="flex items-center gap-3 animate-in fade-in duration-500">
           <Link

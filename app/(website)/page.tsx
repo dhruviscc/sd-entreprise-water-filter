@@ -5,8 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import {
-  productsData,
-  blogPostsData,
+
   servicesData,
 } from "@/app/(website)/data/mockData";
 import { Review } from "@/modules/review/reviewService";
@@ -37,6 +36,8 @@ import {
   Circle,
   Cylinder,
   Loader2,
+  Package,
+  BookOpen,
 } from "lucide-react";
 import BubbleBackground from "@/components/BubbleBackground";
 import ScrollReveal from "@/components/ScrollReveal";
@@ -69,102 +70,7 @@ interface HeroBanner {
   secondaryType: "service" | "product" | "general";
 }
 
-// Fallback data used when the database is empty or API call fails
-const fallbackBanners: HeroBanner[] = [
-  {
-    image: "/water-filter.png",
-    title: "Trusted RO Solutions for Clean & Safe Drinking Water",
-    subtitle: "From domestic RO systems to complete water purification services, we provide reliable solutions for healthier homes and businesses.",
-    primaryText: "Explore Products",
-    primaryUrl: "/products",
-    secondaryText: "Book RO Service",
-    secondaryInterest: "All Types of RO and Services",
-    secondaryType: "service",
-  },
-  {
-    image: "/filter-3.png",
-    title: "Complete Water Filter Care & Expert RO Services",
-    subtitle: "Keep your filtration system performing at its best with professional installation, maintenance, cartridge replacement, and repair services.",
-    primaryText: "View AMC Plans",
-    primaryUrl: "/services",
-    secondaryText: "Request Service",
-    secondaryInterest: "All Types of RO and Services",
-    secondaryType: "service",
-  },
-  {
-    image: "/industrial.png",
-    title: "Complete Water Treatment Solutions for Industrial Applications",
-    subtitle: "From pre-treatment to advanced RO purification, we deliver customized systems that ensure high-quality water for every industrial requirement.",
-    primaryText: "View Solutions",
-    primaryUrl: "/industrial-ro",
-    secondaryText: "Get Free Quote",
-    secondaryInterest: "Industrial RO Plant",
-    secondaryType: "service",
-  }
-];
 
-const fallbackTextReviews: Review[] = [
-  {
-    id: "rev-1",
-    name: "Sunita Vyas",
-    location: "Ahmedabad, Gujarat",
-    rating: 5,
-    content: "Switched to SD Aqua Sparkle RO three months ago, and the difference in water taste is amazing. The service was set up in just 2 hours! Highly recommended.",
-    type: "text",
-    is_active: true
-  },
-  {
-    id: "rev-2",
-    name: "Anand Shah",
-    location: "Vadodara, Gujarat",
-    rating: 5,
-    content: "We bought the Kangan Life Ionizer for our parents. Their acid reflux issues have reduced significantly, and beauty water is a great addition for skincare.",
-    type: "text",
-    is_active: true
-  },
-  {
-    id: "rev-4",
-    name: "Meera Deshmukh",
-    location: "Surat, Gujarat",
-    rating: 4,
-    content: "The hard water in our area was causing bad scale deposits in our geyser and hair fall. The SD Soft-Home water softener completely resolved it. Five stars!",
-    type: "text",
-    is_active: true
-  }
-];
-
-const fallbackVideoReviews: Review[] = [
-  {
-    id: "rev-3",
-    name: "Harish Patel (Factory Owner)",
-    location: "GIDC Naroda, Gujarat",
-    rating: 5,
-    content: "Excellent service on the 250 LPH Industrial RO system. It feeds our plant smoothly. Their response on AMC calls is quick and parts replaced are always genuine.",
-    type: "video",
-    video_url: "https://www.shutterstock.com/shutterstock/videos/1101915055/preview/stock-footage-industrial-equipment-for-water-purification-water-purification-system-equipment-interior-of-water.mp4",
-    is_active: true
-  },
-  {
-    id: "rev-5",
-    name: "Anita Sharma",
-    location: "Rajkot, Gujarat",
-    rating: 5,
-    content: "Great experience with the domestic filter installation.",
-    type: "video",
-    video_url: "https://www.shutterstock.com/shutterstock/videos/3521349219/preview/stock-footage-woman-on-her-kitchen-floor-assembling-the-reverse-osmosis-water-filter.mp4",
-    is_active: true
-  },
-  {
-    id: "rev-6",
-    name: "Rajesh Patel",
-    location: "Bhavnagar, Gujarat",
-    rating: 5,
-    content: "The water softener works like magic.",
-    type: "video",
-    video_url: "https://www.shutterstock.com/shutterstock/videos/4031391119/preview/stock-footage-interior-of-water-treatment-plant-facility-for-purification-of-drinking-water.mp4",
-    is_active: true
-  }
-];
 
 
 
@@ -172,7 +78,7 @@ export default function HomePage() {
   const { openEnquiry } = useEnquiry();
 
   // --- Hero Slider: Dynamic data from admin ---
-  const [heroBanners, setHeroBanners] = useState(fallbackBanners);
+  const [heroBanners, setHeroBanners] = useState<HeroBanner[]>([]);
   const [isBannersLoading, setIsBannersLoading] = useState(true);
 
 
@@ -187,13 +93,11 @@ export default function HomePage() {
   const [isReviewsLoading, setIsReviewsLoading] = useState(true);
 
   const textReviews = useMemo(() => {
-    const filtered = allReviews.filter(r => r.type === 'text');
-    return filtered.length > 0 ? filtered : fallbackTextReviews;
+    return allReviews.filter(r => r.type === 'text');
   }, [allReviews]);
 
   const videoReviews = useMemo(() => {
-    const filtered = allReviews.filter(r => r.type === 'video');
-    return filtered.length > 0 ? filtered : fallbackVideoReviews;
+    return allReviews.filter(r => r.type === 'video');
   }, [allReviews]);
 
 
@@ -228,10 +132,11 @@ export default function HomePage() {
             secondaryType: (s.secondaryType || "service") as "service" | "product" | "general",
           }));
           setHeroBanners(mapped);
+        } else {
+          setHeroBanners([]);
         }
-        // If data is empty, keep fallback banners
       } catch {
-        // On error, keep fallback banners
+        setHeroBanners([]);
       } finally {
         setIsBannersLoading(false);
       }
@@ -245,9 +150,7 @@ export default function HomePage() {
         const res = await fetch("/admin/api/blog?active=true");
         if (!res.ok) throw new Error("Failed to fetch blogs");
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setBlogs(data);
-        }
+        if (Array.isArray(data)) setBlogs(data);
       } catch (err) {
         console.error("Error fetching blogs:", err);
       } finally {
@@ -307,18 +210,17 @@ export default function HomePage() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
 
-  // Reset slider when banners data changes (e.g., API data arrives)
   useEffect(() => {
     setSlideIndex(1);
     setIsTransitioning(true);
     setIsAnimating(false);
   }, [heroBanners]);
 
-  const extendedBanners = [
+  const extendedBanners = heroBanners.length > 0 ? [
     heroBanners[heroBanners.length - 1],
     ...heroBanners,
     heroBanners[0],
-  ];
+  ] : [];
 
   const prevSlide = () => {
     if (isAnimating) return;
@@ -574,175 +476,162 @@ export default function HomePage() {
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
-       
-        {/* Slider Track */}
-        <div
-          className="absolute inset-0 flex h-full"
-          style={{
-            transform: `translateX(-${slideIndex * (100 / extendedBanners.length)}%)`,
-            transition: isTransitioning ? "transform 1000ms cubic-bezier(0.4, 0, 0.2, 1)" : "none",
-            width: `${extendedBanners.length * 100}%`
-          }}
-        >
-          
-          {extendedBanners.map((banner, index) => {
-            const isVisuallyActive =
-              (index === slideIndex) ||
-              (slideIndex === 0 && index === heroBanners.length) ||
-              (slideIndex === heroBanners.length + 1 && index === 1);
 
-            return (
-              <div
-                key={index}
-                className="relative h-full flex-shrink-0"
-                style={{ width: `${100 / extendedBanners.length}%` }}
-              >
+        {isBannersLoading ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/10 backdrop-blur-sm z-50">
+            <Loader2 className="w-12 h-12 animate-spin text-sky-500" />
+          </div>
+        ) : heroBanners.length === 0 ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 text-slate-400 p-8">
+            <div className="p-6 rounded-full bg-slate-100 mb-4 animate-pulse">
+              <Droplets size={64} className="text-sky-200" />
+            </div>
+            <h2 className="text-2xl font-black uppercase tracking-widest text-slate-300">No Banner Data Found</h2>
+            <p className="text-sm font-medium text-center max-w-xs">Please add hero banners from the admin dashboard to populate this section.</p>
+          </div>
+        ) : (
+          <>
+            {/* Slider Track */}
+            <div
+              className="absolute inset-0 flex h-full"
+              style={{
+                transform: `translateX(-${slideIndex * (100 / extendedBanners.length)}%)`,
+                transition: isTransitioning ? "transform 1000ms cubic-bezier(0.4, 0, 0.2, 1)" : "none",
+                width: `${extendedBanners.length * 100}%`
+              }}
+            >
+              {extendedBanners.map((banner, index) => {
+                if (!banner) return null;
+                const isVisuallyActive =
+                  (index === slideIndex) ||
+                  (slideIndex === 0 && index === heroBanners.length) ||
+                  (slideIndex === heroBanners.length + 1 && index === 1);
 
-                {/* Background image container with scale animation */}
-                <div className="absolute inset-0 overflow-hidden bg-sky-50">
-                  <motion.div
-                    className="relative w-full h-full"
-                    animate={isVisuallyActive ? { scale: 1.05 } : { scale: 1 }}
-                    transition={{
-                      duration: isVisuallyActive ? 5 : 0.3,
-                      ease: isVisuallyActive ? "linear" : "easeIn"
-                    }}
+                return (
+                  <div
+                    key={index}
+                    className="relative h-full flex-shrink-0"
+                    style={{ width: `${100 / extendedBanners.length}%` }}
                   >
-
-                    <Image
-                      src={banner.image}
-                      alt={banner.title}
-                      fill
-                      priority={index === 1}
-                      className="object-cover"
-                    />
-
-                  </motion.div>
-                </div>
-
-                {/* Slide Content */}
-                <div className="absolute inset-0 flex items-end sm:items-center justify-center sm:justify-start z-20">
-                  <div className="w-full px-4 sm:px-12 lg:px-24 xl:px-32 pb-20 sm:pb-0">
-                    <motion.div
-                      className="
-    w-full sm:w-auto
-    max-w-none sm:max-w-xl md:max-w-3xl
-
-    space-y-3 sm:space-y-6
-    text-center sm:text-left
-
-    rounded-2xl sm:rounded-3xl
-    p-4 sm:p-8 lg:p-10
-
-    backdrop-blur-xl
-    bg-white/60 sm:bg-white/10
-
-    border border-white/30
-
-    shadow-[0_8px_40px_rgba(0,0,0,0.18)]
-
-    z-20
-  "
-                      initial={{ opacity: 0, x: -40, scale: 0.98 }}
-                      animate={
-                        isVisuallyActive
-                          ? {
-                            opacity: 1,
-                            x: 0,
-                            y: [0, -10, 0],
-                            scale: 1,
-                          }
-                          : { opacity: 0, x: -40, scale: 0.98 }
-                      }
-                      transition={{
-                        opacity: { duration: 0.6 },
-                        scale: { duration: 0.6 },
-                        x: { duration: 0.5 },
-                        y: {
-                          duration: 4,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        },
-                      }}
-                    >
-                      <motion.h1
-                        variants={{
-                          hidden: { opacity: 0, y: 20 },
-                          visible: { opacity: 1, y: 0 }
-                        }}
-                        className="text-lg leading-snug sm:text-4xl lg:text-5xl font-black text-slate-900 sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700"
-                      >
-                        {banner.title}
-                      </motion.h1>
-
-                      <motion.p
-                        variants={{
-                          hidden: { opacity: 0, y: 20 },
-                          visible: { opacity: 1, y: 0 }
-                        }}
-                        className="text-[11px] leading-relaxed sm:text-sm lg:text-base text-slate-700 sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700 font-medium line-clamp-3 sm:line-clamp-none"
-                      >
-                        {banner.subtitle}
-                      </motion.p>
-
+                    {/* Background image container with scale animation */}
+                    <div className="absolute inset-0 overflow-hidden bg-sky-50">
                       <motion.div
-                        variants={{
-                          hidden: { opacity: 0, y: 20 },
-                          visible: { opacity: 1, y: 0 }
+                        className="relative w-full h-full"
+                        animate={isVisuallyActive ? { scale: 1.05 } : { scale: 1 }}
+                        transition={{
+                          duration: isVisuallyActive ? 5 : 0.3,
+                          ease: isVisuallyActive ? "linear" : "easeIn"
                         }}
-                        className="flex flex-wrap gap-2 sm:gap-3 pt-1 justify-center sm:justify-start"
                       >
-                        <Link
-                          href={banner.primaryUrl}
-                          className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
-                        >
-                          {banner.primaryText}
-                        </Link>
-                        <button
-                          className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
-                          onClick={() =>
-                            openEnquiry(banner.secondaryInterest, banner.secondaryType)
-                          }
-                        >
-                          {banner.secondaryText}
-                        </button>
+                        <Image
+                          src={banner.image}
+                          alt={banner.title}
+                          fill
+                          priority={index === 1}
+                          className="object-cover"
+                        />
                       </motion.div>
-                    </motion.div>
+                    </div>
+
+                    {/* Slide Content */}
+                    <div className="absolute inset-0 flex items-end sm:items-center justify-center sm:justify-start z-20">
+                      <div className="w-full px-4 sm:px-12 lg:px-24 xl:px-32 pb-20 sm:pb-0">
+                        <motion.div
+                          className="w-full sm:w-auto max-w-none sm:max-w-xl md:max-w-3xl space-y-3 sm:space-y-6 text-center sm:text-left rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-10 backdrop-blur-xl bg-white/60 sm:bg-white/10 border border-white/30 shadow-[0_8px_40px_rgba(0,0,0,0.18)] z-20"
+                          initial={{ opacity: 0, x: -40, scale: 0.98 }}
+                          animate={
+                            isVisuallyActive
+                              ? {
+                                opacity: 1,
+                                x: 0,
+                                y: [0, -10, 0],
+                                scale: 1,
+                              }
+                              : { opacity: 0, x: -40, scale: 0.98 }
+                          }
+                          transition={{
+                            opacity: { duration: 0.6 },
+                            scale: { duration: 0.6 },
+                            x: { duration: 0.5 },
+                            y: {
+                              duration: 4,
+                              repeat: Infinity,
+                              ease: "easeInOut",
+                            },
+                          }}
+                        >
+                          <motion.h1
+                            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                            className="text-lg leading-snug sm:text-4xl lg:text-5xl font-black text-slate-900 sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700"
+                          >
+                            {banner.title}
+                          </motion.h1>
+
+                          <motion.p
+                            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                            className="text-[11px] leading-relaxed sm:text-sm lg:text-base text-slate-700 sm:text-transparent sm:bg-clip-text sm:bg-gradient-to-r sm:from-slate-900 sm:to-slate-700 font-medium line-clamp-3 sm:line-clamp-none"
+                          >
+                            {banner.subtitle}
+                          </motion.p>
+
+                          <motion.div
+                            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+                            className="flex flex-wrap gap-2 sm:gap-3 pt-1 justify-center sm:justify-start"
+                          >
+                            <Link
+                              href={banner.primaryUrl}
+                              className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
+                            >
+                              {banner.primaryText}
+                            </Link>
+                            <button
+                              className="px-4 py-2 sm:px-6 sm:py-3 rounded-lg bg-white hover:bg-slate-100 text-slate-900 font-bold text-xs sm:text-base shadow-lg transition-all transform hover:-translate-y-1"
+                              onClick={() => openEnquiry(banner.secondaryInterest, banner.secondaryType)}
+                            >
+                              {banner.secondaryText}
+                            </button>
+                          </motion.div>
+                        </motion.div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                );
+              })}
+            </div>
 
-        {/* Hero Slider Controls */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-slate-900/40 hover:bg-slate-950/75 text-white transition-colors focus:outline-none cursor-pointer"
-          aria-label="Previous slide"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-slate-900/40 hover:bg-slate-950/75 text-white transition-colors focus:outline-none cursor-pointer"
-          aria-label="Next slide"
-        >
-          <ChevronRight className="w-6 h-6" />
-        </button>
+            {/* Hero Slider Controls */}
+            {heroBanners.length > 1 && (
+              <>
+                <button
+                  onClick={prevSlide}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-slate-900/40 hover:bg-slate-950/75 text-white transition-colors focus:outline-none cursor-pointer"
+                  aria-label="Previous slide"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  onClick={nextSlide}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 p-2 rounded-full bg-slate-900/40 hover:bg-slate-950/75 text-white transition-colors focus:outline-none cursor-pointer"
+                  aria-label="Next slide"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
 
-        {/* Hero Slide Indicators */}
-        <div className="absolute bottom-4 sm:bottom-20 lg:bottom-14 left-1/2 -translate-x-1/2 z-30 flex gap-2 items-center">
-          {heroBanners.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${index === currentSlide ? "bg-sky-400 w-7" : "bg-white/50 w-2.5"
-                }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
+            {/* Hero Slide Indicators */}
+            <div className="absolute bottom-4 sm:bottom-20 lg:bottom-14 left-1/2 -translate-x-1/2 z-30 flex gap-2 items-center">
+              {heroBanners.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => goToSlide(index)}
+                  className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${index === currentSlide ? "bg-sky-400 w-7" : "bg-white/50 w-2.5"}`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Wave Divider */}
         <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20">
@@ -925,59 +814,74 @@ export default function HomePage() {
           </ScrollReveal>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-4 lg:gap-6">
-            {(featuredProducts.length > 0 ? featuredProducts : productsData.slice(0, 4)).map((product, index) => (
-              <ScrollReveal key={product.id} variant="fadeInUp" delay={index * 100}>
-                <div className="card-3d-wrapper">
-                  <div className="glass-3d rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-row sm:flex-col justify-between h-full hover:shadow-xl sm:hover:-translate-y-2 transition-all group card-3d-inner animate-float-3d relative z-10">
+            {isProductsLoading ? (
+              <div className="col-span-full flex justify-center py-12">
+                <Loader2 className="w-10 h-10 animate-spin text-sky-500" />
+              </div>
+            ) : featuredProducts.length === 0 ? (
+              <div className="col-span-full py-12 text-center bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="p-4 rounded-full bg-slate-50 text-slate-300">
+                    <Package size={48} />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-800">No Products Available</h3>
+                  <p className="text-sm text-slate-500 max-w-xs mx-auto">
+                    We are currently updating our catalog. Please check back later or contact us for enquiries.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              featuredProducts.map((product, index) => (
+                <ScrollReveal key={product.id} variant="fadeInUp" delay={index * 100}>
+                  <div className="card-3d-wrapper">
+                    <div className="glass-3d rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-row sm:flex-col justify-between h-full hover:shadow-xl sm:hover:-translate-y-2 transition-all group card-3d-inner animate-float-3d relative z-10">
 
-                    {/* Product Image */}
-                    <div className="relative w-[120px] min-h-[130px] sm:w-full sm:aspect-[4/3] bg-white/50 border-r sm:border-r-0 sm:border-b border-slate-200 overflow-hidden shrink-0">
-                      <Image
-                        src={product.images[0]}
-                        alt={product.name}
-                        fill
-
-                        className="object-contain p-3 sm:p-4 object-center group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded glass-3d text-[8px] sm:text-[10px] font-bold text-slate-800 uppercase tracking-wider shadow-sm animate-float-3d">
-                        {product.category}
+                      {/* Product Image */}
+                      <div className="relative w-[120px] min-h-[130px] sm:w-full sm:aspect-[4/3] bg-white/50 border-r sm:border-r-0 sm:border-b border-slate-200 overflow-hidden shrink-0">
+                        <Image
+                          src={product.images[0]}
+                          alt={product.name}
+                          fill
+                          className="object-contain p-3 sm:p-4 object-center group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded glass-3d text-[8px] sm:text-[10px] font-bold text-slate-800 uppercase tracking-wider shadow-sm animate-float-3d">
+                          {product.category}
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Card Details */}
-                    <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 flex-grow flex flex-col justify-between min-w-0">
-                      <div className="space-y-1.5">
+                      {/* Card Details */}
+                      <div className="p-3 sm:p-4 space-y-2 sm:space-y-3 flex-grow flex flex-col justify-between min-w-0">
+                        <div className="space-y-1.5">
+                          <h3 className="text-sm sm:text-sm font-bold text-slate-800 tracking-wide line-clamp-2 sm:line-clamp-1 group-hover:text-blue-600 transition-colors">
+                            {product.name}
+                          </h3>
+                          <p className="text-xs sm:text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                            {product.description}
+                          </p>
+                        </div>
 
-                        <h3 className="text-sm sm:text-sm font-bold text-slate-800 tracking-wide line-clamp-2 sm:line-clamp-1 group-hover:text-blue-600 transition-colors">
-                          {product.name}
-                        </h3>
-                        <p className="text-xs sm:text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                          {product.description}
-                        </p>
-                      </div>
-
-                      <div className="space-y-2 sm:space-y-3 pt-2 sm:pt-3 border-t border-slate-100">
-
-                        <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
-                          <Link
-                            href={`/products/${product.id}`}
-                            className="flex items-center justify-center py-1.5 sm:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg text-[10px] sm:text-xs font-bold text-slate-700 transition-colors"
-                          >
-                            Details
-                          </Link>
-                          <button
-                            onClick={() => openEnquiry(product.name, "product")}
-                            className="py-1.5 sm:py-2 bg-sky-500 hover:bg-sky-600 rounded-lg text-[10px] sm:text-xs font-bold text-white transition-colors shadow-sm cursor-pointer"
-                          >
-                            Enquire
-                          </button>
+                        <div className="space-y-2 sm:space-y-3 pt-2 sm:pt-3 border-t border-slate-100">
+                          <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+                            <Link
+                              href={`/products/${product.id}`}
+                              className="flex items-center justify-center py-1.5 sm:py-2 bg-slate-50 hover:bg-slate-100 rounded-lg text-[10px] sm:text-xs font-bold text-slate-700 transition-colors"
+                            >
+                              Details
+                            </Link>
+                            <button
+                              onClick={() => openEnquiry(product.name, "product")}
+                              className="py-1.5 sm:py-2 bg-sky-500 hover:bg-sky-600 rounded-lg text-[10px] sm:text-xs font-bold text-white transition-colors shadow-sm cursor-pointer"
+                            >
+                              Enquire
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </ScrollReveal>
-            ))}
+                </ScrollReveal>
+              ))
+            )}
           </div>
         </div>
 
@@ -1013,18 +917,32 @@ export default function HomePage() {
             <path d="M0,60 C37.5,120 112.5,0 150,60 C187.5,120 262.5,0 300,60 C337.5,120 412.5,0 450,60 C487.5,120 562.5,0 600,60 C637.5,120 712.5,0 750,60 C787.5,120 862.5,0 900,60 C937.5,120 1012.5,0 1050,60 C1087.5,120 1162.5,0 1200,60 C1237.5,120 1312.5,0 1350,60 C1387.5,120 1462.5,0 1500,60 C1537.5,120 1612.5,0 1650,60 C1687.5,120 1762.5,0 1800,60 C1837.5,120 1912.5,0 1950,60 C1987.5,120 2062.5,0 2100,60 C2137.5,120 2212.5,0 2250,60 C2287.5,120 2362.5,0 2400,60 L2400,120 L0,120 Z" className="fill-white"></path>
           </svg>
         </div>
-        <AnimatedTestimonials
-          testimonials={textReviews.map((r: any) => ({
-            id: r.id,
-            name: r.name,
-            role: r.location || 'Customer',
-            company: '',
-            content: r.content || '',
-            rating: r.rating,
-            avatar: r.image_url || "/placeholder-avatar.png",
-          }))}
-          className="max-w-7xl mx-auto"
-        />
+        {isReviewsLoading ? (
+          <div className="flex justify-center py-20">
+            <Loader2 className="w-10 h-10 animate-spin text-sky-500" />
+          </div>
+        ) : textReviews.length > 0 ? (
+          <AnimatedTestimonials
+            testimonials={textReviews.map((r: any) => ({
+              id: r.id,
+              name: r.name,
+              role: r.location || 'Customer',
+              company: '',
+              content: r.content || '',
+              rating: r.rating,
+              avatar: r.image_url || "/placeholder-avatar.png",
+            }))}
+            className="max-w-7xl mx-auto"
+          />
+        ) : (
+          <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+            <div className="bg-white/50 backdrop-blur-sm rounded-3xl border border-sky-100 p-10 shadow-sm">
+              <Star className="w-12 h-12 text-sky-200 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-slate-800">No Customer Reviews Yet</h3>
+              <p className="text-slate-500 mt-2">We haven&apos;t added any featured reviews from our customers yet. Check back soon!</p>
+            </div>
+          </div>
+        )}
 
         {/* Bottom Wave (Sky-50 to White) */}
         <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10 transform translate-y-1">
@@ -1084,55 +1002,68 @@ export default function HomePage() {
             </div>
           </ScrollReveal>
 
-          <div className="relative overflow-hidden group/slider">
+          {isReviewsLoading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="w-10 h-10 animate-spin text-sky-500" />
+            </div>
+          ) : videoReviews.length === 0 ? (
+            <div className="max-w-3xl mx-auto p-12 text-center bg-white/30 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl">
+              <MessageCircle className="w-12 h-12 text-sky-300 mx-auto mb-4" />
+              <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">No Video Feedback</h3>
+              <p className="text-sm text-slate-500 mt-2 font-medium">Video testimonials from our industrial and domestic clients will appear here.</p>
+            </div>
+          ) : (
+            <div className="relative overflow-hidden group/slider">
 
-            <motion.div
-              className={`flex ${videoReviews.length <= itemsVisible ? 'justify-center' : ''}`}
-              animate={videoReviews.length > itemsVisible ? { x: `-${videoIdx * (100 / itemsVisible)}%` } : { x: 0 }}
-              transition={isVideoTransitioning ? { duration: 0.8, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
-            >
+              <motion.div
+                className={`flex ${videoReviews.length <= itemsVisible ? 'justify-center' : ''}`}
+                animate={videoReviews.length > itemsVisible ? { x: `-${videoIdx * (100 / itemsVisible)}%` } : { x: 0 }}
+                transition={isVideoTransitioning ? { duration: 0.8, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
+              >
 
-              {extendedVideoReviews.map((review, i) => (
-                <div
-                  key={`${review.id}-${i}`}
-                  className="shrink-0 transition-all duration-500"
-                  style={{ width: `${100 / itemsVisible}%` }}
-                >
-                  <div className="group rounded-2xl p-4">
-                    <div className="relative rounded-xl overflow-hidden shadow-md w-full h-[450px]">
-                      <video
-                        src={review.video_url}
-                        className="absolute inset-0 w-full h-full object-cover"
-                        muted
-                        loop
-                        playsInline
-                        autoPlay
-                      />
+                {extendedVideoReviews.map((review, i) => (
+                  <div
+                    key={`${review.id}-${i}`}
+                    className="shrink-0 transition-all duration-500"
+                    style={{ width: `${100 / itemsVisible}%` }}
+                  >
+                    <div className="group rounded-2xl p-4">
+                      <div className="relative rounded-xl overflow-hidden shadow-md w-full h-[450px]">
+                        <video
+                          src={review.video_url}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          muted
+                          loop
+                          playsInline
+                          autoPlay
+                        />
+                      </div>
                     </div>
                   </div>
+                ))}
+              </motion.div>
+
+              {videoReviews.length > itemsVisible && (
+                <div className="flex justify-center md:justify-end gap-3 mt-6">
+                  <button
+                    onClick={handlePrev}
+                    className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
+                    aria-label="Previous video"
+                  >
+                    <ChevronLeft />
+                  </button>
+
+                  <button
+                    onClick={handleNext}
+                    className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
+                    aria-label="Next video"
+                  >
+                    <ChevronRight />
+                  </button>
                 </div>
-              ))}
-            </motion.div>
-
-            <div className="flex justify-center md:justify-end gap-3 mt-6">
-              <button
-                onClick={handlePrev}
-                className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
-                aria-label="Previous video"
-              >
-                <ChevronLeft />
-              </button>
-
-              <button
-                onClick={handleNext}
-                className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
-                aria-label="Next video"
-              >
-                <ChevronRight />
-              </button>
+              )}
             </div>
-
-          </div>
+          )}
 
         </div>
 
@@ -1186,7 +1117,19 @@ export default function HomePage() {
               <div className="col-span-full flex justify-center py-12">
                 <Loader2 className="w-10 h-10 animate-spin text-sky-500" />
               </div>
-            ) : (blogs.length > 0 ? blogs.slice(0, 3) : blogPostsData.slice(0, 3)).map((post, index) => (
+            ) : blogs.length === 0 ? (
+              <div className="col-span-full py-12 text-center bg-white/50 backdrop-blur-sm rounded-2xl border border-slate-100 shadow-sm">
+                <div className="flex flex-col items-center gap-3">
+                  <div className="p-4 rounded-full bg-slate-50 text-slate-300">
+                    <BookOpen size={48} />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-800">No Blogs Available</h3>
+                  <p className="text-sm text-slate-500 max-w-xs mx-auto">
+                    We haven&apos;t published any articles yet. Please check back soon for updates and news.
+                  </p>
+                </div>
+              </div>
+            ) : blogs.slice(0, 3).map((post, index) => (
               <ScrollReveal key={post.id} variant="fadeInUp" delay={index * 150}>
                 <div className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col justify-between h-full hover:shadow-md transition-all group">
                   {/* Blog Image */}

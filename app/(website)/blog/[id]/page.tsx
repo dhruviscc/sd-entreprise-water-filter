@@ -26,18 +26,16 @@ export default function BlogDetailPage() {
   const [relatedPosts, setRelatedPosts] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // એડમિન API માંથી ડેટા ફેચ કરવા માટે
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // મુખ્ય બ્લોગ પોસ્ટ મેળવો
         const postRes = await fetch(`/admin/api/blog?id=${id}`);
         const postData = await postRes.json();
 
         if (postRes.ok) {
           setPost(postData);
 
-          // 'Related Articles' માટે અન્ય બ્લોગ્સ મેળવો
+          
           const relatedRes = await fetch("/admin/api/blog?active=true");
           const allBlogs = await relatedRes.json();
           if (Array.isArray(allBlogs)) {
@@ -125,7 +123,7 @@ export default function BlogDetailPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 overflow-hidden">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 overflow-hidden">
       {/* Breadcrumb and Back link */}
       <div className="flex items-center gap-3  animate-in fade-in duration-500 pt-16 ">
 
