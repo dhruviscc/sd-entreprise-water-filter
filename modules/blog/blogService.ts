@@ -34,7 +34,7 @@ export const blogService = {
 
   async getAll(onlyActive = false) {
     let query = supabase
-      .from("blog_posts")
+      .from('blog_posts')
       .select("*");
 
     if (onlyActive) {
@@ -51,7 +51,7 @@ export const blogService = {
 
   async getById(id: string) {
     const { data, error } = await supabase
-      .from("blog_posts")
+      .from('blog_posts')
       .select("*")
       .eq("id", id)
       .single();
@@ -62,7 +62,7 @@ export const blogService = {
 
   async create(blog: BlogPost) {
     const { data, error } = await supabase
-      .from("blog_posts")
+      .from('blog_posts')
       .insert([normalizePost(blog)])
       .select()
       .single();

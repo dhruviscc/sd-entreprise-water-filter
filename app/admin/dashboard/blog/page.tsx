@@ -8,6 +8,8 @@ import StarterKit from '@tiptap/starter-kit';
 import LinkExtension from '@tiptap/extension-link';
 import TiptapImage from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
+import Heading from '@tiptap/extension-heading';
+import TextAlign from '@tiptap/extension-text-align'
 
 
 import {
@@ -30,6 +32,12 @@ import {
     Underline as UnderlineIcon,
     Link,
     Quote,
+    List,
+    ListOrdered,
+    AlignLeft,
+    AlignCenter,
+    AlignRight,
+    AlignJustify,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { getCurrentUser } from '@/modules/auth/sessionService';
@@ -111,8 +119,8 @@ export default function AdminBlogsPage() {
                 category: 'Water Quality',
                 summary: '',
                 content: '',
-                image: '',
-                status: 'draft',
+                image: '', // Default to empty string
+                status: 'published', // Default to published
 
             });
         }
@@ -166,31 +174,41 @@ export default function AdminBlogsPage() {
     const editor = useEditor({
         extensions: [
             StarterKit,
+            Underline,
+            TiptapImage,
             LinkExtension.configure({
                 openOnClick: false,
                 linkOnPaste: true,
             }),
-            TiptapImage,
-            Underline,
+            Heading.configure({
+                levels: [1, 2, 3],
+            }),
+            TextAlign.configure({
+                types: ['heading', 'paragraph'],
+            }),
         ],
-        content: formData.content || '',
+        content: '',
         editorProps: {
             attributes: {
-                class: 'min-h-[250px] prose prose-slate focus:outline-none p-4 rounded-xl border border-gray-200 bg-white text-sm sm:text-base',
+                class:
+                    'min-h-[300px] prose prose-slate max-w-none p-4 focus:outline-none',
             },
         },
         onUpdate: ({ editor }) => {
-            setFormData((prev) => ({ ...prev, content: editor.getHTML() }));
+            setFormData(prev => ({
+                ...prev,
+                content: editor.getHTML(),
+            }));
         },
     });
 
     useEffect(() => {
         if (!editor) return;
-        const currentHtml = editor.getHTML();
-        if (formData.content && formData.content !== currentHtml) {
-            editor.commands.setContent(formData.content);
+
+        if (isModalOpen && editor.getHTML() !== (formData.content || '')) {
+            editor.commands.setContent(formData.content || '', false);
         }
-    }, [editor, formData.content]);
+    }, [editor, formData.content, isModalOpen, editingBlog?.id]);
 
     const addLink = () => {
         if (!editor) return;
@@ -209,8 +227,8 @@ export default function AdminBlogsPage() {
     };
 
     const handleSave = async () => {
-        if (!formData.title) {
-            toast.error("Title is required");
+        if (!formData.title || !formData.image) {
+            toast.error("Title and Image are required");
             return;
         }
 
@@ -338,116 +356,199 @@ export default function AdminBlogsPage() {
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
 
-                <table className="w-full border-collapse">
-                    <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
-                        <tr>
-                            <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">#</th>
-                            <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Blog Title</th>
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-4">
+                {loading ? (
+                    <div className="flex justify-center py-10">
+                        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+                    </div>
+                ) : filteredBlogs.length === 0 ? (
+                    <p className="text-center text-gray-500 py-10">No blogs found.</p>
+                ) : (
+                    filteredBlogs.map((blog, index) => (
+                        <div
+                            key={blog.id}
+                            className="border border-slate-200 rounded-xl p-4 shadow-sm bg-white"
+                        >
+                            <div className="flex items-center gap-1 text-xs text-gray-500 justify-end pb-2">
+                                <Calendar className="w-3.5 h-3.5" />
+                                {new Date(blog.created_at).toLocaleDateString()}
+                            </div>
+                            {/* Top row */}
+                            <div className="flex items-start gap-3">
 
-                            <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Category</th>
-                            <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Status</th>
-                            <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Date</th>
-                            <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Actions</th>
-                        </tr>
-                    </thead>
+                                {blog.image && (
+                                    <div className="w-14 h-14 relative rounded overflow-hidden flex-shrink-0">
+                                        <Image
+                                            src={blog.image}
+                                            alt={blog.title}
+                                            fill
+                                            className="object-cover"
+                                            unoptimized
+                                        />
+                                    </div>
+                                )}
+
+                                <div className="flex-1">
+                                    <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
+                                        {blog.title}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 mt-1">
+                                        {blog.category}
+                                    </p>
+
+
+                                </div>
+                            </div>
+
+
+                            {/* Actions */}
+                            <div className="flex items-center justify-between pt-2">
+                                {/* Status + Date */}
+                                <div className="flex items-center justify-between mt-3">
+                                    <span
+                                        onClick={() => togglePublish(blog.id, blog.status)}
+                                        className={`px-3 py-1 rounded-lg text-[12px] font-medium cursor-pointer ${blog.status === "published"
+                                            ? "bg-green-100 text-green-800"
+                                            : "bg-yellow-100 text-yellow-800"
+                                            }`}
+                                    >
+                                        {blog.status.charAt(0).toUpperCase() + blog.status.slice(1)}
+                                    </span>
+
+                                </div>
+                                <div className="flex items-center gap-2">
+
+                                    <button
+                                        onClick={() => openModal(blog)}
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
+                                    >
+                                        <Edit size={16} />
+                                    </button>
+
+                                    <button
+                                        onClick={() => deleteBlog(blog.id)}
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* Desktop Table */}
+            <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                        <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
+                            <tr>
+                                <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider">#</th>
+                                <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Blog Title</th>
+                                <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Category</th>
+                                <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Status</th>
+                                <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Date</th>
+                                <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+
                         <tbody className="divide-y divide-slate-100">
-                        {loading ? (
-                            <tr>
-                                <td colSpan={4} className="px-6 py-12 text-center">
-                                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
-                                </td>
-                            </tr>
-                        ) : filteredBlogs.length === 0 ? (
-                            <tr>
-                                <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
-                                    No blogs found.
-                                </td>
-                            </tr>
-                        ) : (
-                            filteredBlogs.map((blog, index) => (
-                                <tr key={blog.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-3 py-4 text-sm font-medium text-gray-400">
-                                        {index + 1}
+                            {loading ? (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-12 text-center">
+                                        <Loader2 className="w-8 h-8 animate-spin mx-auto text-blue-500" />
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-3">
-                                            {blog.image && (
-                                                <div className="w-15 h-15 relative rounded overflow-hidden ">
-                                                    <Image
-                                                        src={blog.image}
-                                                        alt=""
-                                                        fill
-                                                        className="object-cover"
-                                                        unoptimized
-                                                    />
-                                                </div>
-                                            )}
-                                            <div className="max-w-xs ">
-                                                <div className="font-sm text-sm text-gray-900 ">{blog.title}</div>
-                                            </div>
-                                        </div>
+                                </tr>
+                            ) : filteredBlogs.length === 0 ? (
+                                <tr>
+                                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                                        No blogs found.
                                     </td>
+                                </tr>
+                            ) : (
+                                filteredBlogs.map((blog, index) => (
+                                    <tr key={blog.id} className="hover:bg-gray-50 transition-colors">
 
-                                    <td className="px-6 py-4">
-                                        <span className="text-sm font-medium text-gray-600">
+                                        <td className="px-6 py-4  text-sm text-slate-400 font-mono">
+                                            {index + 1}
+                                        </td>
+
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                {blog.image && (
+                                                    <div className="w-14 h-14 relative rounded overflow-hidden">
+                                                        <Image
+                                                            src={blog.image}
+                                                            alt={blog.title}
+                                                            fill
+                                                            className="object-cover"
+                                                            unoptimized
+                                                        />
+                                                    </div>
+                                                )}
+                                                <div className="font-sm text-sm text-gray-900 max-w-xs">
+                                                    {blog.title}
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td className="px-6 py-4 text-sm text-gray-600">
                                             {blog.category}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center gap-2">
+                                        </td>
+
+                                        <td className="px-6 py-4">
                                             <span
                                                 onClick={() => togglePublish(blog.id, blog.status)}
-                                                className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${blog.status === "published"
-                                                    ? "bg-green-100 text-green-800 "
+                                                className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer transition-all ${blog.status === "published"
+                                                    ? "bg-green-100 text-green-800"
                                                     : "bg-yellow-100 text-yellow-800"
                                                     }`}
-                                                title={blog.status === "published" ? "Click to Unpublish" : "Click to Publish"}
                                             >
                                                 {blog.status.charAt(0).toUpperCase() + blog.status.slice(1)}
                                             </span>
+                                        </td>
 
+                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                            <div className="flex items-center gap-1">
+                                                <Calendar className="w-3.5 h-3.5" />
+                                                {new Date(blog.created_at).toLocaleDateString()}
+                                            </div>
+                                        </td>
 
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 text-sm text-gray-500">
-                                        <div className="flex items-center gap-1">
-                                            <Calendar className="w-3.5 h-3.5" />
-                                            {new Date(blog.created_at).toLocaleDateString()}
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 ">
-                                        <div className="flex gap-2">
+                                        <td className="px-6 py-4">
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => openModal(blog)}
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#eff6ff] text-sky-600 hover:bg-[#dbeafe]"
+                                                >
+                                                    <Edit size={18} />
+                                                </button>
 
-                                            <button
-                                                onClick={() => openModal(blog)}
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-[#083574] text-sky-600 bg-[#eff6ff]  hover:bg-[#dbeafe] cursor-pointer transition-all"
-                                            >
-                                                <Edit size={18} />
-                                            </button>
-                                            <button onClick={() => deleteBlog(blog.id)}
-                                                className="w-8 h-8 flex items-center justify-center rounded-lg border-0 text-[#ef4444] bg-[#fef2f2] hover:bg-[#fee2e2] cursor-pointer transition-all"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-
+                                                <button
+                                                    onClick={() => deleteBlog(blog.id)}
+                                                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#fef2f2] text-red-500 hover:bg-[#fee2e2]"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
             {/* Proper Blog Form Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
                     <div className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-slate-700">
-                                {editingBlog ? "Edit Blog" : "Create New Blog"}
+                                {editingBlog ? "Edit Blog" : "Add Blog"}
                             </h3>
                             <button
                                 onClick={() => setIsModalOpen(false)}
@@ -458,50 +559,37 @@ export default function AdminBlogsPage() {
                         </div>
 
                         <div className="space-y-5">
-                            <div className="grid gap-4 md:grid-cols-2">
 
-                                <div className="flex flex-col gap-1.5">
-                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Title *</label>
-                                    <input
-                                        type="text"
-                                        value={formData.title}
-                                        onChange={handleTitleChange}
-                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
-                                        placeholder="Blog title..."
-                                    />
-                                </div>
 
-                                <div className="flex flex-col gap-1.5">
-                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Category </label>
-                                    <select
-                                        value={formData.category}
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
-                                    >
-                                        <option value="Water Quality">Water Quality</option>
-                                        <option value="Health">Health</option>
-                                        <option value="Maintenance">Maintenance</option>
-                                        <option value="Water Purification">Water Purification</option>
-                                        <option value="RO Systems & Maintenance">RO Systems & Maintenance</option>
-                                        <option value="Domestic Filters">Domestic Filters</option>
-                                        <option value="Industrial Water Treatment">Industrial Water Treatment</option>
-                                        <option value="Water Softeners">Water Softeners</option>
-                                        <option value="Kangen Water">Kangen Water</option>
-                                        <option value="Gas Geysers">Gas Geysers</option>
-                                        <option value="RO + Water Coolers">RO + Water Coolers</option>
-                                        <option value="AMC Services">AMC Services</option>
-                                        <option value="Product Guides">Product Guides</option>
-                                        <option value="Water Quality & Health">Water Quality & Health</option>
-                                        <option value="Installation & Maintenance">Installation & Maintenance</option>
-                                        <option value="Customer Stories">Customer Stories</option>
-                                        <option value="Industry News">Industry News</option>
-                                    </select>
-                                </div>
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Title *</label>
+                                <input
+                                    type="text"
+                                    value={formData.title}
+                                    onChange={handleTitleChange}
+                                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
+                                    placeholder="Blog title..."
+                                />
                             </div>
+
+
+
+                            <div className="flex flex-col gap-1.5">
+                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Excerpt</label>
+                                <textarea
+                                    value={formData.summary}
+                                    onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                                    rows={9}
+                                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all "
+                                    placeholder="Short summary for list pages..."
+                                />
+                            </div>
+
+
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div className="flex flex-col gap-1.5">
                                     <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
-                                        Featured Image
+                                        Featured Image *
                                     </label>
 
                                     <label className="relative w-85 h-50 border-2 border-dashed border-sky-300 rounded-xl overflow-hidden cursor-pointer hover:border-sky-500 transition-all">
@@ -546,20 +634,32 @@ export default function AdminBlogsPage() {
                                         />
                                     </label>
                                 </div>
-
-
                                 <div className="flex flex-col gap-1.5">
-                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Excerpt</label>
-                                    <textarea
-                                        value={formData.summary}
-                                        onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                                        rows={9}
-                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all "
-                                        placeholder="Short summary for list pages..."
-                                    />
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Category </label>
+                                    <select
+                                        value={formData.category}
+                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
+                                    >
+                                        <option value="Water Quality">Water Quality</option>
+                                        <option value="Health">Health</option>
+                                        <option value="Maintenance">Maintenance</option>
+                                        <option value="Water Purification">Water Purification</option>
+                                        <option value="RO Systems & Maintenance">RO Systems & Maintenance</option>
+                                        <option value="Domestic Filters">Domestic Filters</option>
+                                        <option value="Industrial Water Treatment">Industrial Water Treatment</option>
+                                        <option value="Water Softeners">Water Softeners</option>
+                                        <option value="Kangen Water">Kangen Water</option>
+                                        <option value="Gas Geysers">Gas Geysers</option>
+                                        <option value="RO + Water Coolers">RO + Water Coolers</option>
+                                        <option value="AMC Services">AMC Services</option>
+                                        <option value="Product Guides">Product Guides</option>
+                                        <option value="Water Quality & Health">Water Quality & Health</option>
+                                        <option value="Installation & Maintenance">Installation & Maintenance</option>
+                                        <option value="Customer Stories">Customer Stories</option>
+                                        <option value="Industry News">Industry News</option>
+                                    </select>
                                 </div>
-
-
                             </div>
 
                             <div className="flex flex-col gap-1.5">
@@ -571,21 +671,43 @@ export default function AdminBlogsPage() {
                                             onClick={() => editor?.chain().focus().toggleBold().run()}
                                             className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('bold') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
                                         >
-                                            <Bold size={14} className="inline mr-1" /> Bold
+                                            <Bold size={14} className="inline mr-1" />
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => editor?.chain().focus().toggleItalic().run()}
                                             className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('italic') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
                                         >
-                                            <Italic size={14} className="inline mr-1" /> Italic
+                                            <Italic size={14} className="inline mr-1" />
                                         </button>
                                         <button
                                             type="button"
                                             onClick={() => editor?.chain().focus().toggleUnderline().run()}
                                             className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('underline') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
                                         >
-                                            <UnderlineIcon size={14} className="inline mr-1" /> Underline
+                                            <UnderlineIcon size={14} className="inline mr-1" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                                            className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('bulletList') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
+                                        >
+                                            <List size={14} className="inline mr-1" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+                                            className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('orderedList') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
+                                        >
+                                            <ListOrdered size={14} className="inline mr-1" />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={addLink}
+                                            className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('link') ? 'border-sky-600 bg-sky-600 text-white hover:bg-sky-700' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'}`}
+                                        >
+                                            <Link size={14} className="inline mr-1" />
                                         </button>
 
                                         <button
@@ -594,7 +716,49 @@ export default function AdminBlogsPage() {
                                             className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
                                             title="Insert Image"
                                         >
-                                            <ImageIcon size={14} className="inline mr-1" /> Image
+                                            <ImageIcon size={14} className="inline mr-1" />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                editor?.chain().focus().toggleHeading({ level: 1 }).run()
+                                            }
+                                            className={`rounded-xl border px-3 py-2 text-xs font-semibold transition ${editor?.isActive('heading', { level: 1 })
+                                                    ? 'border-sky-600 bg-sky-600 text-white'
+                                                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
+                                                }`}
+                                        >
+                                            H1
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().setTextAlign('left').run()}
+                                            className="rounded-xl border px-3 py-2 text-xs font-semibold border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+                                        >
+                                            <AlignLeft size={16} />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().setTextAlign('center').run()}
+                                            className="rounded-xl border px-3 py-2 text-xs font-semibold border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+                                        >
+                                            <AlignCenter size={16} />
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().setTextAlign('right').run()}
+                                            className="rounded-xl border px-3 py-2 text-xs font-semibold border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+                                        >
+                                            <AlignRight size={16} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => editor?.chain().focus().setTextAlign('justify').run()}
+                                            className="rounded-xl border px-3 py-2 text-xs font-semibold border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+                                        >
+                                            <AlignJustify size={16} />
                                         </button>
                                     </div>
                                     <div className="rounded-xl border border-gray-200 bg-white">
@@ -613,7 +777,7 @@ export default function AdminBlogsPage() {
                                     className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
                                 >
                                     {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
-                                    {editingBlog ? "Update Post" : "Save Article"}
+                                    {editingBlog ? "Update Blog" : "Save Blog"}
                                 </button>
                             </div>
                         </div>

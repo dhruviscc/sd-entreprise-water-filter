@@ -335,53 +335,218 @@ export default function AdminProductPage() {
                 </div>
             </div>
 
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-4">
+                {filteredProducts.map((product, index) => {
+                    const defaultVariant =
+                        product.product_variants?.find((v) => v.is_default) ||
+                        product.product_variants?.[0];
 
-            <>
+                    const firstImage = defaultVariant?.images?.[0];
+
+                    return (
+                        <div
+                            key={product.id}
+                            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                        >
+                            <div className="flex gap-4">
+                                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                                    {firstImage ? (
+                                        <Image
+                                            src={firstImage}
+                                            alt={product.name}
+                                            fill
+                                            className="object-cover"
+                                            unoptimized
+                                        />
+                                    ) : (
+                                        <div className="flex h-full w-full items-center justify-center">
+                                            <ImageIcon className="h-5 w-5 text-slate-400" />
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold text-slate-800 truncate">
+                                        {product.name}
+                                    </h3>
+
+                                    <p className="text-xs text-slate-500">
+                                        {categories.find(
+                                            (c) => c.id === product.category_id
+                                        )?.name || "Uncategorized"}
+                                    </p>
+
+                                    <div className="mt-3 flex items-center justify-between">
+
+                                        <span className="text-sm font-medium">
+                                            {product.product_variants?.length || 0} Variants
+                                        </span>
+                                    </div>
 
 
+                                </div>
+                            </div>
 
-                <div className="overflow-hidden rounded-[16px] border border-slate-200 bg-white shadow-sm overflow-x-auto">
-                    <table className="w-full border-collapse">
-                        <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
+                            <div className="flex items-center justify-between pt-2">
+                                <div className="mt-3">
+                                    <button
+                                        onClick={() => toggleProduct(product)}
+                                        className={`rounded-lg px-3 py-1 text-xs font-medium ${product.is_active
+                                            ? "bg-green-100 text-green-700"
+                                            : "bg-red-100 text-red-700"
+                                            }`}
+                                    >
+                                        {product.is_active ? "Enabled" : "Disabled"}
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-2">
+
+                                    <button
+                                        onClick={() => setDetailProduct(product)}
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 transition"
+                                    >
+                                        <Eye size={16} className="mx-auto" />
+                                    </button>
+
+                                    <button
+                                        onClick={() => openProductModal(product)}
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
+                                    >
+                                        <Edit size={16} className="mx-auto" />
+                                    </button>
+
+                                    <button
+                                        onClick={() =>
+                                            product.id &&
+                                            deleteItem(product.id, "product", product.name)
+                                        }
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition"
+                                    >
+                                        <Trash2 size={16} className="mx-auto" />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+
+            {/* Desktop Table */}
+            <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                {/* Desktop Table */}
+                <div className="overflow-x-auto">
+                    <table className="w-full">
+                        <thead className="bg-slate-50 border-b border-slate-200">
                             <tr>
-
-                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">#</th>
-                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Image</th>
-                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Product</th>
-                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Variants</th>
-                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Status</th>
-                                <th scope="col" className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600  uppercase tracking-wider whitespace-nowrap">Actions</th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-sky-600">
+                                    #
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-sky-600">
+                                    Image
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-sky-600">
+                                    Product
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-sky-600">
+                                    Variants
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-sky-600">
+                                    Status
+                                </th>
+                                <th className="px-4 py-3 text-left text-xs font-semibold uppercase text-sky-600">
+                                    Actions
+                                </th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+
+                        <tbody>
                             {filteredProducts.map((product, index) => {
-                                const defaultVariant = product.product_variants?.find((variant) => variant.is_default) || product.product_variants?.[0];
+                                const defaultVariant =
+                                    product.product_variants?.find((v) => v.is_default) ||
+                                    product.product_variants?.[0];
+
                                 const firstImage = defaultVariant?.images?.[0];
+
                                 return (
-                                    <tr key={product.id} className="hover:bg-[#f1f5f9] transition-colors">
-                                        <td className="px-4 py-4 text-sm text-slate-400">{index + 1}</td>
+                                    <tr
+                                        key={product.id}
+                                        className="border-b border-slate-100 hover:bg-slate-50 transition"
+                                    >
+                                        <td className="px-6 py-4 text-sm text-slate-400 font-mono">
+                                            {index + 1}
+                                        </td>
+
                                         <td className="px-4 py-4">
-                                            <div className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-100 shadow-inner">
-                                                {firstImage ? <Image src={firstImage} alt={product.name} fill className="object-cover" unoptimized /> : <ImageIcon className="h-5 w-5 text-slate-400" />}
+                                            <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-slate-100">
+                                                {firstImage ? (
+                                                    <Image
+                                                        src={firstImage}
+                                                        alt={product.name}
+                                                        fill
+                                                        className="object-cover"
+                                                        unoptimized
+                                                    />
+                                                ) : (
+                                                    <div className="flex h-full w-full items-center justify-center">
+                                                        <ImageIcon className="h-5 w-5 text-slate-400" />
+                                                    </div>
+                                                )}
                                             </div>
                                         </td>
+
                                         <td className="px-4 py-4">
-                                            <div className="text-sm font-bold text-[#1e293b]">{product.name}</div>
-                                            <div className="max-w-[280px] truncate text-[11px] text-slate-500 uppercase font-sm tracking-wide">
-                                                {categories.find(c => c.id === product.category_id)?.name || 'Uncategorized'}
-                                            </div>
+                                            <h4 className="text-sm font-bold text-slate-800">
+                                                {product.name}
+                                            </h4>
+                                            <p className="text-xs text-slate-500">
+                                                {categories.find(
+                                                    (c) => c.id === product.category_id
+                                                )?.name || "Uncategorized"}
+                                            </p>
                                         </td>
-                                        <td className="px-4 py-4 text-sm text-slate-600">{product.product_variants?.length || 0}</td>
+
                                         <td className="px-4 py-4">
-                                            <button onClick={() => toggleProduct(product)} className={`px-3 py-[5px] rounded-lg text-[12px] font-medium cursor-pointer border border-transparent transition-all ${product.is_active ? 'bg-[#dcfce7] text-[#166534]' : 'bg-[#fee2e2] text-[#991b1b]'}`}>
-                                                {product.is_active ?? true ? "Enabled" : "Disabled"}
+                                            {product.product_variants?.length || 0}
+                                        </td>
+
+                                        <td className="px-4 py-4">
+                                            <button
+                                                onClick={() => toggleProduct(product)}
+                                                className={`rounded-lg px-3 py-1 text-xs font-medium ${product.is_active
+                                                    ? "bg-green-100 text-green-700"
+                                                    : "bg-red-100 text-red-700"
+                                                    }`}
+                                            >
+                                                {product.is_active ? "Enabled" : "Disabled"}
                                             </button>
                                         </td>
+
                                         <td className="px-4 py-4">
                                             <div className="flex gap-2">
-                                                <button onClick={() => setDetailProduct(product)} title="View" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#f8fafc] text-slate-700 hover:bg-[#e2e8f0] transition-all"><Eye size={16} /></button>
-                                                <button onClick={() => openProductModal(product)} title="Edit" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#eff6ff] text-sky-600 hover:bg-[#dbeafe] transition-all"><Edit size={16} /></button>
-                                                <button onClick={() => product.id && deleteItem(product.id, "product", product.name)} title="Delete" className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#fef2f2] text-red-500 hover:bg-[#fee2e2] transition-all"><Trash2 size={16} /></button>
+                                                <button
+                                                    onClick={() => setDetailProduct(product)}
+                                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 hover:bg-slate-200"
+                                                >
+                                                    <Eye size={16} />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => openProductModal(product)}
+                                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200"
+                                                >
+                                                    <Edit size={16} />
+                                                </button>
+
+                                                <button
+                                                    onClick={() =>
+                                                        product.id &&
+                                                        deleteItem(product.id, "product", product.name)
+                                                    }
+                                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-100 text-red-600 hover:bg-red-200"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -390,7 +555,9 @@ export default function AdminProductPage() {
                         </tbody>
                     </table>
                 </div>
-            </>
+
+
+            </div>
 
 
             {isModalOpen && (
@@ -533,17 +700,17 @@ export default function AdminProductPage() {
                                         <div className="flex">
                                             <label
                                                 className="
-      w-25 h-25
-      border-2 border-dashed border-sky-300
-      rounded-2xl
-      bg-slate-100
-      flex flex-col items-center justify-center
-      gap-3
-      cursor-pointer
-      transition-all duration-200
-      hover:border-sky-500
-      hover:bg-sky-50
-    "
+                                                      w-25 h-25
+                                                      border-2 border-dashed border-sky-300
+                                                      rounded-2xl
+                                                      bg-slate-100
+                                                      flex flex-col items-center justify-center
+                                                      gap-3
+                                                      cursor-pointer
+                                                      transition-all duration-200
+                                                      hover:border-sky-500
+                                                      hover:bg-sky-50
+                                                    "
                                             >
                                                 {uploadingKey.startsWith(`${index}-`) ? (
                                                     <Loader2 size={24} className="animate-spin text-sky-600" />

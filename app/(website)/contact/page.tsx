@@ -83,16 +83,9 @@ export default function ContactUsPage() {
 
 
 
-      <section className="relative w-full bg-sky-100 py-16 lg:py-24 overflow-hidden">
+      <section className="relative w-full bg-white py-16 lg:py-24 overflow-hidden">
 
-        {/* Top Wave (White to Sky-50) */}
-        <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 rotate-180 transform -translate-y-1">
-          <svg className="relative block w-[200%] max-w-none h-[25px] sm:h-[45px] animate-[waveAnimation_30s_linear_infinite]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 120" preserveAspectRatio="none">
-            <path d="M0,60 C37.5,120 112.5,0 150,60 C187.5,120 262.5,0 300,60 C337.5,120 412.5,0 450,60 C487.5,120 562.5,0 600,60 C637.5,120 712.5,0 750,60 C787.5,120 862.5,0 900,60 C937.5,120 1012.5,0 1050,60 C1087.5,120 1162.5,0 1200,60 C1237.5,120 1312.5,0 1350,60 C1387.5,120 1462.5,0 1500,60 C1537.5,120 1612.5,0 1650,60 C1687.5,120 1762.5,0 1800,60 C1837.5,120 1912.5,0 1950,60 C1987.5,120 2062.5,0 2100,60 C2137.5,120 2212.5,0 2250,60 C2287.5,120 2362.5,0 2400,60 L2400,120 L0,120 Z" className="fill-white"></path>
-          </svg>
-        </div>
-
-
+      
         {/* Main Container */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -325,25 +318,11 @@ export default function ContactUsPage() {
 
         </div>
 
-        {/* Bottom Wave */}
-        <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-10">
-          <svg
-            className="block w-[200%] max-w-none h-[40px] sm:h-[60px]"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 2400 120"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0,60 C37.5,120 112.5,0 150,60 C187.5,120 262.5,0 300,60 C337.5,120 412.5,0 450,60 C487.5,120 562.5,0 600,60 C637.5,120 712.5,0 750,60 C787.5,120 862.5,0 900,60 C937.5,120 1012.5,0 1050,60 C1087.5,120 1162.5,0 1200,60 C1237.5,120 1312.5,0 1350,60 C1387.5,120 1462.5,0 1500,60 C1537.5,120 1612.5,0 1650,60 C1687.5,120 1762.5,0 1800,60 C1837.5,120 1912.5,0 1950,60 C1987.5,120 2062.5,0 2100,60 C2137.5,120 2212.5,0 2250,60 C2287.5,120 2362.5,0 2400,60 L2400,120 L0,120 Z"
-              className="fill-white"
-            />
-          </svg>
-        </div>
-
+       
       </section>
 
       {/* Google Maps embed */}
-      <section className="max-w-7xl mx-auto p-20 sm:px-6 lg:px-8 space-y-4 ">
+      <section className="max-w-7xl mx-auto p-5 sm:px-6 lg:px-8 space-y-4 ">
         <ScrollReveal variant="fadeInUp" duration={800}>
           <h3 className="text-base font-bold text-slate-800 uppercase tracking-wider">
             Our Geographic Location (Ahmedabad, Gujarat)

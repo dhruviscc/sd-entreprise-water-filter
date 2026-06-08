@@ -35,7 +35,7 @@ export default function BlogDetailPage() {
         if (postRes.ok) {
           setPost(postData);
 
-          
+
           const relatedRes = await fetch("/admin/api/blog?active=true");
           const allBlogs = await relatedRes.json();
           if (Array.isArray(allBlogs)) {
@@ -50,55 +50,6 @@ export default function BlogDetailPage() {
     };
     if (id) fetchData();
   }, [id]);
-
-  const renderedContent = useMemo(() => {
-    if (!post?.content) return null;
-
-    return post.content.split("\n\n").map((block: string, idx: number) => {
-      if (block.startsWith("### ")) {
-        return (
-          <h3 key={idx} className="text-lg sm:text-xl font-bold text-slate-800 mt-6 mb-3 tracking-wide">
-            {block.replace("### ", "")}
-          </h3>
-        );
-      }
-      if (block.startsWith("## ")) {
-        return (
-          <h2 key={idx} className="text-xl sm:text-2xl font-black text-slate-800 mt-8 mb-4 tracking-wide pb-1.5 border-b border-slate-100">
-            {block.replace("## ", "")}
-          </h2>
-        );
-      }
-      if (block.startsWith("- ")) {
-        const listItems = block.split("\n").map((item: string, itemIdx: number) => {
-          const rawItem = item.replace("- ", "");
-          const isBold = rawItem.includes("**");
-
-          if (isBold) {
-            const parts = rawItem.split("**");
-            return (
-              <li key={itemIdx} className="ml-5 list-disc mb-1.5 text-sm sm:text-base text-slate-600">
-                <strong className="text-slate-800">{parts[1]}</strong>
-                {parts[2]}
-              </li>
-            );
-          }
-          return (
-            <li key={itemIdx} className="ml-5 list-disc mb-1.5 text-sm sm:text-base text-slate-600">
-              {rawItem}
-            </li>
-          );
-        });
-        return <ul key={idx} className="space-y-1.5 my-4">{listItems}</ul>;
-      }
-
-      return (
-        <p key={idx} className="text-sm sm:text-base text-slate-600 leading-relaxed mb-4">
-          {block}
-        </p>
-      );
-    });
-  }, [post]);
 
   if (loading) {
     return (
@@ -123,7 +74,7 @@ export default function BlogDetailPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 overflow-hidden">
+    <div className="max-w-7xl mx-auto px-4  sm:px-6 lg:px-8 space-y-10 overflow-hidden">
       {/* Breadcrumb and Back link */}
       <div className="flex items-center gap-3  animate-in fade-in duration-500 pt-16 ">
 
@@ -160,7 +111,7 @@ export default function BlogDetailPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 pb-10 items-start">
 
         {/* Left Column: Full Blog Content */}
         <div className="lg:col-span-2">
@@ -207,20 +158,9 @@ export default function BlogDetailPage() {
                 />
               </div>
 
-              {/* Author info */}
-              <div className="flex items-center gap-3 border-y border-slate-100 py-3.5">
-                <div className="w-9 h-9 rounded-full bg-sky-100 flex items-center justify-center text-sky-600 font-extrabold text-sm border border-sky-200">
-                  <User className="w-4 h-4" />
-                </div>
-                <div>
-                  <span className="block text-xs text-slate-400 uppercase font-semibold">Written by</span>
-
-                </div>
-              </div>
-
+        
               {/* Rendered post paragraphs */}
-              <div className="prose prose-slate max-w-none pt-2">
-                {renderedContent}
+              <div className="prose prose-slate max-w-none pt-2" dangerouslySetInnerHTML={{ __html: post.content }}>
               </div>
 
             </article>

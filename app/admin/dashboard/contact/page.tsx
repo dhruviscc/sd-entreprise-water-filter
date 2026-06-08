@@ -11,7 +11,7 @@ import {
     Eye,
     X,
     Loader2,
-   
+
     Download,
     ExternalLink,
     User,
@@ -203,11 +203,103 @@ export default function EnquiryPage() {
                 </div>
             </div>
 
-            {/* Table Section */}
+            {/* ================= MOBILE CARDS ================= */}
+            <div className="md:hidden space-y-4">
+                {loading ? (
+                    <div className="flex flex-col items-center py-10">
+                        <Loader2 className="w-8 h-8 animate-spin text-sky-600" />
+                        <p className="text-sm text-slate-500 mt-2">Loading enquiries...</p>
+                    </div>
+                ) : filteredEnquiries.length === 0 ? (
+                    <p className="text-center text-slate-500 py-10">No enquiries found.</p>
+                ) : (
+                    filteredEnquiries.map((enquiry) => (
+                        <div
+                            key={enquiry.id}
+                            className="border border-slate-200 rounded-xl p-4 bg-white shadow-sm space-y-3"
+                        >
+                            {/* HEADER */}
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-black uppercase tracking-wider ${(enquiry as any).source === 'Product Enquiry'
+                                        ? ' bg-purple-50 text-purple-600 '
+                                        : ' bg-sky-50 text-sky-800 '
+                                        }`}>
+                                        {(enquiry as any).source || 'Lead'}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-[10px] text-slate-500 font-medium">
+                                    <Calendar size={10} />
+                                    {new Date(enquiry.created_at).toLocaleDateString()}
+                                </div>
+                            </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+                            {/* CUSTOMER INFO */}
+                            <div>
+                                <h3 className="text-sm font-bold text-slate-800">
+                                    {enquiry.full_name}
+                                </h3>
+                                <div className="flex   gap-3 mt-2">
+                                    <a href={`tel:${enquiry.mobile_number}`} className="flex items-center gap-2 text-xs text-slate-600">
+                                        <Phone size={12} className="text-slate-400" /> {enquiry.mobile_number}
+                                    </a>
+                                    {enquiry.email_address && (
+                                        <div className="flex items-center gap-2 text-xs text-slate-600">
+                                            <Mail size={12} className="text-slate-400" /> {enquiry.email_address}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
 
+                            {/* INTEREST */}
+                            <div className="pt-2 border-t border-slate-50">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Interest</p>
+                                <span className="text-xs font-bold text-sky-700">
+                                    {enquiry.service_interest}
+                                </span>
+                            </div>
 
+                            {/* ACTIONS & STATUS */}
+                            <div className="flex items-center justify-between pt-2">
+                                <select
+                                    value={enquiry.status}
+                                    onChange={(e) => handleUpdateStatus(enquiry.id, e.target.value as any)}
+                                    disabled={isUpdatingStatus}
+                                    className={`px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer outline-none transition-all ${getStatusStyles(enquiry.status)}`}
+                                >
+                                    <option value="new">New</option>
+                                    <option value="contacted">Contacted</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => {
+                                            setSelectedEnquiry(enquiry);
+                                            setIsDetailsModalOpen(true);
+                                        }}
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-slate-50 text-slate-600 hover:bg-slate-100 transition"
+                                    >
+                                        <Eye size={16} />
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setEnquiryToDelete(enquiry.id);
+                                            setIsDeleteModalOpen(true);
+                                        }}
+                                        className="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+
+            {/* ================= DESKTOP TABLE ================= */}
+            <div className="hidden md:block bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
                 <table className="w-full border-collapse">
                     <thead className="bg-[#f8fafc] border-b border-[#e2e8f0]">
                         <tr>
@@ -333,9 +425,7 @@ export default function EnquiryPage() {
                         )}
                     </tbody>
                 </table>
-
             </div>
-
             {/* Details Modal */}
             {isDetailsModalOpen && selectedEnquiry && (
                 <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[4px] animate-in fade-in duration-200">
@@ -451,8 +541,8 @@ export default function EnquiryPage() {
                             </div>
                         </div>
 
-                    
-                     
+
+
                     </div>
                 </div>
             )}

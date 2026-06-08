@@ -128,7 +128,7 @@ export default function BlogListingPage() {
       </section>
 
       {/* Listing Grid */}
-      <section className="w-full mx-auto relative px-4 sm:px-6 lg:px-8">
+      <section className="w-full mx-auto relative px-4 sm:px-6 lg:px-8 ">
         {/* Decorative background vectors */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
 
