@@ -74,7 +74,7 @@ export default function Footer() {
             <h4 className="text-white text-base font-bold tracking-wider relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-sky-500">
               Quick Navigation
             </h4>
-            <ul className="space-y-3 mt-4">
+            <ul className="space-y-3 mt-4 list-none ml-0">
               {[
                 { name: 'Home', href: '/' },
                 { name: 'Services', href: '/services' },
@@ -82,7 +82,7 @@ export default function Footer() {
                 { name: 'FAQ', href: '/faq' },
                 { name: 'Blog', href: '/blog' },
                 { name: 'Contact Us', href: '/contact' },
-              ].map((link, index) => (
+              ].map((link) => (
                 <li key={link.name}>
                   <Link
                     href={link.href}
@@ -101,7 +101,7 @@ export default function Footer() {
             <h4 className="text-white text-base font-bold tracking-wider relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-sky-500">
               Get In Touch
             </h4>
-            <ul className="space-y-4 text-sm text-slate-400">
+            <ul className="space-y-4 text-sm text-slate-400 list-none ml-0">
               <li className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
                   <MapPin className="w-4 h-4 text-sky-500" />
@@ -116,7 +116,7 @@ export default function Footer() {
                   <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 group-hover:border-sky-500/30">
                     <Phone className="w-4 h-4 text-sky-500" />
                   </div>
-                  <span className="font-medium">+91 99999 99999</span>
+                  <span className="font-medium">+91 98792 16149</span>
                 </a>
               </li>
               <li>
@@ -135,7 +135,7 @@ export default function Footer() {
             <h4 className="text-white text-base font-bold tracking-wider relative pb-2 after:absolute after:bottom-0 after:left-0 after:w-12 after:h-0.5 after:bg-sky-500">
               Legal Info
             </h4>
-            <ul className="space-y-3 text-sm">
+            <ul className="space-y-3 text-sm list-none ml-0">
               <li>
                 <Link href="#" className="text-slate-400 hover:text-sky-400 transition-colors flex items-center gap-2">
                   <span className="w-1.5 h-[1px] bg-slate-600" />
@@ -149,8 +149,8 @@ export default function Footer() {
                 </Link>
               </li>
             </ul>
-            
-            
+
+
           </motion.div>
         </motion.div>
       </div>

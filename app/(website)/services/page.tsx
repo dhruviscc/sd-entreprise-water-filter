@@ -338,9 +338,7 @@ export default function ServicesPage() {
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-slate-300/50 rounded-full blur-3xl -z-0 animate-blobFloat2" />
 
               <div className="max-w-2xl mx-auto space-y-4 relative z-10">
-                <span className="px-3 py-1 rounded-full bg-sky-100 border border-sky-200 text-sky-600 text-xs font-bold uppercase tracking-wider shadow-sm animate-float-3d inline-block">
-                  Need Instant Repair?
-                </span>
+
                 <h2 className="text-xl sm:text-2xl lg:text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-sky-700 to-blue-900">
                   Get Doorstep Service in 2 Hours
                 </h2>
@@ -353,7 +351,7 @@ export default function ServicesPage() {
                     className="flex items-center gap-2 px-6 py-3 bg-white text-slate-800 hover:bg-slate-50 text-sm font-bold rounded-lg shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1"
                   >
                     <PhoneCall className="w-4 h-4 text-slate-600" />
-                    <span>Call: +91 99999 99999</span>
+                    <span>Call: +91 98792 16149</span>
                   </a>
                   <button
                     onClick={() => openEnquiry("Emergency RO Service", "service")}

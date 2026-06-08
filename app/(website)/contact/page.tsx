@@ -118,7 +118,7 @@ export default function ContactUsPage() {
                           Call Support
                         </p>
                         <p className="font-bold text-slate-800 text-sm">
-                          +91 99999 99999
+                          +91 98792 16149
                         </p>
                       </div>
                     </a>

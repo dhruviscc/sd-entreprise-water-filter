@@ -7,8 +7,6 @@ import { Search, Clock, ArrowRight, BookOpen, X, Droplets, Cylinder, Loader2 } f
 import Link from "next/link";
 import Image from "next/image";
 
-const categories = ["All Topics", "Health", "Water Quality", "Maintenance"];
-
 export default function BlogListingPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Topics");
@@ -30,6 +28,18 @@ export default function BlogListingPage() {
     fetchBlogs();
   }, []);
 
+  // Dynamically generate categories from fetched blogs
+  const blogCategories = useMemo(() => {
+    const uniqueCategories = new Set<string>();
+    blogs.forEach(blog => {
+      if (blog.category) {
+        uniqueCategories.add(blog.category);
+      }
+    });
+    // Ensure "All Topics" is always first, then sort other categories alphabetically
+    const sortedCategories = Array.from(uniqueCategories).sort();
+    return ["All Topics", ...sortedCategories];
+  }, [blogs]);
   // Filter blogs based on search term & category selection
   const filteredBlogs = useMemo(() => {
     return blogs.filter((post) => {
@@ -87,7 +97,7 @@ export default function BlogListingPage() {
           <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
             {/* Category Pills */}
             <div className="flex flex-wrap gap-2 w-full md:w-auto">
-              {categories.map((cat) => {
+              {blogCategories.map((cat) => {
                 const isSelected = selectedCategory === cat;
                 return (
                   <button

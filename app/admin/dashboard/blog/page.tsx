@@ -694,6 +694,7 @@ export default function AdminBlogsPage() {
                                         </div>
 
                                         <div className="flex gap-1 px-1 border-r border-slate-300">
+                                          
                                             <button type="button" onClick={() => editor?.chain().focus().setTextAlign('left').run()}
                                                 className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'left' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignLeft size={18} /></button>
                                             <button type="button" onClick={() => editor?.chain().focus().setTextAlign('center').run()}
