@@ -1,5 +1,57 @@
 @import "tailwindcss";
 
+
+@layer base {
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  h5 {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+
+  h6 {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+@layer base {
+  ul {
+    list-style-type: disc;
+    margin-left: 1.25em; /* Indent for bullets */
+    padding-left: 0;
+  }
+
+  ol {
+    list-style-type: decimal;
+    margin-left: 1.5em; /* Indent for numbers */
+    padding-left: 0;
+  }
+
+  li {
+    margin-bottom: 0.5em; /* Spacing between list items */
+  }
+}
+
+
 @layer components {
   .input {
     width: 100%;
@@ -21,9 +73,11 @@
 }
 
 :root {
-  --background: #ffffff; /* clean water themed background */
- /* clean water themed background */
-  --foreground: #334155; /* slate-700 for text */
+  --background: #ffffff;
+  /* clean water themed background */
+  /* clean water themed background */
+  --foreground: #334155;
+  /* slate-700 for text */
 }
 
 @theme inline {
@@ -36,7 +90,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family:Verdana, Geneva, Tahoma, sans-serif;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
   overflow-x: hidden;
 }
 
@@ -49,13 +103,16 @@ body {
 ::-webkit-scrollbar {
   width: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: #f0f9ff;
 }
+
 ::-webkit-scrollbar-thumb {
   background: #bae6fd;
   border-radius: 4px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: #7dd3fc;
 }
@@ -66,6 +123,7 @@ body {
     opacity: 0;
     transform: translateY(28px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -77,6 +135,7 @@ body {
     opacity: 0;
     transform: scale(0.96);
   }
+
   100% {
     opacity: 1;
     transform: scale(1);
@@ -93,9 +152,12 @@ body {
 
 
 @keyframes float3d {
-  0%,100% {
+
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
+
   50% {
     transform: translateY(-20px) rotate(6deg);
   }
@@ -124,6 +186,7 @@ body {
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
@@ -154,22 +217,57 @@ body {
 
 /* Background Blob Animations */
 @keyframes blobFloat1 {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33% { transform: translate(40px, -60px) scale(1.1) rotate(5deg); }
-  66% { transform: translate(-30px, 30px) scale(0.9) rotate(-5deg); }
-  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(40px, -60px) scale(1.1) rotate(5deg);
+  }
+
+  66% {
+    transform: translate(-30px, 30px) scale(0.9) rotate(-5deg);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
 }
+
 @keyframes blobFloat2 {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33% { transform: translate(-40px, 60px) scale(1.15) rotate(-5deg); }
-  66% { transform: translate(30px, -30px) scale(0.85) rotate(5deg); }
-  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(-40px, 60px) scale(1.15) rotate(-5deg);
+  }
+
+  66% {
+    transform: translate(30px, -30px) scale(0.85) rotate(5deg);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
 }
+
 @keyframes blobFloat3 {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33% { transform: translate(60px, 30px) scale(0.9) rotate(5deg); }
-  66% { transform: translate(-40px, -40px) scale(1.1) rotate(-5deg); }
-  100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  0% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+
+  33% {
+    transform: translate(60px, 30px) scale(0.9) rotate(5deg);
+  }
+
+  66% {
+    transform: translate(-40px, -40px) scale(1.1) rotate(-5deg);
+  }
+
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
 }
 
 /* 3D Glassmorphism Utilities */
@@ -178,7 +276,7 @@ body {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 
+  box-shadow:
     0 8px 32px 0 rgba(31, 38, 135, 0.05),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
     inset 0 -1px 0 0 rgba(255, 255, 255, 0.2);
@@ -187,7 +285,7 @@ body {
 }
 
 .glass-3d:hover {
-  box-shadow: 
+  box-shadow:
     0 15px 35px 0 rgba(31, 38, 135, 0.1),
     inset 0 1px 0 0 rgba(255, 255, 255, 1),
     inset 0 -1px 0 0 rgba(255, 255, 255, 0.3);
@@ -215,17 +313,34 @@ body {
 }
 
 @keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Float Animation for 3D elements */
 @keyframes float-3d {
-  0% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
-  50% { transform: translateY(-10px) rotateX(5deg) rotateY(5deg); }
-  100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg); }
+  0% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+  }
+
+  100% {
+    transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+  }
 }
+
 .animate-float-3d {
   animation: float-3d 6s ease-in-out infinite;
 }
@@ -236,15 +351,19 @@ body {
     transform: translateY(0) translateX(0) scale(0.3);
     opacity: 0;
   }
+
   5% {
     opacity: 1;
   }
+
   50% {
     transform: translateY(-50vh) translateX(var(--wobble, 40px)) scale(0.8);
   }
+
   85% {
     opacity: 1;
   }
+
   100% {
     transform: translateY(-120vh) translateX(calc(var(--wobble, 40px) * -0.5)) scale(1);
     opacity: 0;
@@ -252,17 +371,20 @@ body {
 }
 
 @keyframes bubbleShimmer {
-  0%, 100% {
-    box-shadow: 
-      inset -2px -3px 6px rgba(255,255,255,0.5),
-      inset 2px 2px 6px rgba(14,165,233,0.08),
-      0 0 8px rgba(14,165,233,0.06);
+
+  0%,
+  100% {
+    box-shadow:
+      inset -2px -3px 6px rgba(255, 255, 255, 0.5),
+      inset 2px 2px 6px rgba(14, 165, 233, 0.08),
+      0 0 8px rgba(14, 165, 233, 0.06);
   }
+
   50% {
-    box-shadow: 
-      inset -3px -4px 8px rgba(255,255,255,0.7),
-      inset 3px 3px 8px rgba(14,165,233,0.12),
-      0 0 14px rgba(14,165,233,0.1);
+    box-shadow:
+      inset -3px -4px 8px rgba(255, 255, 255, 0.7),
+      inset 3px 3px 8px rgba(14, 165, 233, 0.12),
+      0 0 14px rgba(14, 165, 233, 0.1);
   }
 }
 
@@ -270,15 +392,13 @@ body {
   position: absolute;
   bottom: -60px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 30% 30%,
-    rgba(255, 255, 255, 0.7) 0%,
-    rgba(186, 230, 253, 0.4) 30%,
-    rgba(56, 189, 248, 0.2) 70%,
-    rgba(14, 165, 233, 0.1) 100%
-  );
+  background: radial-gradient(circle at 30% 30%,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(186, 230, 253, 0.4) 30%,
+      rgba(56, 189, 248, 0.2) 70%,
+      rgba(14, 165, 233, 0.1) 100%);
   border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 
+  box-shadow:
     inset -2px -2px 6px rgba(14, 165, 233, 0.15),
     inset 2px 2px 6px rgba(255, 255, 255, 0.5),
     0 0 6px rgba(14, 165, 233, 0.1);
@@ -300,15 +420,13 @@ body {
 }
 
 .bubble-large {
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgba(255, 255, 255, 0.6) 0%,
-    rgba(186, 230, 253, 0.3) 30%,
-    rgba(56, 189, 248, 0.15) 70%,
-    rgba(14, 165, 233, 0.05) 100%
-  );
+  background: radial-gradient(circle at 35% 35%,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(186, 230, 253, 0.3) 30%,
+      rgba(56, 189, 248, 0.15) 70%,
+      rgba(14, 165, 233, 0.05) 100%);
   border: 1px solid rgba(255, 255, 255, 0.4);
-  box-shadow: 
+  box-shadow:
     inset -4px -4px 10px rgba(14, 165, 233, 0.1),
     inset 4px 4px 10px rgba(255, 255, 255, 0.4),
     0 0 10px rgba(14, 165, 233, 0.08);

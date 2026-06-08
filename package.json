@@ -11,6 +11,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.106.2",
     "@tiptap/extension-bullet-list": "^2.27.2",
+    "@tiptap/extension-heading": "^2.27.2",
     "@tiptap/extension-list-item": "^2.27.2",
     "@tiptap/extension-ordered-list": "^2.27.2",
     "@tiptap/extension-placeholder": "^2.27.2",
@@ -34,7 +35,7 @@
     "@tailwindcss/postcss": "^4",
     "@tiptap/extension-image": "^2.0.0-beta.44",
     "@tiptap/extension-link": "^2.0.0-beta.56",
-    "@tiptap/react": "^2.0.0-beta.220",
+    "@tiptap/react": "^2.27.2",
     "@tiptap/starter-kit": "^2.0.0-beta.162",
     "@types/node": "^20",
     "@types/react": "^19",
