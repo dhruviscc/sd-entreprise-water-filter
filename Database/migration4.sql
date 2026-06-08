@@ -1,9 +1,9 @@
 -- ==========================================
--- BLOG POSTS TABLE SETUP (Migration 4)
+-- BLOGS TABLE SETUP (Migration 4)
 -- ==========================================
 
--- 1. CREATE BLOG_POSTS TABLE
-CREATE TABLE IF NOT EXISTS public.blog_posts (
+-- 1. CREATE BLOGS TABLE
+CREATE TABLE IF NOT EXISTS public.blogs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT NOT NULL,
     slug TEXT NOT NULL UNIQUE,
@@ -20,18 +20,18 @@ CREATE TABLE IF NOT EXISTS public.blog_posts (
 );
 
 -- 2. ENABLE RLS
-ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.blogs ENABLE ROW LEVEL SECURITY;
 
 -- 3. RLS POLICIES
 
 -- Allow public to see only published blogs
-DROP POLICY IF EXISTS "Blogs are viewable by everyone" ON public.blog_posts;
-CREATE POLICY "Blogs are viewable by everyone" ON public.blog_posts 
+DROP POLICY IF EXISTS "Blogs are viewable by everyone" ON public.blogs;
+CREATE POLICY "Blogs are viewable by everyone" ON public.blogs 
     FOR SELECT USING (status = 'published');
 
 -- Allow authenticated admins full access (using the profiles table from Migration 1)
-DROP POLICY IF EXISTS "Admins have full access to blogs" ON public.blog_posts;
-CREATE POLICY "Admins have full access to blogs" ON public.blog_posts 
+DROP POLICY IF EXISTS "Admins have full access to blogs" ON public.blogs;
+CREATE POLICY "Admins have full access to blogs" ON public.blogs 
     FOR ALL TO authenticated 
     USING (
         EXISTS (
@@ -48,16 +48,16 @@ CREATE POLICY "Admins have full access to blogs" ON public.blog_posts
 
 -- 4. UPDATE UPDATED_AT TRIGGER
 -- Uses the function created in Migration 2
-DROP TRIGGER IF EXISTS update_blog_posts_updated_at ON public.blog_posts;
-CREATE TRIGGER update_blog_posts_updated_at
-    BEFORE UPDATE ON public.blog_posts
+DROP TRIGGER IF EXISTS update_blogs_updated_at ON public.blogs;
+CREATE TRIGGER update_blogs_updated_at
+    BEFORE UPDATE ON public.blogs
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 -- 5. INDEXING FOR PERFORMANCE
-CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON public.blog_posts(slug);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_status ON public.blog_posts(status);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_author ON public.blog_posts(author_id);
-CREATE INDEX IF NOT EXISTS idx_blog_posts_created_at ON public.blog_posts(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_blogs_slug ON public.blogs(slug);
+CREATE INDEX IF NOT EXISTS idx_blogs_status ON public.blogs(status);
+CREATE INDEX IF NOT EXISTS idx_blogs_author ON public.blogs(author_id);
+CREATE INDEX IF NOT EXISTS idx_blogs_created_at ON public.blogs(created_at DESC);
 
 -- 6. RELOAD SCHEMA
 NOTIFY pgrst, 'reload schema';
@@ -99,4 +99,3 @@ CREATE POLICY "Admin Full Access Blogs" ON storage.objects
             WHERE profiles.id = auth.uid() AND profiles.role = 'admin'
         )
     );
-

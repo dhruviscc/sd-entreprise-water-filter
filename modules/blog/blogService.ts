@@ -34,11 +34,11 @@ export const blogService = {
 
   async getAll(onlyActive = false) {
     let query = supabase
-      .from('blog_posts')
+      .from('blogs')
       .select("*");
 
     if (onlyActive) {
-     
+
       query = query.eq("status", "published").order("published_at", { ascending: false });
     } else {
       query = query.order("created_at", { ascending: false });
@@ -51,7 +51,7 @@ export const blogService = {
 
   async getById(id: string) {
     const { data, error } = await supabase
-      .from('blog_posts')
+      .from("blogs")
       .select("*")
       .eq("id", id)
       .single();
@@ -62,7 +62,7 @@ export const blogService = {
 
   async create(blog: BlogPost) {
     const { data, error } = await supabase
-      .from('blog_posts')
+      .from('blogs')
       .insert([normalizePost(blog)])
       .select()
       .single();
@@ -77,7 +77,7 @@ export const blogService = {
     } as Partial<BlogPost>;
 
     const { data, error } = await supabase
-      .from("blog_posts")
+      .from("blogs")
       .update(payload)
       .eq("id", id)
       .select()
@@ -88,7 +88,7 @@ export const blogService = {
   },
 
   async delete(id: string) {
-    const { error } = await supabase.from("blog_posts").delete().eq("id", id);
+    const { error } = await supabase.from("blogs").delete().eq("id", id);
     if (error) throw error;
     return true;
   },

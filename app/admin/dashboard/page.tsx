@@ -17,7 +17,7 @@ import Link from 'next/link';
 
 interface DashboardStats {
     productsCount: number;
-    blogCount: number;
+    blogsCount: number;
     enquiriesCount: number;
     reviewsCount: number;
 }
@@ -54,10 +54,11 @@ export default function DashboardPage() {
 
     const statCards = [
         { label: 'Total Products', value: stats?.productsCount || 0, icon: Package, color: 'text-blue-600', bg: 'bg-blue-50', link: '/admin/dashboard/product' },
-        { label: 'Total Blogs', value: stats?.blogCount || 0, icon: BookOpen, color: 'text-purple-600', bg: 'bg-purple-50', link: '/admin/dashboard/blog' },
+        { label: 'Total Blogs', value: stats?.blogsCount || 0, icon: BookOpen, color: 'text-purple-600', bg: 'bg-purple-50', link: '/admin/dashboard/blog' },
         { label: 'Total Contact', value: stats?.enquiriesCount || 0, icon: MessageSquare, color: 'text-amber-600', bg: 'bg-amber-50', link: '/admin/dashboard/contact' },
         { label: 'Total Reviews', value: stats?.reviewsCount || 0, icon: Star, color: 'text-rose-600', bg: 'bg-rose-50', link: '/admin/dashboard/review' },
     ];
+        console.log(stats?.blogsCount)
 
     if (loading) {
         return (
