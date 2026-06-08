@@ -626,11 +626,11 @@ export default function AdminReviewPage() {
 
       {/* Delete Modal */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center z-[110] p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-8 text-center animate-in zoom-in-95 duration-200">
-            <div className="w-16 h-16 bg-red-50 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle size={32} />
-            </div>
+         <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
+          <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 text-center">
+            <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                                <Trash2 size={30} />
+                            </div>
             <h3 className="text-xl font-bold text-slate-900 mb-2">Delete Review?</h3>
             <p className="text-slate-500 text-sm mb-6">
               Are you sure you want to remove this review? This action cannot be undone.
@@ -640,7 +640,7 @@ export default function AdminReviewPage() {
                 onClick={() => setIsDeleteModalOpen(false)}
                 disabled={isDeleting}
                 className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
-                Cancel
+                No, Keep it
               </button>
               <button
                 onClick={confirmDelete}

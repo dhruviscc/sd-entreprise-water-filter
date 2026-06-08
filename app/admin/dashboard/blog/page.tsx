@@ -694,7 +694,7 @@ export default function AdminBlogsPage() {
                                         </div>
 
                                         <div className="flex gap-1 px-1 border-r border-slate-300">
-                                          
+
                                             <button type="button" onClick={() => editor?.chain().focus().setTextAlign('left').run()}
                                                 className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'left' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignLeft size={18} /></button>
                                             <button type="button" onClick={() => editor?.chain().focus().setTextAlign('center').run()}
@@ -744,36 +744,38 @@ export default function AdminBlogsPage() {
 
             {/* Delete Confirmation Modal */}
             {isDeleteModalOpen && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1001] animate-in fade-in duration-300">
-                    <div className="bg-white p-8 rounded-2xl w-full max-w-md shadow-2xl animate-in zoom-in-95 duration-300">
-                        <div className="flex flex-col items-center text-center">
-                            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-600 mb-4">
-                                <AlertTriangle size={32} />
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
+                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 text-center">
+                        <div >
+                            <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                                <Trash2 size={30} />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Confirm Delete</h3>
+                            <h3 className="text-lg font-bold text-[#0f172a] mb-2"> Delete Blog ?</h3>
                             <p className="text-gray-500 mb-8">
                                 Are you sure you want to delete this blog post? This action cannot be undone.
                             </p>
 
-                            <div className="flex gap-3 w-full">
+                            <div className="flex gap-3 mt-6">
                                 <button
                                     onClick={() => { setIsDeleteModalOpen(false); setBlogToDelete(null); }}
                                     disabled={isDeleting}
-                                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                                >
-                                    Cancel
+                                    className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-slate-200 text-slate-800 transition-colors hover:bg-slate-50"
+>
+                                    No, Keep it
                                 </button>
-                                <button
-                                    onClick={confirmDelete}
-                                    disabled={isDeleting}
-                                    className="flex-1 py-3 px-4 rounded-xl bg-red-600 text-white font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-600/20 disabled:opacity-70 flex items-center justify-center gap-2"
-                                >
-                                    {isDeleting ? <Loader2 size={18} className="animate-spin" /> : "Delete"}
-                                </button>
-                            </div>
+                            <button
+                                onClick={confirmDelete}
+                                disabled={isDeleting}
+                                className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-red-500 text-white border-none transition-colors hover:bg-red-600"
+                            >
+                                {isDeleting ? <Loader2 size={18} className="animate-spin" /> : "Delete"}
+                            </button>
                         </div>
                     </div>
                 </div>
-            )}
-        </div>
+                </div>
+    )
+}
+        </div >
     );
 }

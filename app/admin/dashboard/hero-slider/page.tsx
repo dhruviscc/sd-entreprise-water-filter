@@ -329,7 +329,7 @@ export default function HeroSliderAdmin() {
                       {slider.title}
                     </h3>
 
-                 
+
                   </div>
                 </div>
 
@@ -691,7 +691,7 @@ export default function HeroSliderAdmin() {
                 </button>
                 <button type="submit" disabled={isSaving}
                   className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none">
-                                       
+
 
                   {isSaving ? "Saving..." : currentSlider ? "Update Slide" : "Add Slide"}
                 </button>
