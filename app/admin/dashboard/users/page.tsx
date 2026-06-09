@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 
-import { 
-    Plus, 
-    Edit, 
-    Trash2, 
-    X, 
-    Key, 
-    Eye, 
+import {
+    Plus,
+    Edit,
+    Trash2,
+    X,
+    Key,
+    Eye,
     EyeOff,
     ChevronLeft,
-    ChevronRight 
+    ChevronRight
 } from "lucide-react";
 
 import { addUser, deleteUser, getUsers, updateUser } from "@/modules/auth/userService";
@@ -25,7 +25,8 @@ export default function UsersPage() {
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [isAdmin, setIsAdmin] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false); // True if role is 'admin'
+    const [isStaff, setIsStaff] = useState(false); // True if role is 'staff'
 
     const [loggedInUser, setLoggedInUser] = useState<any>(null);
     const [currentUser, setCurrentUser] = useState<any>(null);
@@ -50,7 +51,7 @@ export default function UsersPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [mobile, setMobile] = useState("");
-    const [role, setRole] = useState("user");
+    const [role, setRole] = useState("staff");
 
     // Edit Modal State
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -83,17 +84,18 @@ export default function UsersPage() {
             const user = authData.user;
             if (!user) return;
 
-            const data = await getUsers(query);
+            const userRole = (user.user_metadata?.role || "").toLowerCase();
+            const isCurrentUserAdmin = userRole === "admin";
+            const isCurrentUserStaff = userRole === "staff";
+
+            setIsAdmin(isCurrentUserAdmin);
+            setIsStaff(isCurrentUserStaff);
+            setLoggedInUser(user);
+
+            let data = await getUsers(query);
 
             if (data && !data.error) {
-                const role = (user.user_metadata?.role || "").toLowerCase();
-                const uName = user.user_metadata?.name || user.email?.split('@')[0] || "";
-                const adminCheck = ["admin", "manager", "staff", "accountant", "inventory manager"].includes(role) || uName.toLowerCase() === "admin";
-
-                setIsAdmin(adminCheck);
-                setLoggedInUser(user);
-
-                if (adminCheck) {
+                if (isCurrentUserAdmin) {
                     setUsers(data);
                 } else {
                     const filtered = data.filter((u: any) => u.id === user.id || u.email === user.email);
@@ -148,8 +150,8 @@ export default function UsersPage() {
     };
 
     // Open Delete Modal
-    const openDeleteModal = (user: any) => {
-        if (user.role === "admin" || user.name.toLowerCase() === "admin") {
+    const openDeleteModal = (user: any) => { // Only admins can delete
+        if (!isAdmin || user.role === "admin" || user.name.toLowerCase() === "admin") {
             toast.error("Cannot delete admin users directly.");
             return;
         }
@@ -176,6 +178,9 @@ export default function UsersPage() {
 
     // Toggle Status
     const handleToggleStatus = async (id: string, current: string) => {
+        if (!isAdmin) {
+            return; // Only admins can toggle status
+        }
         const newStatus = current === "active" ? "inactive" : "active";
         try {
             await updateUser(id, { status: newStatus });
@@ -189,17 +194,23 @@ export default function UsersPage() {
 
     // Open Edit Modal
     const openEditModal = (user: any) => {
+        if (!isAdmin && !(isStaff && user.id === loggedInUser?.id)) {
+            return; // Staff can only edit their own profile
+        }
         setEditingUser(user);
         setEditName(user.name);
         setEditEmail(user.email);
         setEditMobile(user.mobile || "");
-        setEditRole(user.role || "user");
+        setEditRole(user.role || "staff");
         setEditStatus(user.status || "active");
         setIsEditModalOpen(true);
     };
 
     // Update User
     const handleUpdateUser = async () => {
+        if (!isAdmin && !(isStaff && editingUser.id === loggedInUser?.id)) {
+            return; // Staff can only update their own profile
+        }
         if (!editName.trim() || !editingUser) return;
 
         try {
@@ -249,12 +260,13 @@ export default function UsersPage() {
 
                 <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-3">
 
-                    <button
+                    {isAdmin && <button // Only admin can add users
                         onClick={() => setIsAddModalOpen(true)}
                         className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all active:scale-95"
                     >
                         <Plus size={18} /> <span>Add User</span>
                     </button>
+                    }
                 </div>
             </div>
 
@@ -327,7 +339,7 @@ export default function UsersPage() {
 
                                         {/* STATUS */}
                                         <td className="px-4 py-4">
-                                            <button
+                                            {(isAdmin || (isStaff && user.id === loggedInUser?.id)) && <button // Staff can see/toggle their own status
                                                 onClick={() =>
                                                     isAdmin && handleToggleStatus(user.id, user.status)
                                                 }
@@ -338,13 +350,14 @@ export default function UsersPage() {
                                             >
                                                 {user.status === "active" ? "Active" : "Inactive"}
                                             </button>
+                                            }
                                         </td>
 
                                         {/* ACTIONS */}
                                         <td className="px-4 py-4">
                                             <div className="flex gap-2">
 
-                                                <button
+                                                {isAdmin && <button
                                                     onClick={() => {
                                                         setResetUser(user);
                                                         setResetPassword("");
@@ -354,7 +367,7 @@ export default function UsersPage() {
                                                     className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 hover:bg-slate-200"
                                                 >
                                                     <Key size={16} />
-                                                </button>
+                                                </button>}
 
                                                 <button
                                                     onClick={() => openEditModal(user)}
@@ -363,12 +376,12 @@ export default function UsersPage() {
                                                     <Edit size={16} />
                                                 </button>
 
-                                                <button
+                                                {isAdmin && <button
                                                     onClick={() => openDeleteModal(user)}
                                                     className="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-500"
                                                 >
                                                     <Trash2 size={16} />
-                                                </button>
+                                                </button>}
 
                                             </div>
                                         </td>
@@ -430,7 +443,7 @@ export default function UsersPage() {
                                     </button>
                                     <div className="flex items-center gap-2">
 
-                                        <button
+                                    <button
                                             onClick={() => {
                                                 setResetUser(user);
                                                 setResetPassword("");
@@ -441,20 +454,22 @@ export default function UsersPage() {
                                         >
                                             <Key size={16} />
                                         </button>
-
-                                        <button
+                                        {isAdmin && <button
                                             onClick={() => openEditModal(user)}
                                             className="w-9 h-9 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition"
                                         >
                                             <Edit size={16} />
                                         </button>
+                                        }
 
-                                        <button
-                                            onClick={() => openDeleteModal(user)}
-                                            className="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition"
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
+
+                                        {isAdmin &&
+                                            <button
+                                                onClick={() => openDeleteModal(user)}
+                                                className="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>}
                                     </div>
 
                                 </div>
@@ -492,7 +507,7 @@ export default function UsersPage() {
                             className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
                         >
                             <ChevronLeft size={16} />
-                           
+
                         </button>
 
                         <div className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-sky-600 bg-sky-50 border border-sky-100 rounded-lg shadow-sm">
@@ -504,7 +519,7 @@ export default function UsersPage() {
                             disabled={currentPage >= totalPages || totalPages === 0}
                             className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
                         >
-                           
+
                             <ChevronRight size={16} />
                         </button>
                     </div>
@@ -578,7 +593,7 @@ export default function UsersPage() {
                                 <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Role *</label>
                                 <select className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10" value={role} onChange={(e) => setRole(e.target.value)} required>
                                     <option value="admin">Admin</option>
-                                    <option value="user">User</option>
+                                    <option value="staff">Staff</option>
                                 </select>
                             </div>
 
@@ -652,7 +667,6 @@ export default function UsersPage() {
                                     <select className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10" value={editRole} onChange={(e) => setEditRole(e.target.value)}>
                                         <option value="admin">Admin</option>
                                         <option value="staff">Staff</option>
-                                        <option value="user">User</option>
                                     </select>
                                 </div>
                             </div>
@@ -759,18 +773,18 @@ export default function UsersPage() {
 
             {/* Delete Confirmation Modal */}
             {isDeleteModalOpen && (
-                  <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
                     <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 text-center">
 
-                        
-            <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-                                <Trash2 size={30} />
-                            </div>
-                            <h3 className="text-lg font-bold text-[#0f172a] mb-2">Delete User?</h3>
-                           <p className="text-slate-500 text-sm mb-6">
-                                Are you sure you want to delete <b>{userToDelete?.name}</b>? This action cannot be undone.
-                            </p>
-                     
+
+                        <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                            <Trash2 size={30} />
+                        </div>
+                        <h3 className="text-lg font-bold text-[#0f172a] mb-2">Delete User?</h3>
+                        <p className="text-slate-500 text-sm mb-6">
+                            Are you sure you want to delete <b>{userToDelete?.name}</b>? This action cannot be undone.
+                        </p>
+
                         <div className="flex gap-3 mt-6">
                             <button className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b] hover:bg-gray-50 disabled:opacity-50" onClick={() => setIsDeleteModalOpen(false)} disabled={isDeleting}>
                                 No, Keep it

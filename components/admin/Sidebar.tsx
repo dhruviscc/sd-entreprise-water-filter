@@ -66,6 +66,7 @@ export default function Sidebar({
     { id: "faq", label: "FAQ", Icon: MessageCircle, href: "/admin/dashboard/faq" },
     { id: "review", label: "Review", Icon: Star, href: "/admin/dashboard/review" },
     { id: "contact", label: "Contact", Icon: Inbox, href: "/admin/dashboard/contact" },
+    
     { id: "users", label: "Users", Icon: Users, href: "/admin/dashboard/users" },
   ];
 
