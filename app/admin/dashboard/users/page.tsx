@@ -492,7 +492,7 @@ export default function UsersPage() {
                             className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
                         >
                             <ChevronLeft size={16} />
-                            <span>Prev</span>
+                           
                         </button>
 
                         <div className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-sky-600 bg-sky-50 border border-sky-100 rounded-lg shadow-sm">
@@ -504,7 +504,7 @@ export default function UsersPage() {
                             disabled={currentPage >= totalPages || totalPages === 0}
                             className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
                         >
-                            <span>Next</span>
+                           
                             <ChevronRight size={16} />
                         </button>
                     </div>

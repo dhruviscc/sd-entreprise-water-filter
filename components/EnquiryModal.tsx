@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { X, Send, CheckCircle2 } from "lucide-react";
 import { useEnquiry } from "@/app/(website)/context/EnquiryContext";
 import { Service } from "@/app/(website)/data/mockData";
- 
+
 export default function EnquiryModal() {
   const { isOpen, interestName, closeEnquiry } = useEnquiry();
   const [formData, setFormData] = useState({
@@ -56,6 +56,13 @@ export default function EnquiryModal() {
     }
   }, [isOpen, interestName]);
 
+  // Utility function to sanitize text for display, especially in contexts like toast messages
+  const sanitizeText = (text: string) => {
+    const element = document.createElement('div');
+    element.innerText = text; // Using innerText to escape HTML
+    return element.innerHTML;
+  };
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -87,7 +94,7 @@ export default function EnquiryModal() {
       setIsSuccess(true);
       setFormData({
         fullName: "",
-        mobileNumber: "",
+        mobileNumber: "", // Reset mobile number after successful submission
         emailAddress: "",
         serviceInterest: interestName || "General Enquiry",
         message: "",
@@ -106,7 +113,12 @@ export default function EnquiryModal() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value}));
+    if (name === "mobileNumber") {
+      const numericValue = value.replace(/\D/g, ""); // Remove non-digits
+      setFormData((prev) => ({ ...prev, [name]: numericValue.slice(0, 10) })); // Limit to 10 digits
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   return (
@@ -137,8 +149,7 @@ export default function EnquiryModal() {
             <div className="flex flex-col items-center justify-center py-8 text-center animate-in fade-in duration-500">
               <CheckCircle2 className="w-16 h-16 text-emerald-500 mb-4 animate-bounce" />
               <h4 className="text-2xl font-bold text-slate-800">Thank You!</h4>
-              <p className="text-slate-600 mt-2">
-                Your enquiry for <span className="font-semibold text-sky-600">"{interestName || "General Enquiry"}"</span> has been submitted successfully.
+              <p className="text-slate-600 mt-2" dangerouslySetInnerHTML={{ __html: `Your enquiry for <span class="font-semibold text-sky-600">"${sanitizeText(interestName || "General Enquiry")}"</span> has been submitted successfully.` }}>
               </p>
               <p className="text-slate-400 text-xs mt-4">
                 We will contact you on your mobile number within 2 hours.
@@ -205,7 +216,7 @@ export default function EnquiryModal() {
                   onChange={handleChange}
                   className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 text-slate-800 text-sm bg-slate-50 hover:bg-white transition-all"
                 >
-                 
+
                   <optgroup label="Products">
                     {products.map((product) => (
                       <option key={product.id} value={product.name}>{product.name}</option>

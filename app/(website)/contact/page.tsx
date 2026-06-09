@@ -166,7 +166,7 @@ export default function ContactUsPage() {
                     </div>
 
                     {/* Address */}
-                    <div className="flex gap-4 p-2 items-center rounded-xl border border-slate-200">
+                    <div className="flex gap-4 p-2 py-3 items-center rounded-xl border border-slate-200">
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <MapPin className="w-5 h-5 text-sky-600" />
                       </div>
