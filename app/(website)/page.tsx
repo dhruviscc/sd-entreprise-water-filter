@@ -537,6 +537,7 @@ export default function HomePage() {
                           alt={banner.title}
                           fill
                           priority={index === 1}
+                          sizes="100vw"
                           className="object-cover"
                         />
                       </motion.div>
@@ -851,6 +852,7 @@ export default function HomePage() {
                           src={product.images[0]}
                           alt={product.name}
                           fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                           className="object-contain p-3 sm:p-4 object-center group-hover:scale-105 transition-transform duration-500"
                         />
                         <div className="absolute top-2 left-2 px-1.5 py-0.5 rounded glass-3d text-[8px] sm:text-[10px] font-bold text-slate-800 uppercase tracking-wider shadow-sm animate-float-3d">
@@ -1157,6 +1159,7 @@ export default function HomePage() {
                       src={post.image}
                       alt={post.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       unoptimized
                       className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
                     />

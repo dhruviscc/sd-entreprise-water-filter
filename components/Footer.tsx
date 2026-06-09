@@ -8,17 +8,6 @@ import { motion } from "framer-motion";
 
 
 export default function Footer() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.trim()) {
-      setSubscribed(true);
-      setEmail("");
-      setTimeout(() => setSubscribed(false), 5000);
-    }
-  };
 
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -33,13 +22,13 @@ export default function Footer() {
     <footer className="bg-slate-900 text-slate-300 relative  border-t border-slate-800">
 
       {/* Top Wave (White to Slate-50) */}
-      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 rotate-180 transform -translate-y-1">
+      <div className="absolute top-0 left-0 w-full overflow-hidden leading-none z-10 rotate-180 transform -translate-y-1 pointer-events-none">
         <svg className="relative block w-[300%] max-w-none h-[25px] sm:h-[35px] animate-[waveAnimation_30s_linear_infinite]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 120" preserveAspectRatio="none">
           <path d="M0,60 C37.5,120 112.5,0 150,60 C187.5,120 262.5,0 300,60 C337.5,120 412.5,0 450,60 C487.5,120 562.5,0 600,60 C637.5,120 712.5,0 750,60 C787.5,120 862.5,0 900,60 C937.5,120 1012.5,0 1050,60 C1087.5,120 1162.5,0 1200,60 C1237.5,120 1312.5,0 1350,60 C1387.5,120 1462.5,0 1500,60 C1537.5,120 1612.5,0 1650,60 C1687.5,120 1762.5,0 1800,60 C1837.5,120 1912.5,0 1950,60 C1987.5,120 2062.5,0 2100,60 C2137.5,120 2212.5,0 2250,60 C2287.5,120 2362.5,0 2400,60 L2400,120 L0,120 Z" className="fill-white"></path>
         </svg>
       </div>
       {/* Upper Footer section */}
-      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="relative z-20 max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 sm:gap-10"
           initial="hidden"
@@ -77,7 +66,7 @@ export default function Footer() {
             <ul className="space-y-3 mt-4 list-none ml-0">
               {[
                 { name: 'Home', href: '/' },
-                { name: 'Services', href: '/services' },
+                { name: 'Services', href: 'services' },
                 { name: 'Products', href: '/products' },
                 { name: 'FAQ', href: '/faq' },
                 { name: 'Blog', href: '/blog' },
@@ -102,17 +91,24 @@ export default function Footer() {
               Get In Touch
             </h4>
             <ul className="space-y-4 text-sm text-slate-400 list-none ml-0">
-              <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700">
+            <li>
+              <a 
+                href="https://www.google.com/maps/search/?api=1&query=SD+Enterprise+Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 hover:text-sky-400 transition-all group"
+              >
+                <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 group-hover:border-sky-500/30">
                   <MapPin className="w-4 h-4 text-sky-500" />
                 </div>
                 <span>
                   Plot No. 12, GIDC Phase 3,<br />
                   Naroda, Ahmedabad, Gujarat - 382330
                 </span>
+              </a>
               </li>
               <li>
-                <a href="tel:+919999999999" className="flex items-center gap-3 hover:text-sky-400 transition-all group">
+              <a href="tel:+919879216149" className="flex items-center gap-3 hover:text-sky-400 transition-all group">
                   <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 group-hover:border-sky-500/30">
                     <Phone className="w-4 h-4 text-sky-500" />
                   </div>

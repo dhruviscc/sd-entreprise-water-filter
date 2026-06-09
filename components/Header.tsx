@@ -52,7 +52,7 @@ export default function Header() {
     { name: "Products", path: "/products" },
     { name: "Blog", path: "/blog" },
     { name: "FAQ", path: "/faq" },
- { name: "Contact Us", path: "/contact" },
+    { name: "Contact Us", path: "/contact" },
   ];
 
   return (
@@ -64,12 +64,12 @@ export default function Header() {
           className="fixed z-[9999] pointer-events-none"
           style={{ left: burst.x, top: burst.y }}
         >
-          {Array.from({ length: 20 }).map((_, i) => {
+          {Array.from({ length: 8 }).map((_, i) => {
             const angle = (i * 30 * Math.PI) / 180;
             const distance = Math.random() * 30 + 30; // 30px to 60px distance
             const tx = Math.cos(angle) * distance;
             const ty = Math.sin(angle) * distance;
-            const size = 30; // Increased size for bubbles
+            const size = Math.random() * 15 + 5;
             const colors = ["#38bdf8", "#0284c7", "#bae6fd", "#ffffff"];
             const color = colors[Math.floor(Math.random() * colors.length)];
 
@@ -97,7 +97,7 @@ export default function Header() {
           : "py-5 bg-sky-80/100"
           }`}
       >
-      
+
         {/* HEADER CONTENT */}
         <div className="relative z-20 max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">

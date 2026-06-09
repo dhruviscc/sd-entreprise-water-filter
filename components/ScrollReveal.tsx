@@ -68,6 +68,7 @@ export default function ScrollReveal({
     transitionDuration: `${duration}ms`,
     transitionDelay: `${delay}ms`,
     transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)", // Premium smooth cubic easeOut
+    willChange: "transform, opacity",
   };
 
   return (

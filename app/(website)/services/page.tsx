@@ -241,6 +241,7 @@ export default function ServicesPage() {
                           src={selectedService.image}
                           alt={selectedService.name}
                           fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
                           className="object-cover object-center"
                         />
                       </div>
