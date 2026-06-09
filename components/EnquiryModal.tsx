@@ -182,7 +182,7 @@ export default function EnquiryModal() {
                     name="mobileNumber"
                     required
                     pattern="[0-9]{10}"
-                    min={10}
+                    maxLength={10}
                     placeholder="10-digit mobile number"
                     value={formData.mobileNumber}
                     onChange={handleChange}

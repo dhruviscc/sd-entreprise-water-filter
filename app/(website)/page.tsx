@@ -1311,6 +1311,7 @@ export default function HomePage() {
                           type="tel"
                           required
                           pattern="[0-9]{10}"
+                          maxLength={10}
                           placeholder="10 digit number"
                           value={contactForm.mobileNumber}
                           onChange={(e) => setContactForm({ ...contactForm, mobileNumber: e.target.value })}
