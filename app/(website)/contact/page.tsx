@@ -61,7 +61,12 @@ export default function ContactUsPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === "mobileNumber") {
+      const numericValue = value.replace(/\D/g, ""); // Remove non-digits
+      setFormData((prev) => ({ ...prev, [name]: numericValue.slice(0, 10) })); // Limit to 10 digits
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   return (
@@ -242,6 +247,7 @@ export default function ContactUsPage() {
                             name="mobileNumber"
                             required
                             pattern="[0-9]{10}"
+                            maxLength={10}
                             placeholder="10 digit number"
                             value={formData.mobileNumber}
                             onChange={handleChange}
