@@ -385,9 +385,9 @@ export default function AdminProductPage() {
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                    <h3 className="font-semibold text-slate-800 truncate">
+                                    <p className="font-semibold text-slate-800 truncate">
                                         {product.name}
-                                    </h3>
+                                    </p>
 
                                     <p className="text-xs text-slate-500">
                                         {categories.find(
@@ -452,7 +452,7 @@ export default function AdminProductPage() {
 
             {/* Desktop Table */}
             <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                {/* Desktop Table */}
+             
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead className="bg-slate-50 border-b border-slate-200">
