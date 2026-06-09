@@ -58,6 +58,15 @@ const iconMap: Record<string, React.ComponentType<any>> = {
   Search: Search,
 };
 
+const getYoutubeEmbedUrl = (url: string) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11
+    ? `https://www.youtube.com/embed/${match[2]}`
+    : null;
+};
+
 // Type for hero banner data
 interface HeroBanner {
   image: string;
@@ -1028,22 +1037,35 @@ export default function HomePage() {
                     style={{ width: `${100 / itemsVisible}%` }}
                   >
                     <div className="group rounded-2xl p-4">
-                      <div className="relative rounded-xl overflow-hidden shadow-md w-full h-[450px]">
-                        <video
-                          src={review.video_url}
-                          className="absolute inset-0 w-full h-full object-cover"
-                          muted
-                          loop
-                          playsInline
-                          autoPlay
-                        />
+                      <div className="relative rounded-xl overflow-hidden shadow-md w-full h-[450px] bg-slate-900">
+                        {review.video_url && getYoutubeEmbedUrl(review.video_url) ? (
+                          <iframe
+                            src={getYoutubeEmbedUrl(review.video_url)!}
+                            className="absolute inset-0 w-full h-full"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            title={review.name || "Video Review"}
+                          />
+                        ) : (
+                          <video
+                            src={review.video_url}
+                            className="absolute inset-0 w-full h-full object-cover"
+                            muted
+                            loop
+                            playsInline
+                            autoPlay
+                          />
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
               </motion.div>
 
-              {videoReviews.length > itemsVisible && (
+            </div>
+          )}
+
+              {videoReviews.length  && (
                 <div className="flex justify-center md:justify-end gap-3 mt-6">
                   <button
                     onClick={handlePrev}
@@ -1062,9 +1084,6 @@ export default function HomePage() {
                   </button>
                 </div>
               )}
-            </div>
-          )}
-
         </div>
 
       </section>
