@@ -59,12 +59,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       </div>
 
       {logoutDialogOpen && (
-        <div className="fixed inset-0 z-[1200] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[1200] flex items-center justify-center">
           <div
             className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
             onClick={() => setLogoutDialogOpen(false)}
           />
-          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl">
+          <div className="relative w-full max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white p-4 shadow-2xl">
             <div className="space-y-4 text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600">
                 <LogOut size={28} />

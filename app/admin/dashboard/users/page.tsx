@@ -285,7 +285,8 @@ export default function UsersPage() {
                                 <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase">Mobile</th>
                                 <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase">Role</th>
                                 <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase">Status</th>
-                                <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase">Action</th>
+                                {isAdmin &&
+                                    <th className="px-4 py-[14px] text-left text-[12px] font-semibold text-sky-600 uppercase">Action</th>}
                             </tr>
                         </thead>
 
@@ -369,12 +370,13 @@ export default function UsersPage() {
                                                     <Key size={16} />
                                                 </button>}
 
-                                                <button
+                                                {isAdmin && <button
                                                     onClick={() => openEditModal(user)}
                                                     className="w-8 h-8 flex items-center justify-center rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-600"
                                                 >
                                                     <Edit size={16} />
                                                 </button>
+                                                }
 
                                                 {isAdmin && <button
                                                     onClick={() => openDeleteModal(user)}
@@ -443,7 +445,7 @@ export default function UsersPage() {
                                     </button>
                                     <div className="flex items-center gap-2">
 
-                                    <button
+                                        <button
                                             onClick={() => {
                                                 setResetUser(user);
                                                 setResetPassword("");
