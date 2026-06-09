@@ -40,7 +40,6 @@ export default function ServicesPage() {
   const [selectedServiceId, setSelectedServiceId] = useState(servicesData[0].id);
   const [expandedFaqIndex, setExpandedFaqIndex] = useState<number | null>(null);
 
-  // Auto scroll to target service if hashtag is provided in URL
   useEffect(() => {
     if (typeof window !== "undefined" && window.location.hash) {
       const id = window.location.hash.substring(1);
@@ -151,35 +150,49 @@ export default function ServicesPage() {
               <div className="space-y-3">
 
                 <ScrollReveal variant="fadeInLeft" duration={800}>
-
                   <div className="space-y-2">
                     {servicesData.map((service) => {
                       const Icon = iconMap[service.icon] || Droplets;
                       const isSelected = service.id === selectedServiceId;
+
                       return (
                         <button
                           key={service.id}
                           onClick={() => {
                             setSelectedServiceId(service.id);
                             setExpandedFaqIndex(null);
+
                             const element = document.getElementById("details-view");
                             if (element && window.innerWidth < 1024) {
                               element.scrollIntoView({ behavior: "smooth" });
                             }
                           }}
-                          className={`w-full text-left p-4 rounded-xl border transition-all flex items-center gap-4 cursor-pointer hover:scale-[1.01] ${isSelected
-                            ? "glass-3d bg-sky-50/80 text-sky-700 border-sky-300 shadow-lg font-bold"
-                            : "bg-white/50 text-slate-500 border-slate-100 hover:border-sky-200 hover:bg-sky-50/40 font-medium hover:shadow-md"
-                            }`}
+                          className={`
+  w-full text-left p-4 rounded-xl border transition-all duration-300
+  flex items-center gap-4 cursor-pointer
+
+  ${isSelected
+                              ? "bg-gradient-to-r from-sky-400 to-cyan-600 text-white shadow-xl scale-[1.02] border-transparent"
+                              : "bg-white/60 text-slate-600 border-slate-200 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700 hover:shadow-md"
+                            }
+`}
                         >
+                          {/* Icon Box */}
                           <div
-                            className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${isSelected ? "bg-sky-500 text-white shadow-md animate-float-3d" : "bg-sky-100 text-sky-400"
-                              }`}
+                            className={`
+              w-10 h-10 rounded-lg flex items-center justify-center transition-all duration-300
+              ${isSelected
+                                ? "bg-white text-sky-600 shadow-md"
+                                : "bg-sky-100 text-sky-500"
+                              }
+            `}
                           >
                             <Icon className="w-5 h-5" />
                           </div>
-                          <div>
-                            <span className="block text-sm sm:text-base leading-tight">
+
+                          {/* Text */}
+                          <div className="flex-1">
+                            <span className="block text-sm sm:text-base font-medium leading-tight">
                               {service.name}
                             </span>
                           </div>
