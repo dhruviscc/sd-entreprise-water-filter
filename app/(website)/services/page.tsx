@@ -168,8 +168,8 @@ export default function ServicesPage() {
                             }
                           }}
                           className={`
-  w-full text-left p-4 rounded-xl border transition-all duration-300
-  flex items-center gap-4 cursor-pointer
+                                 w-full text-left p-4 rounded-xl border transition-all duration-300
+                                flex items-center gap-4 cursor-pointer
 
   ${isSelected
                               ? "bg-gradient-to-r from-sky-400 to-cyan-600 text-white shadow-xl scale-[1.02] border-transparent"
