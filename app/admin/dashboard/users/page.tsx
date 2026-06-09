@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { Plus, Edit, Trash2, X, Key, Eye, EyeOff } from "lucide-react";
 
 import { addUser, deleteUser, getUsers, updateUser } from "@/modules/auth/userService";
-import { getCurrentUser } from "@/modules/auth/sessionService";
+import { supabase } from "@/lib/client";
 import { toast } from "sonner";
 
 
@@ -19,7 +18,13 @@ export default function UsersPage() {
     const [isAdmin, setIsAdmin] = useState(false);
 
     const [loggedInUser, setLoggedInUser] = useState<any>(null);
-    const router = useRouter();
+    const [currentUser, setCurrentUser] = useState<any>(null);
+
+    useEffect(() => {
+        supabase.auth.getUser().then(({ data }) => {
+            if (data.user) setCurrentUser(data.user);
+        });
+    }, []);
 
     // Add User State
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -55,25 +60,17 @@ export default function UsersPage() {
     // Fetch users
     const fetchUsers = async (query = "") => {
         setLoading(true);
-        console.log("UsersPage: Fetching users, query:", query);
         try {
-            const { user } = await getCurrentUser();
-            if (!user) {
-                router.push('/login');
-                return;
-            }
-            console.log("UsersPage: Current user:", user?.id, user?.email);
+            const { data: authData } = await supabase.auth.getUser();
+            const user = authData.user;
+            if (!user) return;
 
             const data = await getUsers(query);
-            console.log("UsersPage: Received data from getUsers:", data);
 
             if (data && !data.error) {
-                const role = (user?.role || user?.user_metadata?.role || "").toLowerCase();
-                const uName = user?.name || user?.email?.split('@')[0] || "";
-                console.log("UsersPage: Identified role:", role, "name:", uName);
-
+                const role = (user.user_metadata?.role || "").toLowerCase();
+                const uName = user.user_metadata?.name || user.email?.split('@')[0] || "";
                 const adminCheck = ["admin", "manager", "staff", "accountant", "inventory manager"].includes(role) || uName.toLowerCase() === "admin";
-                console.log("UsersPage: adminCheck result:", adminCheck);
 
                 setIsAdmin(adminCheck);
                 setLoggedInUser(user);
@@ -81,12 +78,9 @@ export default function UsersPage() {
                 if (adminCheck) {
                     setUsers(data);
                 } else {
-                    const filtered = data.filter((u: any) => u.id === user?.id || (user?.email && u.email === user?.email));
-                    console.log("UsersPage: Non-admin, filtered data:", filtered);
+                    const filtered = data.filter((u: any) => u.id === user.id || u.email === user.email);
                     setUsers(filtered);
                 }
-            } else {
-                console.log("UsersPage: data is null or has error:", data?.error);
             }
         } catch (e) {
             console.error("UsersPage: Error in fetchUsers:", e);

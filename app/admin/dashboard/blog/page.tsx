@@ -39,7 +39,7 @@ import {
     AlignJustify,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { getCurrentUser } from '@/modules/auth/sessionService';
+import { supabase } from '@/lib/client';
 
 interface Blog {
     id: string;
@@ -234,8 +234,8 @@ export default function AdminBlogsPage() {
 
         setIsSaving(true);
         try {
-            const session = await getCurrentUser();
-            const user = session?.user;
+            const { data: sessionData } = await supabase.auth.getUser();
+            const user = sessionData?.user;
 
             const publishedAt = formData.status === 'published'
                 ? (editingBlog?.published_at || new Date().toISOString())

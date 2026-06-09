@@ -9,7 +9,6 @@ import {
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 const USER_ENDPOINT = `${SUPABASE_URL}/auth/v1/user`;
-const REFRESH_ENDPOINT = `${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`;
 
 async function fetchSupabaseUser(accessToken: string) {
   const response = await fetch(USER_ENDPOINT, {
@@ -26,23 +25,6 @@ async function fetchSupabaseUser(accessToken: string) {
   return response.json();
 }
 
-async function refreshSupabaseSession(refreshToken: string) {
-  const response = await fetch(REFRESH_ENDPOINT, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${SUPABASE_ANON_KEY || ""}`,
-      apikey: SUPABASE_ANON_KEY || "",
-    },
-    body: `refresh_token=${encodeURIComponent(refreshToken)}`,
-  });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  return response.json();
-}
 
 export async function GET(request: NextRequest) {
   const accessToken = request.cookies.get(AUTH_COOKIE_NAME)?.value;

@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.106.2",
     "@tiptap/extension-bullet-list": "^2.27.2",
     "@tiptap/extension-heading": "^2.27.2",
