@@ -165,6 +165,23 @@ export default function Sidebar({
 
         {/* ===== USER SECTION ===== */}
         <div className="border-t border-white/10 p-3">
+          {/* ===== LOGOUT BUTTON ===== */}
+          <div
+            className={`overflow-hidden transition-all pb-4 duration-300 ease-in-out ${
+              showLogout ? "max-h-24 opacity-100 mt-3" : "max-h-0 opacity-0"
+            }`}
+          >
+            <button
+              onClick={() => (onLogoutRequest ? onLogoutRequest() : undefined)}
+              className={`flex w-full items-center gap-3 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-400 transition-all duration-300 hover:bg-red-500/20 hover:text-red-300 ${
+                collapsed ? "justify-center" : ""
+              }`}
+            >
+              <LogOut size={18} className="shrink-0" />
+              {!collapsed && <span>Logout</span>}
+            </button>
+          </div>
+
           {/* PROFILE */}
           <div
             onClick={() => setShowLogout(!showLogout)}
@@ -197,22 +214,7 @@ export default function Sidebar({
             )}
           </div>
 
-          {/* ===== LOGOUT BUTTON ===== */}
-          <div
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              showLogout ? "max-h-24 opacity-100 mt-3" : "max-h-0 opacity-0"
-            }`}
-          >
-            <button
-              onClick={() => (onLogoutRequest ? onLogoutRequest() : undefined)}
-              className={`flex w-full items-center gap-3 rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm font-semibold text-red-400 transition-all duration-300 hover:bg-red-500/20 hover:text-red-300 ${
-                collapsed ? "justify-center" : ""
-              }`}
-            >
-              <LogOut size={18} className="shrink-0" />
-              {!collapsed && <span>Logout</span>}
-            </button>
-          </div>
+        
         </div>
       </aside>
     </>
