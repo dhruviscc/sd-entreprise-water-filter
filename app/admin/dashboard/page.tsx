@@ -58,7 +58,7 @@ export default function DashboardPage() {
         { label: 'Total Contact', value: stats?.enquiriesCount || 0, icon: MessageSquare, color: 'text-amber-600', bg: 'bg-amber-50', link: '/admin/dashboard/contact' },
         { label: 'Total Reviews', value: stats?.reviewsCount || 0, icon: Star, color: 'text-rose-600', bg: 'bg-rose-50', link: '/admin/dashboard/review' },
     ];
-        console.log(stats?.blogsCount)
+    console.log(stats?.blogsCount)
 
     if (loading) {
         return (

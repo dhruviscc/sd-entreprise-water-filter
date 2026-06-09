@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import {
     Check,
@@ -11,6 +11,8 @@ import {
     Plus,
     PlusCircle,
     Save,
+    ChevronLeft,
+    ChevronRight,
     Search,
     Trash2,
     Upload,
@@ -67,7 +69,6 @@ export default function AdminProductPage() {
     const [uploadingKey, setUploadingKey] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("all");
-    const [activeTab, setActiveTab] = useState<"products" | "enquiries">("products");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [formData, setFormData] = useState(emptyForm());
@@ -75,6 +76,9 @@ export default function AdminProductPage() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<{ id: string; name: string; type: string } | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
 
     async function fetchAll() {
         setLoading(true);
@@ -123,9 +127,23 @@ export default function AdminProductPage() {
         });
     }, [products, searchTerm, statusFilter]);
 
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedProducts = filteredProducts.slice(
+        startIndex,
+        startIndex + itemsPerPage
+    );
+
+    // Reset page when search term changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm]);
+
     const getCategoryIdByName = (name: string) => {
         return categories.find((category) => category.name === name)?.id || "";
     };
+
+
 
     const updateProductName = (name: string) => {
         setFormData((prev) => ({
@@ -337,7 +355,7 @@ export default function AdminProductPage() {
 
             {/* Mobile Cards */}
             <div className="md:hidden space-y-4">
-                {filteredProducts.map((product, index) => {
+                {paginatedProducts.map((product, index) => {
                     const defaultVariant =
                         product.product_variants?.find((v) => v.is_default) ||
                         product.product_variants?.[0];
@@ -461,7 +479,7 @@ export default function AdminProductPage() {
                         </thead>
 
                         <tbody>
-                            {filteredProducts.map((product, index) => {
+                            {paginatedProducts.map((product, index) => {
                                 const defaultVariant =
                                     product.product_variants?.find((v) => v.is_default) ||
                                     product.product_variants?.[0];
@@ -474,7 +492,7 @@ export default function AdminProductPage() {
                                         className="border-b border-slate-100 hover:bg-slate-50 transition"
                                     >
                                         <td className="px-6 py-4 text-sm text-slate-400 font-mono">
-                                            {index + 1}
+                                            {startIndex + index + 1}
                                         </td>
 
                                         <td className="px-4 py-4">
@@ -556,8 +574,59 @@ export default function AdminProductPage() {
                     </table>
                 </div>
 
-
             </div>
+            {/* PAGINATION CONTROLS */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between bg-slate-50  rounded-lg shrink-0">
+
+                {/* Info text */}
+                <span className="text-xs sm:text-sm text-slate-500 font-medium text-center sm:text-left">
+                    Showing{" "}
+                    <strong className="text-slate-700">
+                        {products.length === 0 ? 0 : startIndex + 1}
+                    </strong>{" "}
+                    to{" "}
+                    <strong className="text-slate-700">
+                        {Math.min(startIndex + itemsPerPage, products.length)}
+                    </strong>{" "}
+                    of{" "}
+                    <strong className="text-slate-700">
+                        {products.length}
+                    </strong>{" "}
+                    items
+                </span>
+
+                {/* Buttons */}
+                <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
+
+                    {/* Prev */}
+                    <button
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                    >
+                        <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        <span className="hidden xs:inline">Prev</span>
+                    </button>
+
+                    {/* Page indicator */}
+                    <div className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-[#3da9d4] bg-[#3da9d4]/10 border border-[#3da9d4]/20 rounded-lg shadow-sm">
+                        {currentPage} / {Math.max(1, totalPages)}
+                    </div>
+
+                    {/* Next */}
+                    <button
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage >= totalPages || totalPages === 0}
+                        className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                    >
+                        <span className="hidden xs:inline">Next</span>
+                        <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                    </button>
+
+                </div>
+            </div>
+
+
 
 
             {isModalOpen && (

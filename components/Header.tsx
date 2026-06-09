@@ -40,7 +40,7 @@ export default function Header() {
 
     setBursts((prev) => [...prev, { id, x, y }]);
 
-    // Remove burst after animation completes (600ms)
+  
     setTimeout(() => {
       setBursts((prev) => prev.filter((b) => b.id !== id));
     }, 600);

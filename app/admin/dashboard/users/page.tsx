@@ -2,7 +2,17 @@
 
 import { useEffect, useState } from "react";
 
-import { Plus, Edit, Trash2, X, Key, Eye, EyeOff } from "lucide-react";
+import { 
+    Plus, 
+    Edit, 
+    Trash2, 
+    X, 
+    Key, 
+    Eye, 
+    EyeOff,
+    ChevronLeft,
+    ChevronRight 
+} from "lucide-react";
 
 import { addUser, deleteUser, getUsers, updateUser } from "@/modules/auth/userService";
 import { supabase } from "@/lib/client";
@@ -19,6 +29,14 @@ export default function UsersPage() {
 
     const [loggedInUser, setLoggedInUser] = useState<any>(null);
     const [currentUser, setCurrentUser] = useState<any>(null);
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 10;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearch]);
 
     useEffect(() => {
         supabase.auth.getUser().then(({ data }) => {
@@ -200,6 +218,12 @@ export default function UsersPage() {
         }
     };
 
+    const totalPages = Math.ceil(users.length / pageSize);
+    const paginatedUsers = users.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+    );
+
     return (
         <div className="space-y-4 sm:space-y-6 bg-slate-50 ">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
@@ -268,7 +292,7 @@ export default function UsersPage() {
                                     </td>
                                 </tr>
                             ) : (
-                                users.map((user, index) => (
+                                paginatedUsers.map((user, index) => (
                                     <tr
                                         key={user.id}
                                         className="hover:bg-[#f1f5f9] transition-colors"
@@ -276,7 +300,7 @@ export default function UsersPage() {
 
                                         {/* INDEX */}
                                         <td className="px-4 py-4 text-sm text-slate-700">
-                                            {index + 1}
+                                            {(currentPage - 1) * pageSize + index + 1}
                                         </td>
 
                                         {/* NAME */}
@@ -367,7 +391,7 @@ export default function UsersPage() {
                             No users found. Start by adding one above.
                         </p>
                     ) : (
-                        users.map((user) => (
+                        paginatedUsers.map((user) => (
                             <div
                                 key={user.id}
                                 className="border border-slate-200 rounded-xl p-4 bg-white shadow-sm"
@@ -441,6 +465,51 @@ export default function UsersPage() {
 
                 </div>
             </div>
+
+            {/* Pagination Controls */}
+            {!loading && users.length > 0 && (
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between bg-slate-50 rounded-lg shrink-0">
+                    <span className="text-xs sm:text-sm text-slate-500 font-medium text-center sm:text-left">
+                        Showing{" "}
+                        <strong className="text-slate-700">
+                            {users.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
+                        </strong>{" "}
+                        to{" "}
+                        <strong className="text-slate-700">
+                            {Math.min(currentPage * pageSize, users.length)}
+                        </strong>{" "}
+                        of{" "}
+                        <strong className="text-slate-700">
+                            {users.length}
+                        </strong>{" "}
+                        items
+                    </span>
+
+                    <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
+                        <button
+                            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                        >
+                            <ChevronLeft size={16} />
+                            <span>Prev</span>
+                        </button>
+
+                        <div className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-sky-600 bg-sky-50 border border-sky-100 rounded-lg shadow-sm">
+                            {currentPage} / {Math.max(1, totalPages)}
+                        </div>
+
+                        <button
+                            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                            disabled={currentPage >= totalPages || totalPages === 0}
+                            className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                        >
+                            <span>Next</span>
+                            <ChevronRight size={16} />
+                        </button>
+                    </div>
+                </div>
+            )}
 
 
 

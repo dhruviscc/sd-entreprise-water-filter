@@ -9,6 +9,8 @@ import {
   Loader2,
   AlertTriangle,
   X,
+  ChevronLeft,
+  ChevronRight,
   Save,
 
 } from 'lucide-react';
@@ -43,6 +45,8 @@ export default function AdminFAQPage() {
     status: 'published',
     display_order: 0
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     fetchFaqs();
@@ -164,6 +168,19 @@ export default function AdminFAQPage() {
     faq.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredFaqs.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+
+  const paginatedFaqs = filteredFaqs.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  // Reset page when search term changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
   return (
     <div className="space-y-4 sm:space-y-6 bg-slate-50 ">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
@@ -209,7 +226,7 @@ export default function AdminFAQPage() {
           <p className="text-center text-slate-500 py-10">No FAQs found.</p>
         ) : (
 
-          filteredFaqs.map((faq, index) => (
+          paginatedFaqs.map((faq, index) => (
             <div
               key={faq.id}
               className="border border-slate-200 rounded-xl p-4 shadow-sm bg-white"
@@ -309,12 +326,12 @@ export default function AdminFAQPage() {
                   </td>
                 </tr>
               ) : (
-                filteredFaqs.map((faq, index) => (
+                paginatedFaqs.map((faq, index) => (
                   <tr key={faq.id} className="hover:bg-slate-50/50 transition-colors">
 
                     {/* INDEX */}
-                    <td className="px-6 py-4 text-center text-xs text-slate-400 font-mono">
-                      {index + 1}
+                    <td className="px-6 py-4 text-sm text-slate-400 font-mono">
+                      {startIndex + index + 1}
                     </td>
 
                     {/* FAQ DETAILS */}
@@ -378,6 +395,56 @@ export default function AdminFAQPage() {
 
 
       </div>
+
+      {/* PAGINATION CONTROLS */}
+      {!loading && filteredFaqs.length > 0 && (
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between bg-slate-50 rounded-lg shrink-0">
+          {/* Info text */}
+          <span className="text-xs sm:text-sm text-slate-500 font-medium text-center sm:text-left">
+            Showing{" "}
+            <strong className="text-slate-700">
+              {filteredFaqs.length === 0 ? 0 : startIndex + 1}
+            </strong>{" "}
+            to{" "}
+            <strong className="text-slate-700">
+              {Math.min(startIndex + itemsPerPage, filteredFaqs.length)}
+            </strong>{" "}
+            of{" "}
+            <strong className="text-slate-700">
+              {filteredFaqs.length}
+            </strong>{" "}
+            items
+          </span>
+
+          {/* Buttons */}
+          <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
+            {/* Prev */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+            >
+              <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Prev</span>
+            </button>
+
+            {/* Page indicator */}
+            <div className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-[#3da9d4] bg-[#3da9d4]/10 border border-[#3da9d4]/20 rounded-lg shadow-sm">
+              {currentPage} / {Math.max(1, totalPages)}
+            </div>
+
+            {/* Next */}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage >= totalPages || totalPages === 0}
+              className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+            >
+              <span className="hidden xs:inline">Next</span>
+              <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* FAQ Form Modal */}
       {isModalOpen && (
@@ -497,7 +564,7 @@ export default function AdminFAQPage() {
                 onClick={() => setIsDeleteModalOpen(false)}
                 disabled={isDeleting}
                 className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
-              No, Keep it
+                No, Keep it
               </button>
               <button
                 onClick={confirmDelete}

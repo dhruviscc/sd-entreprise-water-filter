@@ -11,11 +11,12 @@ import {
     Eye,
     X,
     Loader2,
-
     Download,
     ExternalLink,
     User,
-    Briefcase
+    Briefcase,
+    ChevronLeft,
+    ChevronRight
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Contact } from '@/modules/contact/contactService';
@@ -25,6 +26,13 @@ export default function EnquiryPage() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<'all' | 'new' | 'contacted' | 'closed'>('all');
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 10;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchTerm, statusFilter]);
 
     // UI States
     const [selectedEnquiry, setSelectedEnquiry] = useState<Contact | null>(null);
@@ -145,6 +153,12 @@ export default function EnquiryPage() {
         return matchesSearch && matchesStatus;
     });
 
+    const totalPages = Math.ceil(filteredEnquiries.length / pageSize);
+    const paginatedEnquiries = filteredEnquiries.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+    );
+
     const getStatusStyles = (status: string) => {
         switch (status) {
             case 'new': return 'bg-blue-50 text-blue-600 border-blue-100';
@@ -213,7 +227,7 @@ export default function EnquiryPage() {
                 ) : filteredEnquiries.length === 0 ? (
                     <p className="text-center text-slate-500 py-10">No enquiries found.</p>
                 ) : (
-                    filteredEnquiries.map((enquiry) => (
+                    paginatedEnquiries.map((enquiry) => (
                         <div
                             key={enquiry.id}
                             className="border border-slate-200 rounded-xl p-4 bg-white shadow-sm space-y-3"
@@ -322,25 +336,25 @@ export default function EnquiryPage() {
                     <tbody className="divide-y divide-slate-100">
                         {loading ? (
                             <tr>
-                                <td colSpan={6} className="px-6 py-12 text-center">
+                                <td colSpan={7} className="px-6 py-12 text-center">
                                     <Loader2 className="w-8 h-8 animate-spin mx-auto text-sky-600" />
                                     <p className="mt-2 text-sm text-slate-500">Loading enquiries...</p>
                                 </td>
                             </tr>
                         ) : filteredEnquiries.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
+                                <td colSpan={7} className="px-6 py-12 text-center text-slate-500">
                                     <div className="flex flex-col items-center gap-2">
                                         <p>No enquiries found.</p>
                                     </div>
                                 </td>
                             </tr>
                         ) : (
-                            filteredEnquiries.map((enquiry, index) => (
+                            paginatedEnquiries.map((enquiry, index) => (
                                 <tr key={enquiry.id} className="hover:bg-slate-50/50 transition-colors group">
                                     <td className=" py-4">
                                         <div className="flex items-center justify-center text-slate-400 font-mono text-xs">
-                                            {index + 1}
+                                            {(currentPage - 1) * pageSize + index + 1}
                                         </div>
                                     </td>
                                     <td>
@@ -426,6 +440,57 @@ export default function EnquiryPage() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {!loading && filteredEnquiries.length > 0 && (
+                <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between bg-slate-50 rounded-lg shrink-0">
+                    {/* Info text */}
+                    <span className="text-xs sm:text-sm text-slate-500 font-medium text-center sm:text-left">
+                        Showing{" "}
+                        <strong className="text-slate-700">
+                            {filteredEnquiries.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
+                        </strong>{" "}
+                        to{" "}
+                        <strong className="text-slate-700">
+                            {Math.min(currentPage * pageSize, filteredEnquiries.length)}
+                        </strong>{" "}
+                        of{" "}
+                        <strong className="text-slate-700">
+                            {filteredEnquiries.length}
+                        </strong>{" "}
+                        items
+                    </span>
+
+                    {/* Buttons */}
+                    <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
+                        {/* Prev */}
+                        <button
+                            onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                        >
+                            <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                            <span className="hidden xs:inline">Prev</span>
+                        </button>
+
+                        {/* Page indicator */}
+                        <div className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-[#3da9d4] bg-[#3da9d4]/10 border border-[#3da9d4]/20 rounded-lg shadow-sm">
+                            {currentPage} / {Math.max(1, totalPages)}
+                        </div>
+
+                        {/* Next */}
+                        <button
+                            onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                            disabled={currentPage >= totalPages || totalPages === 0}
+                            className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+                        >
+                            <span className="hidden xs:inline">Next</span>
+                            <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Details Modal */}
             {isDetailsModalOpen && selectedEnquiry && (
                 <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[4px] animate-in fade-in duration-200">
@@ -554,12 +619,12 @@ export default function EnquiryPage() {
                         <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
                             <Trash2 size={30} />
                         </div>
-                       
-                            <h3 className="text-xl font-black text-slate-900 tracking-tight">Delete Enquiry?</h3>
-                           <p className="text-slate-500 text-sm mb-6">
-                                This action cannot be undone. This enquiry will be permanently removed from your history.
-                            </p>
-             
+
+                        <h3 className="text-xl font-black text-slate-900 tracking-tight">Delete Enquiry?</h3>
+                        <p className="text-slate-500 text-sm mb-6">
+                            This action cannot be undone. This enquiry will be permanently removed from your history.
+                        </p>
+
                         <div className="flex gap-3">
                             <button
                                 onClick={() => setIsDeleteModalOpen(false)}

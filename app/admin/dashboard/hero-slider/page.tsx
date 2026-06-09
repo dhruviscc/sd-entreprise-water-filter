@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, Fragment } from "react";
-import { Plus, Pencil, Trash2, X, Edit, Upload, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Edit, Upload, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -15,9 +15,28 @@ export default function HeroSliderAdmin() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [sliderToDelete, setSliderToDelete] = useState<any>(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const [search, setSearch] = useState("");
   const [isUploading, setIsUploading] = useState(false);
+
+  const filteredSliders = sliders.filter(slider =>
+    slider.title?.toLowerCase().includes(search.toLowerCase()) ||
+    slider.subtitle?.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalPages = Math.ceil(filteredSliders.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+
+  const paginatedSliders = filteredSliders.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  // Reset page when search term changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   // Form state for the modal
   const [formState, setFormState] = useState({
@@ -56,7 +75,6 @@ export default function HeroSliderAdmin() {
         title: "",
         subtitle: "",
         desktopImage: "",
-
         primaryCtaText: "",
         primaryCtaLink: "",
         secondaryCtaText: "",
@@ -118,7 +136,6 @@ export default function HeroSliderAdmin() {
       title: slider.title || "",
       subtitle: slider.subtitle || "",
       desktopImage: slider.desktopImage || "",
-
       primaryCtaText: slider.primaryCtaText || "",
       primaryCtaLink: slider.primaryCtaLink || "",
       secondaryCtaText: slider.secondaryCtaText || "",
@@ -257,13 +274,6 @@ export default function HeroSliderAdmin() {
     }
   }, [currentSlider, formState, fetchSliders, sliders.length]);
 
-
-
-  const filteredSliders = sliders.filter(slider =>
-    slider.title?.toLowerCase().includes(search.toLowerCase()) ||
-    slider.subtitle?.toLowerCase().includes(search.toLowerCase())
-  );
-
   return (
     <div className="space-y-4 sm:space-y-6 bg-slate-50 ">
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
@@ -307,7 +317,7 @@ export default function HeroSliderAdmin() {
 
           {/* Mobile Cards */}
           <div className="md:hidden space-y-4">
-            {filteredSliders.map((slider) => (
+            {paginatedSliders.map((slider, index) => (
               <div
                 key={slider.id}
                 className={`bg-white border border-slate-200 rounded-2xl p-4 shadow-sm ${!slider.isActive ? "opacity-70 bg-slate-50" : ""
@@ -400,6 +410,7 @@ export default function HeroSliderAdmin() {
           </div>
 
           {/* Desktop Table */}
+
           <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -433,7 +444,7 @@ export default function HeroSliderAdmin() {
                 </thead>
 
                 <tbody className="divide-y divide-slate-100">
-                  {filteredSliders.map((slider, index) => (
+                  {paginatedSliders.map((slider, index) => (
                     <tr
                       key={slider.id}
                       className={`hover:bg-slate-50 ${!slider.isActive
@@ -442,7 +453,7 @@ export default function HeroSliderAdmin() {
                         }`}
                     >
                       <td className="px-6 py-4  text-sm text-slate-400 font-mono">
-                        {index + 1}
+                        {startIndex + index + 1}
                       </td>
 
                       <td className="px-4 py-4">
@@ -519,7 +530,61 @@ export default function HeroSliderAdmin() {
                 </tbody>
               </table>
             </div>
+
+
           </div>
+
+          {/* PAGINATION CONTROLS */}
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between bg-slate-50  rounded-lg shrink-0">
+
+            {/* Info text */}
+            <span className="text-xs sm:text-sm text-slate-500 font-medium text-center sm:text-left">
+              Showing{" "}
+              <strong className="text-slate-700">
+                {filteredSliders.length === 0 ? 0 : startIndex + 1}
+              </strong>{" "}
+              to{" "}
+              <strong className="text-slate-700">
+                {Math.min(startIndex + itemsPerPage, filteredSliders.length)}
+              </strong>{" "}
+              of{" "}
+              <strong className="text-slate-700">
+                {filteredSliders.length}
+              </strong>{" "}
+              items
+            </span>
+
+            {/* Buttons */}
+            <div className="flex items-center justify-center sm:justify-end gap-2 flex-wrap">
+
+              {/* Prev */}
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+              >
+                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden xs:inline">Prev</span>
+              </button>
+
+              {/* Page indicator */}
+              <div className="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-bold text-[#3da9d4] bg-[#3da9d4]/10 border border-[#3da9d4]/20 rounded-lg shadow-sm">
+                {currentPage} / {Math.max(1, totalPages)}
+              </div>
+
+              {/* Next */}
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage >= totalPages || totalPages === 0}
+                className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition shadow-sm"
+              >
+                <span className="hidden xs:inline">Next</span>
+                <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              </button>
+
+            </div>
+          </div>
+
         </div>
       )}
 
