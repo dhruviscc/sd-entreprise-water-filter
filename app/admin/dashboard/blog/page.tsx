@@ -9,6 +9,8 @@ import LinkExtension from '@tiptap/extension-link';
 import TiptapImage from '@tiptap/extension-image';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align'
+import { motion, AnimatePresence } from "framer-motion";
+
 
 
 import {
@@ -617,240 +619,262 @@ export default function AdminBlogsPage() {
 
 
 
-            {/* Proper Blog Form Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-xl font-bold text-slate-700">
-                                {editingBlog ? "Edit Blog" : "Add Blog"}
-                            </h3>
-                            <button
-                                onClick={() => setIsModalOpen(false)}
-                                className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
-                            >
-                                <X size={20} />
-                            </button>
-                        </div>
-
-                        <div className="space-y-5">
-
-
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Title *</label>
-                                <input
-                                    type="text"
-                                    value={formData.title}
-                                    onChange={handleTitleChange}
-                                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
-                                    placeholder="Blog title..."
-                                />
-                            </div>
-
-
-
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Excerpt</label>
-                                <textarea
-                                    value={formData.summary}
-                                    onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                                    rows={9}
-                                    className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all "
-                                    placeholder="Short summary for list pages..."
-                                />
-                            </div>
-
-
-                            <div className="grid gap-4 md:grid-cols-2">
-                                <div className="flex flex-col gap-1.5">
-                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
-                                        Featured Image *
-                                    </label>
-
-                                    <label className="relative w-85 h-50 border-2 border-dashed border-sky-300 rounded-xl overflow-hidden cursor-pointer hover:border-sky-500 transition-all">
-
-                                        {formData.image ? (
-                                            <>
-                                                <Image
-                                                    src={formData.image}
-                                                    alt="Featured Preview"
-                                                    fill
-                                                    className="object-cover"
-                                                    unoptimized
-                                                />
-
-                                                <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                    <span className="text-white text-xs font-bold">
-                                                        Change Image
-                                                    </span>
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <div className="w-full h-full flex flex-col items-center justify-center bg-sky-50">
-                                                {isUploading ? (
-                                                    <Loader2 size={24} className="animate-spin text-sky-600" />
-                                                ) : (
-                                                    <>
-                                                        <Upload size={24} className="text-sky-600 mb-2" />
-                                                        <span className="text-xs font-bold text-sky-600 text-center px-2">
-                                                            Upload Image
-                                                        </span>
-                                                    </>
-                                                )}
-                                            </div>
-                                        )}
-
-                                        <input
-                                            type="file"
-                                            className="hidden"
-                                            onChange={handleImageUpload}
-                                            accept="image/*"
-                                            disabled={isUploading}
-                                        />
-                                    </label>
-                                </div>
-                                <div className="flex flex-col gap-1.5">
-                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Category </label>
-                                    <select
-                                        value={formData.category}
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
-                                    >
-                                        <option value="Water Quality">Water Quality</option>
-                                        <option value="Health">Health</option>
-                                        <option value="Maintenance">Maintenance</option>
-                                        <option value="Water Purification">Water Purification</option>
-                                        <option value="RO Systems & Maintenance">RO Systems & Maintenance</option>
-                                        <option value="Domestic Filters">Domestic Filters</option>
-                                        <option value="Industrial Water Treatment">Industrial Water Treatment</option>
-                                        <option value="Water Softeners">Water Softeners</option>
-                                        <option value="Kangen Water">Kangen Water</option>
-                                        <option value="Gas Geysers">Gas Geysers</option>
-                                        <option value="RO + Water Coolers">RO + Water Coolers</option>
-                                        <option value="AMC Services">AMC Services</option>
-                                        <option value="Product Guides">Product Guides</option>
-                                        <option value="Water Quality & Health">Water Quality & Health</option>
-                                        <option value="Installation & Maintenance">Installation & Maintenance</option>
-                                        <option value="Customer Stories">Customer Stories</option>
-                                        <option value="Industry News">Industry News</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Content</label>
-                                <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-                                    {/* Modern Editor Toolbar */}
-                                    <div className="bg-slate-50 border-b border-slate-200 p-2 flex flex-wrap gap-1 sticky top-0 z-10 backdrop-blur-sm">
-                                        {/* Formatting Group */}
-                                        <div className="flex gap-1 pr-1 border-r border-slate-300">
-                                            <button type="button" onClick={() => editor?.chain().focus().toggleBold().run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive('bold') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Bold"><Bold size={18} /></button>
-                                            <button type="button" onClick={() => editor?.chain().focus().toggleItalic().run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive('italic') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Italic"><Italic size={18} /></button>
-                                            <button type="button" onClick={() => editor?.chain().focus().toggleUnderline().run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive('underline') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Underline"><UnderlineIcon size={18} /></button>
-                                        </div>
-
-                                        {/* Heading Group */}
-                                        <div className="flex gap-1 px-1 border-r border-slate-300">
-                                            <button type="button" onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive('bulletList') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Bullet List"><List size={18} /></button>
-                                            <button type="button" onClick={() => editor?.chain().focus().toggleOrderedList().run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive('orderedList') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Ordered List"><ListOrdered size={18} /></button>
-                                        </div>
-                                        <div className="flex gap-1 px-1 border-r border-slate-300">
-                                            {[1, 2, 3].map((level) => (
-                                                <button key={level} type="button" onClick={() => editor?.chain().focus().toggleHeading({ level: level as any }).run()}
-                                                    className={`px-3 py-1 rounded-lg font-bold text-sm transition ${editor?.isActive('heading', { level }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}>
-                                                    H{level}
-                                                </button>
-                                            ))}
-                                        </div>
-
-                                        <div className="flex gap-1 px-1 border-r border-slate-300">
-
-                                            <button type="button" onClick={() => editor?.chain().focus().setTextAlign('left').run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'left' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignLeft size={18} /></button>
-                                            <button type="button" onClick={() => editor?.chain().focus().setTextAlign('center').run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'center' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignCenter size={18} /></button>
-                                            <button type="button" onClick={() => editor?.chain().focus().setTextAlign('right').run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'right' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignRight size={18} /></button>
-                                            <button type="button" onClick={() => editor?.chain().focus().setTextAlign('justify').run()}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'justify' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignJustify size={18} /></button>
-                                        </div>
-
-                                        <div className="flex gap-1 pl-1">
-                                            <button type="button" onClick={addLink}
-                                                className={`p-2 rounded-lg transition ${editor?.isActive('link') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Add Link"><Link size={18} /></button>
-                                            <button type="button" onClick={addImageToEditor}
-                                                className="p-2 rounded-lg text-slate-600 hover:bg-slate-200 transition" title="Add Image"><ImageIcon size={18} />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Editor Area */}
-                                    <div className="bg-white">
-                                        {editor ? (
-                                            <EditorContent editor={editor} />
-                                        ) : (
-                                            <div className="min-h-[450px] flex items-center justify-center text-slate-400 italic bg-slate-50">
-                                                Initializing editor...
-                                            </div>
-                                        )}
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div className="flex gap-4 mt-8 pt-4 ">
-                                <button onClick={() => setIsModalOpen(false)} className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">Cancel</button>
-                                <button onClick={handleSave} disabled={isSaving}
-                                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
+            <AnimatePresence>
+                {isModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg"
+                        >
+                            <div className="flex justify-between items-center mb-6">
+                                <h3 className="text-xl font-bold text-slate-700">
+                                    {editingBlog ? "Edit Blog" : "Add Blog"}
+                                </h3>
+                                <button
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
                                 >
-                                    {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
-                                    {editingBlog ? "Update Blog" : "Save Blog"}
+                                    <X size={20} />
                                 </button>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+
+                            <div className="space-y-5">
+
+
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Title *</label>
+                                    <input
+                                        type="text"
+                                        value={formData.title}
+                                        onChange={handleTitleChange}
+                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
+                                        placeholder="Blog title..."
+                                    />
+                                </div>
+
+
+
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Excerpt</label>
+                                    <textarea
+                                        value={formData.summary}
+                                        onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                                        rows={9}
+                                        className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all "
+                                        placeholder="Short summary for list pages..."
+                                    />
+                                </div>
+
+
+                                <div className="grid gap-4 md:grid-cols-2">
+                                    <div className="flex flex-col gap-1.5">
+                                        <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
+                                            Featured Image *
+                                        </label>
+
+                                        <label className="relative w-85 h-50 border-2 border-dashed border-sky-300 rounded-xl overflow-hidden cursor-pointer hover:border-sky-500 transition-all">
+
+                                            {formData.image ? (
+                                                <>
+                                                    <Image
+                                                        src={formData.image}
+                                                        alt="Featured Preview"
+                                                        fill
+                                                        className="object-cover"
+                                                        unoptimized
+                                                    />
+
+                                                    <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                        <span className="text-white text-xs font-bold">
+                                                            Change Image
+                                                        </span>
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <div className="w-full h-full flex flex-col items-center justify-center bg-sky-50">
+                                                    {isUploading ? (
+                                                        <Loader2 size={24} className="animate-spin text-sky-600" />
+                                                    ) : (
+                                                        <>
+                                                            <Upload size={24} className="text-sky-600 mb-2" />
+                                                            <span className="text-xs font-bold text-sky-600 text-center px-2">
+                                                                Upload Image
+                                                            </span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            <input
+                                                type="file"
+                                                className="hidden"
+                                                onChange={handleImageUpload}
+                                                accept="image/*"
+                                                disabled={isUploading}
+                                            />
+                                        </label>
+                                    </div>
+                                    <div className="flex flex-col gap-1.5">
+                                        <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Category </label>
+                                        <select
+                                            value={formData.category}
+                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                            className="w-full px-4 py-2.5 text-sm rounded-xl border border-gray-200 focus:ring-2 focus:ring-sky-600/10 focus:border-sky-600 outline-none transition-all"
+                                        >
+                                            <option value="Water Quality">Water Quality</option>
+                                            <option value="Health">Health</option>
+                                            <option value="Maintenance">Maintenance</option>
+                                            <option value="Water Purification">Water Purification</option>
+                                            <option value="RO Systems & Maintenance">RO Systems & Maintenance</option>
+                                            <option value="Domestic Filters">Domestic Filters</option>
+                                            <option value="Industrial Water Treatment">Industrial Water Treatment</option>
+                                            <option value="Water Softeners">Water Softeners</option>
+                                            <option value="Kangen Water">Kangen Water</option>
+                                            <option value="Gas Geysers">Gas Geysers</option>
+                                            <option value="RO + Water Coolers">RO + Water Coolers</option>
+                                            <option value="AMC Services">AMC Services</option>
+                                            <option value="Product Guides">Product Guides</option>
+                                            <option value="Water Quality & Health">Water Quality & Health</option>
+                                            <option value="Installation & Maintenance">Installation & Maintenance</option>
+                                            <option value="Customer Stories">Customer Stories</option>
+                                            <option value="Industry News">Industry News</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-col gap-1.5">
+                                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Content</label>
+                                    <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                                        {/* Modern Editor Toolbar */}
+                                        <div className="bg-slate-50 border-b border-slate-200 p-2 flex flex-wrap gap-1 sticky top-0 z-10 backdrop-blur-sm">
+                                            {/* Formatting Group */}
+                                            <div className="flex gap-1 pr-1 border-r border-slate-300">
+                                                <button type="button" onClick={() => editor?.chain().focus().toggleBold().run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive('bold') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Bold"><Bold size={18} /></button>
+                                                <button type="button" onClick={() => editor?.chain().focus().toggleItalic().run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive('italic') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Italic"><Italic size={18} /></button>
+                                                <button type="button" onClick={() => editor?.chain().focus().toggleUnderline().run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive('underline') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Underline"><UnderlineIcon size={18} /></button>
+                                            </div>
+
+                                            {/* Heading Group */}
+                                            <div className="flex gap-1 px-1 border-r border-slate-300">
+                                                <button type="button" onClick={() => editor?.chain().focus().toggleBulletList().run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive('bulletList') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Bullet List"><List size={18} /></button>
+                                                <button type="button" onClick={() => editor?.chain().focus().toggleOrderedList().run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive('orderedList') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Ordered List"><ListOrdered size={18} /></button>
+                                            </div>
+                                            <div className="flex gap-1 px-1 border-r border-slate-300">
+                                                {[1, 2, 3].map((level) => (
+                                                    <button key={level} type="button" onClick={() => editor?.chain().focus().toggleHeading({ level: level as any }).run()}
+                                                        className={`px-3 py-1 rounded-lg font-bold text-sm transition ${editor?.isActive('heading', { level }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}>
+                                                        H{level}
+                                                    </button>
+                                                ))}
+                                            </div>
+
+                                            <div className="flex gap-1 px-1 border-r border-slate-300">
+
+                                                <button type="button" onClick={() => editor?.chain().focus().setTextAlign('left').run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'left' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignLeft size={18} /></button>
+                                                <button type="button" onClick={() => editor?.chain().focus().setTextAlign('center').run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'center' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignCenter size={18} /></button>
+                                                <button type="button" onClick={() => editor?.chain().focus().setTextAlign('right').run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'right' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignRight size={18} /></button>
+                                                <button type="button" onClick={() => editor?.chain().focus().setTextAlign('justify').run()}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive({ textAlign: 'justify' }) ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`}><AlignJustify size={18} /></button>
+                                            </div>
+
+                                            <div className="flex gap-1 pl-1">
+                                                <button type="button" onClick={addLink}
+                                                    className={`p-2 rounded-lg transition ${editor?.isActive('link') ? 'bg-sky-600 text-white' : 'text-slate-600 hover:bg-slate-200'}`} title="Add Link"><Link size={18} /></button>
+                                                <button type="button" onClick={addImageToEditor}
+                                                    className="p-2 rounded-lg text-slate-600 hover:bg-slate-200 transition" title="Add Image"><ImageIcon size={18} />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Editor Area */}
+                                        <div className="bg-white">
+                                            {editor ? (
+                                                <EditorContent editor={editor} />
+                                            ) : (
+                                                <div className="min-h-[450px] flex items-center justify-center text-slate-400 italic bg-slate-50">
+                                                    Initializing editor...
+                                                </div>
+                                            )}
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-4 mt-8 pt-4 ">
+                                    <button onClick={() => setIsModalOpen(false)} className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">Cancel</button>
+                                    <button onClick={handleSave} disabled={isSaving}
+                                        className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
+                                    >
+                                        {isSaving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
+                                        {editingBlog ? "Update Blog" : "Save Blog"}
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Delete Confirmation Modal */}
-            {isDeleteModalOpen && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 text-center">
-                        <div >
-                            <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-                                <Trash2 size={30} />
-                            </div>
-                            <h3 className="text-lg font-bold text-[#0f172a] mb-2"> Delete Blog ?</h3>
-                            <p className="text-gray-500 mb-8">
-                                Are you sure you want to delete this blog post? This action cannot be undone.
-                            </p>
+            <AnimatePresence>
+                {isDeleteModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg text-center"
+                        >
+                            <div >
+                                <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                                    <Trash2 size={30} />
+                                </div>
+                                <h3 className="text-lg font-bold text-[#0f172a] mb-2"> Delete Blog ?</h3>
+                                <p className="text-gray-500 mb-8">
+                                    Are you sure you want to delete this blog post? This action cannot be undone.
+                                </p>
 
-                            <div className="flex gap-3 mt-6">
-                                <button
-                                    onClick={() => { setIsDeleteModalOpen(false); setBlogToDelete(null); }}
-                                    disabled={isDeleting}
-                                    className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-slate-200 text-slate-800 transition-colors hover:bg-slate-50"
-                                >
-                                    No, Keep it
-                                </button>
-                                <button
-                                    onClick={confirmDelete}
-                                    disabled={isDeleting}
-                                    className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-red-500 text-white border-none transition-colors hover:bg-red-600"
-                                >
-                                    {isDeleting ? <Loader2 size={18} className="animate-spin" /> : "Delete"}
-                                </button>
+                                <div className="flex gap-3 mt-6">
+                                    <button
+                                        onClick={() => { setIsDeleteModalOpen(false); setBlogToDelete(null); }}
+                                        disabled={isDeleting}
+                                        className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-slate-200 text-slate-800 transition-colors hover:bg-slate-50"
+                                    >
+                                        No, Keep it
+                                    </button>
+                                    <button
+                                        onClick={confirmDelete}
+                                        disabled={isDeleting}
+                                        className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-red-500 text-white border-none transition-colors hover:bg-red-600"
+                                    >
+                                        {isDeleting ? <Loader2 size={18} className="animate-spin" /> : "Delete"}
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            )
-            }
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div >
     );
 }

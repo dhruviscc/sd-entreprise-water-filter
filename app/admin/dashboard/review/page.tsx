@@ -21,6 +21,8 @@ import {
 
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from "framer-motion";
+
 
 interface Review {
   id: string;
@@ -546,181 +548,206 @@ export default function AdminReviewPage() {
       </div>
 
       {/* Review Form Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[4px] animate-in fade-in duration-200">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-7 shadow-2xl animate-in slide-in-from-bottom-2 duration-300">
-            <div className="mb-5 flex items-center justify-between">
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">
-                  {editingReview ? "Edit Review" : "Add Review"}
-                </h3>
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg"
+            >
+              <div className="mb-5 flex items-center justify-between">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">
+                    {editingReview ? "Edit Review" : "Add Review"}
+                  </h3>
 
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"                            >
-                <X size={20} />
-              </button>
-            </div>
-
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Type Selection */}
-              <div className="space-y-1.5 md:col-span-2">
-                <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Review Type</label>
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, type: 'text' })}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${formData.type === 'text'
-                      ? 'border-sky-600 bg-sky-50 text-sky-600 shadow-sm'
-                      : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200'
-                      }`}
-                  >
-                    <Type size={18} />
-                    <span className="font-bold text-sm">Text Review</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, type: 'video' })}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${formData.type === 'video'
-                      ? 'border-sky-600 bg-sky-50 text-sky-600 shadow-sm'
-                      : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200'
-                      }`}
-                  >
-                    <Video size={18} />
-                    <span className="font-bold text-sm">Video Review</span>
-                  </button>
                 </div>
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"                            >
+                  <X size={20} />
+                </button>
               </div>
 
-              {/* Customer Name */}
-              {formData.type === 'text' && (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Customer Name</label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
-                    placeholder="e.g. Rahul Sharma"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  />
-                </div>
-              )}
 
-              {/* Location/Role */}
-              {formData.type === 'text' && (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Location / Role</label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
-                    placeholder="e.g. Ahmedabad, Resident"
-                    value={formData.location}
-                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  />
-                </div>
-              )}
-
-              {/* Rating */}
-              {formData.type === 'text' && (
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Rating (1-5)</label>
-                  <div className="flex gap-2">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setFormData({ ...formData, rating: star })}
-                        className={`p-2 rounded-lg transition-all ${formData.rating >= star ? 'text-amber-400' : 'text-slate-200'}`}
-                      >
-                        <Star size={24} fill={formData.rating >= star ? "currentColor" : "none"} />
-                      </button>
-                    ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Type Selection */}
+                <div className="space-y-1.5 md:col-span-2">
+                  <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Review Type</label>
+                  <div className="flex gap-4">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, type: 'text' })}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${formData.type === 'text'
+                        ? 'border-sky-600 bg-sky-50 text-sky-600 shadow-sm'
+                        : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200'
+                        }`}
+                    >
+                      <Type size={18} />
+                      <span className="font-bold text-sm">Text Review</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, type: 'video' })}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all ${formData.type === 'video'
+                        ? 'border-sky-600 bg-sky-50 text-sky-600 shadow-sm'
+                        : 'border-slate-100 bg-white text-slate-500 hover:border-slate-200'
+                        }`}
+                    >
+                      <Video size={18} />
+                      <span className="font-bold text-sm">Video Review</span>
+                    </button>
                   </div>
                 </div>
-              )}
 
-              {/* Review Text Content (Only for text type) */}
-              {formData.type === 'text' && (
-                <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
-                    Review Content
-                  </label>
-                  <textarea
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white min-h-[100px] resize-none"
-                    placeholder="Write the customer's feedback here..."
-                    value={formData.content}
-                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                  />
-                </div>
-              )}
+                {/* Customer Name */}
+                {formData.type === 'text' && (
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Customer Name</label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
+                      placeholder="e.g. Rahul Sharma"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                )}
 
-              {/* Video URL (Only for video type) */}
-              {formData.type === 'video' && (
-                <div className="space-y-1.5 md:col-span-2">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Video URL (Direct link to .mp4 or YouTube)</label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
-                    placeholder="https://example.com/video.mp4"
-                    value={formData.video_url}
-                    onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
-                  />
-                </div>
-              )}
+                {/* Location/Role */}
+                {formData.type === 'text' && (
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Location / Role</label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
+                      placeholder="e.g. Ahmedabad, Resident"
+                      value={formData.location}
+                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    />
+                  </div>
+                )}
 
-            </div>
+                {/* Rating */}
+                {formData.type === 'text' && (
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Rating (1-5)</label>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setFormData({ ...formData, rating: star })}
+                          className={`p-2 rounded-lg transition-all ${formData.rating >= star ? 'text-amber-400' : 'text-slate-200'}`}
+                        >
+                          <Star size={24} fill={formData.rating >= star ? "currentColor" : "none"} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Review Text Content (Only for text type) */}
+                {formData.type === 'text' && (
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
+                      Review Content
+                    </label>
+                    <textarea
+                      className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white min-h-[100px] resize-none"
+                      placeholder="Write the customer's feedback here..."
+                      value={formData.content}
+                      onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                    />
+                  </div>
+                )}
+
+                {/* Video URL (Only for video type) */}
+                {formData.type === 'video' && (
+                  <div className="space-y-1.5 md:col-span-2">
+                    <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Video URL (Direct link to .mp4 or YouTube)</label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
+                      placeholder="https://example.com/video.mp4"
+                      value={formData.video_url}
+                      onChange={(e) => setFormData({ ...formData, video_url: e.target.value })}
+                    />
+                  </div>
+                )}
+
+              </div>
 
 
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={isSaving}
-                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
-              >
-                {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                {editingReview ? "Update Review" : "Save Review"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
+                >
+                  {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                  {editingReview ? "Update Review" : "Save Review"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
 
       {/* Delete Modal */}
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-          <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 text-center">
-            <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-              <Trash2 size={30} />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Delete Review?</h3>
-            <p className="text-slate-500 text-sm mb-6">
-              Are you sure you want to remove this review? This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                disabled={isDeleting}
-                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
-                No, Keep it
-              </button>
-              <button
-                onClick={confirmDelete}
-                disabled={isDeleting}
-                className="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition-all shadow-lg shadow-red-600/20 active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
-              >
-                {isDeleting ? <Loader2 size={16} className="animate-spin" /> : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isDeleteModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg text-center"
+            >
+              <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                <Trash2 size={30} />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Delete Review?</h3>
+              <p className="text-slate-500 text-sm mb-6">
+                Are you sure you want to remove this review? This action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsDeleteModalOpen(false)}
+                  disabled={isDeleting}
+                  className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
+                  No, Keep it
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={isDeleting}
+                  className="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition-all shadow-lg shadow-red-600/20 active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
+                >
+                  {isDeleting ? <Loader2 size={16} className="animate-spin" /> : "Delete"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

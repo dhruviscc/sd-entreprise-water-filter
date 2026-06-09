@@ -15,6 +15,8 @@ import {
 
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion, AnimatePresence } from "framer-motion";
+
 
 interface FAQ {
   id: string;
@@ -447,136 +449,161 @@ export default function AdminFAQPage() {
       )}
 
       {/* FAQ Form Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-          <div className="bg-white p-[28px] rounded-[16px] w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
-            <div className="flex justify-between items-center mb-6 ">
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">
-                  {editingFaq ? "Edit FAQ" : "Add FAQ"}
-                </h3>
-
-              </div>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className=" space-y-6">
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Category</label>
-                    <select
-                      className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 appearance-none bg-white"
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    >
-                      {CATEGORIES.map(cat => (
-                        <option key={cat} value={cat}>{cat}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
-                      Status
-                    </label>
-
-                    <div className="flex gap-2 flex-wrap">
-                      {['published', 'draft', 'archived'].map((status) => (
-                        <button
-                          key={status}
-                          type="button"
-                          onClick={() => setFormData({ ...formData, status })}
-                          className={`px-4 py-2 rounded-lg text-[10px] items-center font-bold uppercase tracking-wider transition-all border ${formData.status === status
-                            ? 'bg-sky-600 text-white border-sky-600 shadow-md shadow-sky-600/20'
-                            : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
-                            }`}
-                        >
-                          {status}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg"
+            >
+              <div className="flex justify-between items-center mb-6 ">
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">
+                    {editingFaq ? "Edit FAQ" : "Add FAQ"}
+                  </h3>
 
                 </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-sky-600  uppercase tracking-wider">Question</label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
-                    placeholder="e.g. How often should I service my RO system?"
-                    value={formData.question}
-                    onChange={(e) => setFormData({ ...formData, question: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-sky-600  uppercase tracking-wider">Answer</label>
-                  <textarea
-                    className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white min-h-[150px] resize-none"
-                    placeholder="Provide a clear and concise answer..."
-                    value={formData.answer}
-                    onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
-                  />
-                </div>
-
-
-              </div>
-
-              <div className="flex gap-3 pt-4 border-t border-slate-100">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
+                  className="p-2 rounded-lg hover:bg-gray-100 text-gray-500 transition-colors"
                 >
-                  {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                  {editingFaq ? "Update FAQ" : "Save FAQ"}
+                  <X size={20} />
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+
+              <div className=" space-y-6">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">Category</label>
+                      <select
+                        className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 appearance-none bg-white"
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      >
+                        {CATEGORIES.map(cat => (
+                          <option key={cat} value={cat}>{cat}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-bold text-sky-600 uppercase tracking-wider">
+                        Status
+                      </label>
+
+                      <div className="flex gap-2 flex-wrap">
+                        {['published', 'draft', 'archived'].map((status) => (
+                          <button
+                            key={status}
+                            type="button"
+                            onClick={() => setFormData({ ...formData, status })}
+                            className={`px-4 py-2 rounded-lg text-[10px] items-center font-bold uppercase tracking-wider transition-all border ${formData.status === status
+                              ? 'bg-sky-600 text-white border-sky-600 shadow-md shadow-sky-600/20'
+                              : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
+                              }`}
+                          >
+                            {status}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-sky-600  uppercase tracking-wider">Question</label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white"
+                      placeholder="e.g. How often should I service my RO system?"
+                      value={formData.question}
+                      onChange={(e) => setFormData({ ...formData, question: e.target.value })}
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-sky-600  uppercase tracking-wider">Answer</label>
+                    <textarea
+                      className="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500/10 focus:border-sky-500 bg-white min-h-[150px] resize-none"
+                      placeholder="Provide a clear and concise answer..."
+                      value={formData.answer}
+                      onChange={(e) => setFormData({ ...formData, answer: e.target.value })}
+                    />
+                  </div>
+
+
+                </div>
+
+                <div className="flex gap-3 pt-4 border-t border-slate-100">
+                  <button
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                                >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
+                  >
+                    {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+                    {editingFaq ? "Update FAQ" : "Save FAQ"}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
 
       {/* Delete Modal */}
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-          <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 text-center">
-            <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-              <Trash2 size={30} />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">Delete FAQ?</h3>
-            <p className="text-slate-500 text-sm mb-6">
-              Are you sure you want to remove this question? This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setIsDeleteModalOpen(false)}
-                disabled={isDeleting}
-                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
-                No, Keep it
-              </button>
-              <button
-                onClick={confirmDelete}
-                disabled={isDeleting}
-                className="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition-all shadow-lg shadow-red-600/20 active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
-              >
-                {isDeleting ? <Loader2 size={16} className="animate-spin" /> : "Delete"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isDeleteModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg text-center"
+            >
+              <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                <Trash2 size={30} />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Delete FAQ?</h3>
+              <p className="text-slate-500 text-sm mb-6">
+                Are you sure you want to remove this question? This action cannot be undone.
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setIsDeleteModalOpen(false)}
+                  disabled={isDeleting}
+                  className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
+                  No, Keep it
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={isDeleting}
+                  className="flex-1 py-3 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition-all shadow-lg shadow-red-600/20 active:scale-95 disabled:opacity-70 flex items-center justify-center gap-2"
+                >
+                  {isDeleting ? <Loader2 size={16} className="animate-spin" /> : "Delete"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

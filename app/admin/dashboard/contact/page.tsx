@@ -20,6 +20,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Contact } from '@/modules/contact/contactService';
+import { motion, AnimatePresence } from "framer-motion";
+
 
 export default function EnquiryPage() {
     const [enquiries, setEnquiries] = useState<Contact[]>([]);
@@ -492,155 +494,178 @@ export default function EnquiryPage() {
             )}
 
             {/* Details Modal */}
-            {isDetailsModalOpen && selectedEnquiry && (
-                <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[4px] animate-in fade-in duration-200">
-                    <div className="w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl bg-white">
 
-                        {/* Header */}
-                        <div className="relative bg-gradient-to-r from-sky-90 via-cyan-100 to-blue-100 p-6 text-white">
-                            <button
-                                onClick={() => setIsDetailsModalOpen(false)}
-                                className="absolute right-5 top-7 rounded-xl  p-2 hover:bg-black/10"
-                            >
-                                <X size={20} className='text-sky-600' />
-                            </button>
+            <AnimatePresence>
+                {isDetailsModalOpen && selectedEnquiry && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg"
+                        >
+                            {/* Header */}
+                            <div className="relative bg-gradient-to-r from-sky-90 via-cyan-100 to-blue-100 p-6 text-white">
+                                <button
+                                    onClick={() => setIsDetailsModalOpen(false)}
+                                    className="absolute right-5 top-7 rounded-xl  p-2 hover:bg-black/10"
+                                >
+                                    <X size={20} className='text-sky-600' />
+                                </button>
 
-                            <div className="flex items-center gap-4">
-                                <div className="h-14 w-14 rounded-2xl bg-sky-100  flex items-center justify-center">
-                                    <User size={25} className='text-sky-600' />
+                                <div className="flex items-center gap-4">
+                                    <div className="h-14 w-14 rounded-2xl bg-sky-100  flex items-center justify-center">
+                                        <User size={25} className='text-sky-600' />
+                                    </div>
+
+                                    <div>
+                                        <h2 className="text-xl font-black uppercase text-slate-800">
+                                            {selectedEnquiry.full_name}
+                                        </h2>
+
+                                        <p className="text-sm text-slate-500" >
+                                            Enquiry ID #{selectedEnquiry.id.slice(0, 8)}
+                                        </p>
+                                    </div>
                                 </div>
+                            </div>
 
+                            {/* Body */}
+                            <div className="overflow-y-auto max-h-[65vh] p-6 space-y-6">
+
+                                {/* Customer Details */}
                                 <div>
-                                    <h2 className="text-xl font-black uppercase text-slate-800">
-                                        {selectedEnquiry.full_name}
-                                    </h2>
+                                    <h3 className="mb-4 text-sm font-black uppercase tracking-wider text-sky-600">
+                                        Customer Information
+                                    </h3>
 
-                                    <p className="text-sm text-slate-500" >
-                                        Enquiry ID #{selectedEnquiry.id.slice(0, 8)}
+                                    <div className="grid md:grid-cols-2 gap-4">
+
+                                        <div className="rounded-2xl border border-slate-200 p-5">
+                                            <div className="flex items-center gap-3">
+                                                <Phone className="text-sky-600" size={18} />
+                                                <div>
+                                                    <p className="text-xs text-slate-500">Mobile Number</p>
+                                                    <a
+                                                        href={`tel:${selectedEnquiry.mobile_number}`}
+                                                        className="font-bold text-slate-800 hover:text-sky-600"
+                                                    >
+                                                        {selectedEnquiry.mobile_number}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="rounded-2xl border border-slate-200 p-5">
+                                            <div className="flex items-center gap-3">
+                                                <Mail className="text-sky-600" size={18} />
+                                                <div>
+                                                    <p className="text-xs text-slate-500">Email Address</p>
+                                                    <p className="font-bold text-slate-800">
+                                                        {selectedEnquiry.email_address || "Not Provided"}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="rounded-2xl border border-slate-200 p-5 md:col-span-2">
+                                            <div className="flex items-center gap-3">
+                                                <Briefcase className="text-sky-600" size={18} />
+                                                <div>
+                                                    <p className="text-xs text-slate-500">Service Interest</p>
+                                                    <p className="font-bold text-slate-800">
+                                                        {selectedEnquiry.service_interest}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                {/* Message */}
+                                <div>
+                                    <h3 className="mb-4 text-sm font-black uppercase tracking-wider text-slate-500">
+                                        Customer Message
+                                    </h3>
+
+                                    <div className="rounded-3xl border border-sky-100 bg-sky-50 p-6">
+                                        <p className="leading-relaxed text-slate-700">
+                                            {selectedEnquiry.message ||
+                                                "No message provided by customer."}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Timeline */}
+                                <div className="rounded-2xl bg-slate-50 p-5 border border-slate-200">
+                                    <h3 className="mb-2 text-sm font-black uppercase tracking-wider text-slate-500">
+                                        Submission Details
+                                    </h3>
+
+                                    <p className="text-sm text-slate-700">
+                                        Submitted on{" "}
+                                        <span className="font-bold">
+                                            {new Date(
+                                                selectedEnquiry.created_at
+                                            ).toLocaleString()}
+                                        </span>
                                     </p>
                                 </div>
                             </div>
-                        </div>
-
-                        {/* Body */}
-                        <div className="overflow-y-auto max-h-[65vh] p-6 space-y-6">
-
-                            {/* Customer Details */}
-                            <div>
-                                <h3 className="mb-4 text-sm font-black uppercase tracking-wider text-sky-600">
-                                    Customer Information
-                                </h3>
-
-                                <div className="grid md:grid-cols-2 gap-4">
-
-                                    <div className="rounded-2xl border border-slate-200 p-5">
-                                        <div className="flex items-center gap-3">
-                                            <Phone className="text-sky-600" size={18} />
-                                            <div>
-                                                <p className="text-xs text-slate-500">Mobile Number</p>
-                                                <a
-                                                    href={`tel:${selectedEnquiry.mobile_number}`}
-                                                    className="font-bold text-slate-800 hover:text-sky-600"
-                                                >
-                                                    {selectedEnquiry.mobile_number}
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="rounded-2xl border border-slate-200 p-5">
-                                        <div className="flex items-center gap-3">
-                                            <Mail className="text-sky-600" size={18} />
-                                            <div>
-                                                <p className="text-xs text-slate-500">Email Address</p>
-                                                <p className="font-bold text-slate-800">
-                                                    {selectedEnquiry.email_address || "Not Provided"}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="rounded-2xl border border-slate-200 p-5 md:col-span-2">
-                                        <div className="flex items-center gap-3">
-                                            <Briefcase className="text-sky-600" size={18} />
-                                            <div>
-                                                <p className="text-xs text-slate-500">Service Interest</p>
-                                                <p className="font-bold text-slate-800">
-                                                    {selectedEnquiry.service_interest}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            {/* Message */}
-                            <div>
-                                <h3 className="mb-4 text-sm font-black uppercase tracking-wider text-slate-500">
-                                    Customer Message
-                                </h3>
-
-                                <div className="rounded-3xl border border-sky-100 bg-sky-50 p-6">
-                                    <p className="leading-relaxed text-slate-700">
-                                        {selectedEnquiry.message ||
-                                            "No message provided by customer."}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Timeline */}
-                            <div className="rounded-2xl bg-slate-50 p-5 border border-slate-200">
-                                <h3 className="mb-2 text-sm font-black uppercase tracking-wider text-slate-500">
-                                    Submission Details
-                                </h3>
-
-                                <p className="text-sm text-slate-700">
-                                    Submitted on{" "}
-                                    <span className="font-bold">
-                                        {new Date(
-                                            selectedEnquiry.created_at
-                                        ).toLocaleString()}
-                                    </span>
-                                </p>
-                            </div>
-                        </div>
 
 
-
-                    </div>
-                </div>
-            )}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Delete Confirmation Modal */}
-            {isDeleteModalOpen && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 text-center">
-                        <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-                            <Trash2 size={30} />
-                        </div>
+            <AnimatePresence>
+                {isDeleteModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg text-center"
+                        >
+                            <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                                <Trash2 size={30} />
+                            </div>
 
-                        <h3 className="text-xl font-black text-slate-900 tracking-tight">Delete Enquiry?</h3>
-                        <p className="text-slate-500 text-sm mb-6">
-                            This action cannot be undone. This enquiry will be permanently removed from your history.
-                        </p>
+                            <h3 className="text-xl font-black text-slate-900 tracking-tight">Delete Enquiry?</h3>
+                            <p className="text-slate-500 text-sm mb-6">
+                                This action cannot be undone. This enquiry will be permanently removed from your history.
+                            </p>
 
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setIsDeleteModalOpen(false)}
-                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                className="flex-1 py-3 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-all shadow-lg shadow-red-600/20"
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setIsDeleteModalOpen(false)}
+                                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    className="flex-1 py-3 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-all shadow-lg shadow-red-600/20"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

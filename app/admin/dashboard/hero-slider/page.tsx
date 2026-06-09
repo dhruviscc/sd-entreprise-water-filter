@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback, Fragment } from "react";
 import { Plus, Pencil, Trash2, X, Edit, Upload, Loader2, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -588,211 +589,235 @@ export default function HeroSliderAdmin() {
         </div>
       )}
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-          <div className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 ease-out">
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>{currentSlider ? "Edit Slide" : "Add Slide"}</h3>
-              <button onClick={() => setIsModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
-            </div>
-            <form className="flex flex-col gap-3.5" onSubmit={handleSave}>
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg"
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <h3 className="text-lg font-bold mb-5 text-slate-700" style={{ marginBottom: 0 }}>{currentSlider ? "Edit Slide" : "Add Slide"}</h3>
+                <button onClick={() => setIsModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
+              </div>
+              <form className="flex flex-col gap-3.5" onSubmit={handleSave}>
 
-              <div className="flex flex-col gap-[5px]">
-                <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">
-                  Desktop Image *
-                </label>
+                <div className="flex flex-col gap-[5px]">
+                  <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">
+                    Desktop Image *
+                  </label>
 
-                <label className="relative w-50 h-50 border-2 border-dashed border-sky-300 rounded-xl overflow-hidden cursor-pointer hover:border-sky-500 transition-all">
+                  <label className="relative w-50 h-50 border-2 border-dashed border-sky-300 rounded-xl overflow-hidden cursor-pointer hover:border-sky-500 transition-all">
 
-                  {formState.desktopImage ? (
-                    <>
-                      <Image
-                        src={formState.desktopImage}
-                        alt="Desktop Preview"
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
+                    {formState.desktopImage ? (
+                      <>
+                        <Image
+                          src={formState.desktopImage}
+                          alt="Desktop Preview"
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
 
-                      <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">
-                          Change Image
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-sky-50">
-                      {isUploading ? (
-                        <Loader2 size={24} className="animate-spin text-sky-600" />
-                      ) : (
-                        <>
-                          <Upload size={24} className="text-sky-600 mb-2" />
-                          <span className="text-xs font-bold text-sky-600">
-                            Upload Image
+                        <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="text-white text-xs font-bold">
+                            Change Image
                           </span>
-                        </>
-                      )}
-                    </div>
-                  )}
+                        </div>
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-sky-50">
+                        {isUploading ? (
+                          <Loader2 size={24} className="animate-spin text-sky-600" />
+                        ) : (
+                          <>
+                            <Upload size={24} className="text-sky-600 mb-2" />
+                            <span className="text-xs font-bold text-sky-600">
+                              Upload Image
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    )}
 
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(e, "desktopImage")}
-                    disabled={isUploading}
-                  />
-                </label>
-              </div>
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, "desktopImage")}
+                      disabled={isUploading}
+                    />
+                  </label>
+                </div>
 
-              <div className="flex flex-col gap-[5px]">
-                <label htmlFor="title" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Title *</label>
-                <input
-                  type="text"
-                  id="title"
-                  name="title"
-                  className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                  value={formState.title}
-                  onChange={handleFormChange}
-                  required
-                />
-              </div>
-              <div className="flex flex-col gap-[5px]">
-                <label htmlFor="subtitle" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider flex items-center gap-1">
-                  Subtitle
-                </label>
-                <textarea
-                  id="subtitle"
-                  name="subtitle"
-                  className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                  rows={2}
-                  value={formState.subtitle}
-                  onChange={handleFormChange}
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-[5px]">
-                  <label htmlFor="primaryCtaText" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Primary CTA Text</label>
+                  <label htmlFor="title" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Title *</label>
                   <input
                     type="text"
-                    id="primaryCtaText"
-                    name="primaryCtaText"
+                    id="title"
+                    name="title"
                     className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                    value={formState.primaryCtaText}
+                    value={formState.title}
                     onChange={handleFormChange}
+                    required
                   />
                 </div>
                 <div className="flex flex-col gap-[5px]">
-                  <label htmlFor="primaryCtaLink" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Primary CTA Link</label>
-                  <input
-                    type="text"
-                    id="primaryCtaLink"
-                    name="primaryCtaLink"
+                  <label htmlFor="subtitle" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider flex items-center gap-1">
+                    Subtitle
+                  </label>
+                  <textarea
+                    id="subtitle"
+                    name="subtitle"
                     className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                    value={formState.primaryCtaLink}
+                    rows={2}
+                    value={formState.subtitle}
                     onChange={handleFormChange}
                   />
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-[5px]">
-                  <label htmlFor="secondaryCtaText" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Secondary CTA Text</label>
-                  <input
-                    type="text"
-                    id="secondaryCtaText"
-                    name="secondaryCtaText"
-                    className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                    placeholder="e.g. Book RO Service"
-                    value={formState.secondaryCtaText}
-                    onChange={handleFormChange}
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-[5px]">
+                    <label htmlFor="primaryCtaText" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Primary CTA Text</label>
+                    <input
+                      type="text"
+                      id="primaryCtaText"
+                      name="primaryCtaText"
+                      className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                      value={formState.primaryCtaText}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-[5px]">
+                    <label htmlFor="primaryCtaLink" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Primary CTA Link</label>
+                    <input
+                      type="text"
+                      id="primaryCtaLink"
+                      name="primaryCtaLink"
+                      className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                      value={formState.primaryCtaLink}
+                      onChange={handleFormChange}
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col gap-[5px]">
-                  <label htmlFor="secondaryCtaLink" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Secondary CTA Link</label>
-                  <input
-                    type="text"
-                    id="secondaryCtaLink"
-                    name="secondaryCtaLink"
-                    className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                    placeholder="Leave empty for popup"
-                    value={formState.secondaryCtaLink}
-                    onChange={handleFormChange}
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-[5px]">
+                    <label htmlFor="secondaryCtaText" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Secondary CTA Text</label>
+                    <input
+                      type="text"
+                      id="secondaryCtaText"
+                      name="secondaryCtaText"
+                      className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                      placeholder="e.g. Book RO Service"
+                      value={formState.secondaryCtaText}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-[5px]">
+                    <label htmlFor="secondaryCtaLink" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Secondary CTA Link</label>
+                    <input
+                      type="text"
+                      id="secondaryCtaLink"
+                      name="secondaryCtaLink"
+                      className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                      placeholder="Leave empty for popup"
+                      value={formState.secondaryCtaLink}
+                      onChange={handleFormChange}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-[5px]">
-                  <label htmlFor="secondaryInterest" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Enquiry Interest <span className="text-[#94a3b8] normal-case">(Prefill)</span></label>
-                  <input
-                    type="text"
-                    id="secondaryInterest"
-                    name="secondaryInterest"
-                    className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                    placeholder="e.g. All Types of RO"
-                    value={formState.secondaryInterest}
-                    onChange={handleFormChange}
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-[5px]">
+                    <label htmlFor="secondaryInterest" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Enquiry Interest <span className="text-[#94a3b8] normal-case">(Prefill)</span></label>
+                    <input
+                      type="text"
+                      id="secondaryInterest"
+                      name="secondaryInterest"
+                      className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                      placeholder="e.g. All Types of RO"
+                      value={formState.secondaryInterest}
+                      onChange={handleFormChange}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-[5px]">
+                    <label htmlFor="secondaryType" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Enquiry Type</label>
+                    <select
+                      id="secondaryType"
+                      name="secondaryType"
+                      className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                      value={formState.secondaryType}
+                      onChange={handleFormChange}
+                    >
+                      <option value="service">Service</option>
+                      <option value="product">Product</option>
+                      <option value="general">General</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="flex flex-col gap-[5px]">
-                  <label htmlFor="secondaryType" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Enquiry Type</label>
-                  <select
-                    id="secondaryType"
-                    name="secondaryType"
-                    className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
-                    value={formState.secondaryType}
-                    onChange={handleFormChange}
-                  >
-                    <option value="service">Service</option>
-                    <option value="product">Product</option>
-                    <option value="general">General</option>
-                  </select>
-                </div>
-              </div>
 
+                <div className="flex gap-3 mt-6">
+                  <button type="button" onClick={() => setIsModalOpen(false)}
+                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">
+                    Cancel
+                  </button>
+                  <button type="submit" disabled={isSaving}
+                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none">
+
+
+                    {isSaving ? "Saving..." : currentSlider ? "Update Slide" : "Add Slide"}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isDeleteModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg text-center"
+            >
+              <div style={{ marginBottom: "20px" }}>
+                <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                  <Trash2 size={30} />
+                </div>
+                <h3 className="text-lg font-bold text-[#0f172a] mb-2">Delete Slide?</h3>
+                <p className="text-[#584c79] text-[14px] m-0">
+                  Are you sure you want to delete <b>{sliderToDelete?.title}</b>? This action cannot be undone.
+                </p>
+              </div>
               <div className="flex gap-3 mt-6">
-                <button type="button" onClick={() => setIsModalOpen(false)}
-                  className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]">
-                  Cancel
-                </button>
-                <button type="submit" disabled={isSaving}
-                  className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none">
-
-
-                  {isSaving ? "Saving..." : currentSlider ? "Update Slide" : "Add Slide"}
+                <button
+                  className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-slate-200 text-slate-800 transition-colors hover:bg-slate-50"
+                  onClick={() => {
+                    setIsDeleteModalOpen(false);
+                    setSliderToDelete(null);
+                  }}
+                >No, Keep it</button>
+                <button className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-red-500 text-white border-none transition-colors hover:bg-red-600" disabled={isDeleting} onClick={handleDeleteSlider}>
+                  {isDeleting ? "Deleting..." : "Yes, Delete!"}
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {isDeleteModalOpen && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-300">
-          <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in zoom-in-95 slide-in-from-bottom-4 duration-300 text-center">
-            <div style={{ marginBottom: "20px" }}>
-              <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-                <Trash2 size={30} />
-              </div>
-              <h3 className="text-lg font-bold text-[#0f172a] mb-2">Delete Slide?</h3>
-              <p className="text-[#584c79] text-[14px] m-0">
-                Are you sure you want to delete <b>{sliderToDelete?.title}</b>? This action cannot be undone.
-              </p>
-            </div>
-            <div className="flex gap-3 mt-6">
-              <button
-                className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-slate-200 text-slate-800 transition-colors hover:bg-slate-50"
-                onClick={() => {
-                  setIsDeleteModalOpen(false);
-                  setSliderToDelete(null);
-                }}
-              >No, Keep it</button>
-              <button className="flex-1 p-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-red-500 text-white border-none transition-colors hover:bg-red-600" disabled={isDeleting} onClick={handleDeleteSlider}>
-                {isDeleting ? "Deleting..." : "Yes, Delete!"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
 
     </div>

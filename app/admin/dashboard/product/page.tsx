@@ -25,6 +25,8 @@ import type {
     ProductEnquiry,
     ProductVariant,
 } from "@/modules/product/productService";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 const PRODUCT_CATEGORY_NAMES = [
     "Domestic Filter",
@@ -77,7 +79,7 @@ export default function AdminProductPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<{ id: string; name: string; type: string } | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+    const itemsPerPage = 10;
 
 
     async function fetchAll() {
@@ -452,7 +454,7 @@ export default function AdminProductPage() {
 
             {/* Desktop Table */}
             <div className="hidden md:block bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-             
+
                 <div className="overflow-x-auto">
                     <table className="w-full">
                         <thead className="bg-slate-50 border-b border-slate-200">
@@ -628,147 +630,157 @@ export default function AdminProductPage() {
 
 
 
-
-            {isModalOpen && (
-                <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/40 p-4 backdrop-blur-[4px] animate-in fade-in duration-200">
-                    <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white p-7 shadow-2xl animate-in slide-in-from-bottom-2 duration-300">
-                        <div className="mb-5 flex items-center justify-between">
-                            <h3 className="text-lg font-bold text-slate-600">{editingProduct ? "Edit Product" : "Add Product"}</h3>
-                            <button onClick={() => setIsModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
-                        </div>
-
-                        <div className="grid gap-4 md:grid-cols-2">
-
-                            <div className="flex flex-col gap-2 mb-4">
-                                <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Category *</label>
-                                <select
-                                    value={formData.category_id}
-                                    onChange={(event) => setFormData({ ...formData, category_id: event.target.value })}
-                                    className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10"
-                                    required
-                                >
-                                    <option value="">Select Category</option>
-                                    {categories.map((cat) => (
-                                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                                    ))}
-                                </select>
+            <AnimatePresence>
+                {isModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white p-[28px] rounded-[16px] w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg"
+                        >
+                            <div className="mb-5 flex items-center justify-between">
+                                <h3 className="text-lg font-bold text-slate-600">{editingProduct ? "Edit Product" : "Add Product"}</h3>
+                                <button onClick={() => setIsModalOpen(false)} className="rounded-lg p-2 text-slate-500 hover:bg-slate-100"><X size={18} /></button>
                             </div>
-                            <div className="flex flex-col gap-2 mb-4">
-                                <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Product Name *</label>
-                                <input
-                                    type="text"
-                                    value={formData.name}
-                                    onChange={(event) => updateProductName(event.target.value)}
-                                    placeholder="Enter product name"
-                                    className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white"
-                                />
-                            </div>
-                        </div>
 
-                        <div className="grid gap-4 md:grid-cols-2">
-                            <div className="flex flex-col gap-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Short Description</label>
-                                <textarea value={formData.description} onChange={(event) => setFormData({ ...formData, description: event.target.value })} className="rounded-lg border border-slate-200 p-3 text-sm outline-none min-h-[6rem] focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10" placeholder="A brief catchphrase..." />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Full Description</label>
-                                <textarea value={formData.long_description} onChange={(event) => setFormData({ ...formData, long_description: event.target.value })} className="rounded-lg border border-slate-200 p-3 text-sm outline-none min-h-[6rem] focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10" placeholder="Detailed product info..." />
-                            </div>
-                        </div>
+                            <div className="grid gap-4 md:grid-cols-2">
 
-
-                        <SectionTitle title="Features" onAdd={() => setFormData({ ...formData, features: [...formData.features, ""] })} />
-                        <div className="space-y-2">
-                            {formData.features.map((feature, index) => (
-                                <div key={index} className="flex gap-2">
-                                    <input value={feature} onChange={(event) => setFormData({ ...formData, features: formData.features.map((item, idx) => idx === index ? event.target.value : item) })} className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10" placeholder={`Feature ${index + 1}`} />
-                                    <button onClick={() => setFormData({ ...formData, features: formData.features.filter((_, idx) => idx !== index) })} className="rounded-lg px-3 text-red-500 hover:bg-red-50 transition-colors"><Trash2 size={16} /></button>
-                                </div>
-                            ))}
-                        </div>
-
-                        <SectionTitle
-                            title="Specifications"
-                            onAdd={() =>
-                                setFormData({
-                                    ...formData,
-                                    specifications: [
-                                        ...formData.specifications,
-                                        { key: "", value: "" }
-                                    ]
-                                })
-                            }
-                        />
-
-                        <div className="mb-3 space-y-3">
-                            {formData.specifications.map((spec, index) => (
-                                <div key={index} className="flex items-center gap-3">
-                                    <input
-                                        value={spec.key}
-                                        onChange={(event) =>
-                                            setFormData({
-                                                ...formData,
-                                                specifications: formData.specifications.map((item, idx) =>
-                                                    idx === index
-                                                        ? { ...item, key: event.target.value }
-                                                        : item
-                                                ),
-                                            })
-                                        }
-                                        className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600"
-                                        placeholder="Spec Name"
-                                    />
-
-                                    <input
-                                        value={spec.value}
-                                        onChange={(event) =>
-                                            setFormData({
-                                                ...formData,
-                                                specifications: formData.specifications.map((item, idx) =>
-                                                    idx === index
-                                                        ? { ...item, value: event.target.value }
-                                                        : item
-                                                ),
-                                            })
-                                        }
-                                        className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600"
-                                        placeholder="Value"
-                                    />
-
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            setFormData({
-                                                ...formData,
-                                                specifications: formData.specifications.filter(
-                                                    (_, idx) => idx !== index
-                                                ),
-                                            })
-                                        }
-                                        className="flex h-10 w-10 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                                <div className="flex flex-col gap-2 mb-4">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Category *</label>
+                                    <select
+                                        value={formData.category_id}
+                                        onChange={(event) => setFormData({ ...formData, category_id: event.target.value })}
+                                        className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10"
+                                        required
                                     >
-                                        <Trash2 size={16} />
-                                    </button>
+                                        <option value="">Select Category</option>
+                                        {categories.map((cat) => (
+                                            <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="flex flex-col gap-2 mb-4">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Product Name *</label>
+                                    <input
+                                        type="text"
+                                        value={formData.name}
+                                        onChange={(event) => updateProductName(event.target.value)}
+                                        placeholder="Enter product name"
+                                        className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm outline-none transition-all focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10 bg-white"
+                                    />
+                                </div>
+                            </div>
 
-                        <SectionTitle title="Colour Variants" onAdd={() => setFormData({ ...formData, product_variants: [...formData.product_variants, { ...emptyVariant(), is_default: false, name: "" }] })} />
-                        <div className="space-y-4">
-                            {formData.product_variants.map((variant, index) => (
-                                <div key={index} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-                                    <div className="grid gap-3 md:grid-cols-[1fr_140px_auto_auto]">
-                                        <input value={variant.name} onChange={(event) => updateVariant(index, { name: event.target.value })} className="rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600" placeholder="Variant name, e.g. White" />
-                                        <input type="color" value={variant.color_hex} onChange={(event) => updateVariant(index, { color_hex: event.target.value })} className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2 cursor-pointer" />
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Short Description</label>
+                                    <textarea value={formData.description} onChange={(event) => setFormData({ ...formData, description: event.target.value })} className="rounded-lg border border-slate-200 p-3 text-sm outline-none min-h-[6rem] focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10" placeholder="A brief catchphrase..." />
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-sky-600">Full Description</label>
+                                    <textarea value={formData.long_description} onChange={(event) => setFormData({ ...formData, long_description: event.target.value })} className="rounded-lg border border-slate-200 p-3 text-sm outline-none min-h-[6rem] focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10" placeholder="Detailed product info..." />
+                                </div>
+                            </div>
 
-                                        <button type="button" onClick={() => setFormData({ ...formData, product_variants: formData.product_variants.filter((_, idx) => idx !== index) })} className="rounded-lg bg-white border border-slate-200 px-3 text-red-500 hover:bg-red-50 transition-colors"><Trash2 size={16} /></button>
+
+                            <SectionTitle title="Features" onAdd={() => setFormData({ ...formData, features: [...formData.features, ""] })} />
+                            <div className="space-y-2">
+                                {formData.features.map((feature, index) => (
+                                    <div key={index} className="flex gap-2">
+                                        <input value={feature} onChange={(event) => setFormData({ ...formData, features: formData.features.map((item, idx) => idx === index ? event.target.value : item) })} className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600 focus:ring-2 focus:ring-sky-600/10" placeholder={`Feature ${index + 1}`} />
+                                        <button onClick={() => setFormData({ ...formData, features: formData.features.filter((_, idx) => idx !== index) })} className="rounded-lg px-3 text-red-500 hover:bg-red-50 transition-colors"><Trash2 size={16} /></button>
                                     </div>
+                                ))}
+                            </div>
 
-                                    <div className="mt-4 space-y-3">
-                                        <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Variant Images</label>
-                                        <div className="flex">
-                                            <label
-                                                className="
+                            <SectionTitle
+                                title="Specifications"
+                                onAdd={() =>
+                                    setFormData({
+                                        ...formData,
+                                        specifications: [
+                                            ...formData.specifications,
+                                            { key: "", value: "" }
+                                        ]
+                                    })
+                                }
+                            />
+
+                            <div className="mb-3 space-y-3">
+                                {formData.specifications.map((spec, index) => (
+                                    <div key={index} className="flex items-center gap-3">
+                                        <input
+                                            value={spec.key}
+                                            onChange={(event) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    specifications: formData.specifications.map((item, idx) =>
+                                                        idx === index
+                                                            ? { ...item, key: event.target.value }
+                                                            : item
+                                                    ),
+                                                })
+                                            }
+                                            className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600"
+                                            placeholder="Spec Name"
+                                        />
+
+                                        <input
+                                            value={spec.value}
+                                            onChange={(event) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    specifications: formData.specifications.map((item, idx) =>
+                                                        idx === index
+                                                            ? { ...item, value: event.target.value }
+                                                            : item
+                                                    ),
+                                                })
+                                            }
+                                            className="flex-1 rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600"
+                                            placeholder="Value"
+                                        />
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setFormData({
+                                                    ...formData,
+                                                    specifications: formData.specifications.filter(
+                                                        (_, idx) => idx !== index
+                                                    ),
+                                                })
+                                            }
+                                            className="flex h-10 w-10 items-center justify-center rounded-lg text-red-500 hover:bg-red-50 transition-colors"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <SectionTitle title="Colour Variants" onAdd={() => setFormData({ ...formData, product_variants: [...formData.product_variants, { ...emptyVariant(), is_default: false, name: "" }] })} />
+                            <div className="space-y-4">
+                                {formData.product_variants.map((variant, index) => (
+                                    <div key={index} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                                        <div className="grid gap-3 md:grid-cols-[1fr_140px_auto_auto]">
+                                            <input value={variant.name} onChange={(event) => updateVariant(index, { name: event.target.value })} className="rounded-lg border border-slate-200 px-4 py-2 text-sm outline-none focus:border-sky-600" placeholder="Variant name, e.g. White" />
+                                            <input type="color" value={variant.color_hex} onChange={(event) => updateVariant(index, { color_hex: event.target.value })} className="h-10 w-full rounded-lg border border-slate-200 bg-white px-2 cursor-pointer" />
+
+                                            <button type="button" onClick={() => setFormData({ ...formData, product_variants: formData.product_variants.filter((_, idx) => idx !== index) })} className="rounded-lg bg-white border border-slate-200 px-3 text-red-500 hover:bg-red-50 transition-colors"><Trash2 size={16} /></button>
+                                        </div>
+
+                                        <div className="mt-4 space-y-3">
+                                            <label className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Variant Images</label>
+                                            <div className="flex">
+                                                <label
+                                                    className="
                                                       w-25 h-25
                                                       border-2 border-dashed border-sky-300
                                                       rounded-2xl
@@ -780,245 +792,259 @@ export default function AdminProductPage() {
                                                       hover:border-sky-500
                                                       hover:bg-sky-50
                                                     "
-                                            >
-                                                {uploadingKey.startsWith(`${index}-`) ? (
-                                                    <Loader2 size={24} className="animate-spin text-sky-600" />
+                                                >
+                                                    {uploadingKey.startsWith(`${index}-`) ? (
+                                                        <Loader2 size={24} className="animate-spin text-sky-600" />
 
-                                                ) : (
-                                                    <>
-                                                        <Upload size={24} className="text-sky-600 mb-2" />
-                                                        <span className="text-xs font-bold text-sky-600 text-center px-2">
-                                                            Upload Image
-                                                        </span>
-                                                    </>
-                                                )}
+                                                    ) : (
+                                                        <>
+                                                            <Upload size={24} className="text-sky-600 mb-2" />
+                                                            <span className="text-xs font-bold text-sky-600 text-center px-2">
+                                                                Upload Image
+                                                            </span>
+                                                        </>
+                                                    )}
 
-                                                <input
-                                                    type="file"
-                                                    className="hidden"
-                                                    onChange={(e) =>
-                                                        uploadVariantImage(e.target.files?.[0], index)
-                                                    }
-                                                    accept="image/*"
-                                                />
-                                            </label>
-                                        </div>
-
-                                        <div className="flex flex-wrap items-center gap-3">
-                                            {(variant.images || []).map((image, imageIndex) => (
-                                                <div key={`${image}-${imageIndex}`} className="group relative h-20 w-20 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:border-sky-400">
-                                                    <img
-                                                        src={image}
-                                                        alt={variant.name || "Variant"}
-                                                        className="h-full w-full object-contain p-1"
-                                                        onError={(e) => {
-                                                            (e.target as HTMLImageElement).src = "https://placehold.co/200x200?text=Broken+Link";
-                                                        }}
+                                                    <input
+                                                        type="file"
+                                                        className="hidden"
+                                                        onChange={(e) =>
+                                                            uploadVariantImage(e.target.files?.[0], index)
+                                                        }
+                                                        accept="image/*"
                                                     />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => updateVariant(index, { images: variant.images.filter((_, idx) => idx !== imageIndex) })}
-                                                        className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 hover:bg-red-600"
-                                                    >
-                                                        <X size={12} strokeWidth={3} />
-                                                    </button>
+                                                </label>
+                                            </div>
+
+                                            <div className="flex flex-wrap items-center gap-3">
+                                                {(variant.images || []).map((image, imageIndex) => (
+                                                    <div key={`${image}-${imageIndex}`} className="group relative h-20 w-20 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:border-sky-400">
+                                                        <img
+                                                            src={image}
+                                                            alt={variant.name || "Variant"}
+                                                            className="h-full w-full object-contain p-1"
+                                                            onError={(e) => {
+                                                                (e.target as HTMLImageElement).src = "https://placehold.co/200x200?text=Broken+Link";
+                                                            }}
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => updateVariant(index, { images: variant.images.filter((_, idx) => idx !== imageIndex) })}
+                                                            className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100 hover:bg-red-600"
+                                                        >
+                                                            <X size={12} strokeWidth={3} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                                {variant.images?.length === 0 && !uploadingKey.startsWith(`${index}-`) && (
+                                                    <div className="flex h-20 w-20 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-100 text-slate-300 bg-slate-50/50">
+                                                        <ImageIcon size={20} />
+                                                        <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">No Image</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="flex gap-3 mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    onClick={saveProduct}
+                                    disabled={saving}
+                                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
+                                >
+                                    {saving ? (
+                                        <>
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                            Saving...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Save size={16} />
+                                            Save Product
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
+          
+                {detailProduct && (
+                    <div
+                        className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-md p-4"
+                        onClick={() => setDetailProduct(null)}
+                    >
+                        <div
+                            className="w-full max-w-3xl max-h-[90vh] overflow-hidden rounded-3xl bg-white shadow-[0_25px_80px_rgba(0,0,0,0.25)]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Header */}
+                            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/95 px-6 py-5 backdrop-blur-xl">
+                                <div>
+                                    <h3 className="text-2xl font-bold text-sky-600">
+                                        {detailProduct.name}
+                                    </h3>
+                                    <p className="text-sm text-slate-500">
+                                        Product Information
+                                    </p>
+                                </div>
+
+                                <button
+                                    onClick={() => setDetailProduct(null)}
+                                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-all "
+                                >
+                                    <X size={18} />
+                                </button>
+                            </div>
+
+                            {/* Content */}
+                            <div className="max-h-[calc(90vh-90px)] overflow-y-auto px-6 py-6">
+                                {/* Description */}
+                                <div className="mb-6 rounded-2xl bg-slate-50 p-5">
+                                    <h4 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">
+                                        Description
+                                    </h4>
+
+                                    <p className="whitespace-pre-wrap leading-7 text-slate-600">
+                                        {detailProduct.description || "No description added."}
+                                    </p>
+                                </div>
+
+                                {/* Features + Specifications */}
+                                <div className="grid gap-5 md:grid-cols-2">
+                                    {/* Features */}
+                                    <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                                        <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-600">
+                                            Features
+                                        </h4>
+
+                                        <ul className="space-y-3">
+                                            {(detailProduct.features || []).map((feature) => (
+                                                <li
+                                                    key={feature}
+                                                    className="flex items-start gap-3 text-sm text-slate-600"
+                                                >
+                                                    <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
+                                                    {feature}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    {/* Specifications */}
+                                    <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                                        <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-600">
+                                            Specifications
+                                        </h4>
+
+                                        <div className="space-y-3">
+                                            {Object.entries(
+                                                detailProduct.specifications || {}
+                                            ).map(([key, value]) => (
+                                                <div
+                                                    key={key}
+                                                    className="flex justify-between gap-4 border-b border-slate-100 pb-2"
+                                                >
+                                                    <span className="font-medium text-slate-500">
+                                                        {key}
+                                                    </span>
+
+                                                    <span className="text-right text-slate-700">
+                                                        {value}
+                                                    </span>
                                                 </div>
                                             ))}
-                                            {variant.images?.length === 0 && !uploadingKey.startsWith(`${index}-`) && (
-                                                <div className="flex h-20 w-20 flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-100 text-slate-300 bg-slate-50/50">
-                                                    <ImageIcon size={20} />
-                                                    <span className="text-[9px] font-black mt-1 uppercase tracking-tighter">No Image</span>
-                                                </div>
-                                            )}
                                         </div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
 
-                        <div className="flex gap-3 mt-6">
-                            <button
-                                type="button"
-                                onClick={() => setIsModalOpen(false)}
-                                className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b]"                            >
-                                Cancel
-                            </button>
+                                {/* Variants */}
 
-                            <button
-                                onClick={saveProduct}
-                                disabled={saving}
-                                className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-gradient-to-br from-sky-600 via-sky-600 to-slate-600 text-white border-none disabled:opacity-60"
-                            >
-                                {saving ? (
-                                    <>
-                                        <Loader2 className="h-4 w-4 animate-spin" />
-                                        Saving...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Save size={16} />
-                                        Save Product
-                                    </>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-
-
-            {detailProduct && (
-                <div
-                    className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/60 backdrop-blur-md p-4"
-                    onClick={() => setDetailProduct(null)}
-                >
-                    <div
-                        className="w-full max-w-3xl max-h-[90vh] overflow-hidden rounded-3xl bg-white shadow-[0_25px_80px_rgba(0,0,0,0.25)]"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Header */}
-                        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/95 px-6 py-5 backdrop-blur-xl">
-                            <div>
-                                <h3 className="text-2xl font-bold text-sky-600">
-                                    {detailProduct.name}
-                                </h3>
-                                <p className="text-sm text-slate-500">
-                                    Product Information
-                                </p>
-                            </div>
-
-                            <button
-                                onClick={() => setDetailProduct(null)}
-                                className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition-all "
-                            >
-                                <X size={18} />
-                            </button>
-                        </div>
-
-                        {/* Content */}
-                        <div className="max-h-[calc(90vh-90px)] overflow-y-auto px-6 py-6">
-                            {/* Description */}
-                            <div className="mb-6 rounded-2xl bg-slate-50 p-5">
-                                <h4 className="mb-3 text-sm font-bold uppercase tracking-wider text-slate-500">
-                                    Description
-                                </h4>
-
-                                <p className="whitespace-pre-wrap leading-7 text-slate-600">
-                                    {detailProduct.description || "No description added."}
-                                </p>
-                            </div>
-
-                            {/* Features + Specifications */}
-                            <div className="grid gap-5 md:grid-cols-2">
-                                {/* Features */}
-                                <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
+                                <div className="mt-6">
                                     <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-600">
-                                        Features
+                                        Product Variants ({detailProduct.product_variants?.length})
                                     </h4>
 
-                                    <ul className="space-y-3">
-                                        {(detailProduct.features || []).map((feature) => (
-                                            <li
-                                                key={feature}
-                                                className="flex items-start gap-3 text-sm text-slate-600"
-                                            >
-                                                <span className="mt-1 h-2 w-2 rounded-full bg-sky-500" />
-                                                {feature}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                {/* Specifications */}
-                                <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-                                    <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-600">
-                                        Specifications
-                                    </h4>
-
-                                    <div className="space-y-3">
-                                        {Object.entries(
-                                            detailProduct.specifications || {}
-                                        ).map(([key, value]) => (
+                                    <div className="grid gap-4 sm:grid-cols-2">
+                                        {detailProduct.product_variants?.map((variant) => (
                                             <div
-                                                key={key}
-                                                className="flex justify-between gap-4 border-b border-slate-100 pb-2"
+                                                key={variant.id}
+                                                className="group flex items-center gap-4 rounded-2xl border border-slate-100 p-3 transition-all hover:border-sky-200 hover:bg-sky-50/50 hover:shadow-md"
                                             >
-                                                <span className="font-medium text-slate-500">
-                                                    {key}
-                                                </span>
+                                                <img
+                                                    src={variant.images?.[0]}
+                                                    alt={variant.name}
+                                                    className="h-16 w-16 rounded-xl object-cover"
+                                                />
 
-                                                <span className="text-right text-slate-700">
-                                                    {value}
-                                                </span>
+                                                <div>
+                                                    <h5 className="font-semibold text-slate-800 group-hover:text-sky-600">
+                                                        {variant.name}
+                                                    </h5>
+
+                                                    <p className="text-xs text-slate-500">
+                                                        Available Variant
+                                                    </p>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
+
                             </div>
-
-                            {/* Variants */}
-
-                            <div className="mt-6">
-                                <h4 className="mb-4 text-sm font-bold uppercase tracking-wider text-sky-600">
-                                    Product Variants ({detailProduct.product_variants?.length})
-                                </h4>
-
-                                <div className="grid gap-4 sm:grid-cols-2">
-                                    {detailProduct.product_variants?.map((variant) => (
-                                        <div
-                                            key={variant.id}
-                                            className="group flex items-center gap-4 rounded-2xl border border-slate-100 p-3 transition-all hover:border-sky-200 hover:bg-sky-50/50 hover:shadow-md"
-                                        >
-                                            <img
-                                                src={variant.images?.[0]}
-                                                alt={variant.name}
-                                                className="h-16 w-16 rounded-xl object-cover"
-                                            />
-
-                                            <div>
-                                                <h5 className="font-semibold text-slate-800 group-hover:text-sky-600">
-                                                    {variant.name}
-                                                </h5>
-
-                                                <p className="text-xs text-slate-500">
-                                                    Available Variant
-                                                </p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
                         </div>
                     </div>
-                </div>
-            )}
+                )}
 
+         
             {/* Delete Confirmation Modal */}
-            {isDeleteModalOpen && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000] animate-in fade-in duration-200">
-                    <div className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg animate-in slide-in-from-bottom-2 duration-200 text-center">
-                        <div style={{ marginBottom: "20px" }}>
-                            <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
-                                <Trash2 size={30} />
+            <AnimatePresence>
+                {isDeleteModalOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 bg-black/40 backdrop-blur-[4px] flex items-center justify-center z-[1000]"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            className="bg-white p-[28px] rounded-[16px] w-full max-w-[350px] max-h-[90vh] overflow-y-auto shadow-lg text-center"
+                        >
+                            <div style={{ marginBottom: "20px" }}>
+                                <div className="w-[60px] h-[60px] rounded-full bg-red-50 text-red-500 flex items-center justify-center mx-auto mb-4">
+                                    <Trash2 size={30} />
+                                </div>
+                                <h3 className="text-lg font-bold text-[#0f172a] mb-2">Delete {itemToDelete?.type === 'product' ? 'Product' : 'Enquiry'}?</h3>
+                                <p className="text-[#584c79] text-[14px] m-0">
+                                    Are you sure you want to delete <b>{itemToDelete?.name}</b>? This action cannot be undone.
+                                </p>
                             </div>
-                            <h3 className="text-lg font-bold text-[#0f172a] mb-2">Delete {itemToDelete?.type === 'product' ? 'Product' : 'Enquiry'}?</h3>
-                            <p className="text-[#584c79] text-[14px] m-0">
-                                Are you sure you want to delete <b>{itemToDelete?.name}</b>? This action cannot be undone.
-                            </p>
-                        </div>
-                        <div className="flex gap-3 mt-6">
-                            <button className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b] hover:bg-gray-50 disabled:opacity-50" onClick={() => setIsDeleteModalOpen(false)} disabled={isDeleting}>
-                                No, Keep it
-                            </button>
-                            <button className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm text-white border-none bg-red-600 hover:bg-red-700 transition-all disabled:bg-red-400" onClick={confirmDeleteItem} disabled={isDeleting}>
-                                {isDeleting ? "Deleting..." : "Yes, Delete!"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+                            <div className="flex gap-3 mt-6">
+                                <button className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm bg-white border border-[#e2e8f0] text-[#1e293b] hover:bg-gray-50 disabled:opacity-50" onClick={() => setIsDeleteModalOpen(false)} disabled={isDeleting}>
+                                    No, Keep it
+                                </button>
+                                <button className="flex-1 py-2.5 rounded-lg font-semibold cursor-pointer text-sm text-white border-none bg-red-600 hover:bg-red-700 transition-all disabled:bg-red-400" onClick={confirmDeleteItem} disabled={isDeleting}>
+                                    {isDeleting ? "Deleting..." : "Yes, Delete!"}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
