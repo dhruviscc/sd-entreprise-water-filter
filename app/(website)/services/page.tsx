@@ -171,11 +171,11 @@ export default function ServicesPage() {
                                  w-full text-left p-4 rounded-xl border transition-all duration-300
                                 flex items-center gap-4 cursor-pointer
 
-  ${isSelected
+                              ${isSelected
                               ? "bg-gradient-to-r from-sky-400 to-cyan-600 text-white shadow-xl scale-[1.02] border-transparent"
                               : "bg-white/60 text-slate-600 border-slate-200 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-700 hover:shadow-md"
                             }
-`}
+                          `}
                         >
                           {/* Icon Box */}
                           <div
