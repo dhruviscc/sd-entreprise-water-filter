@@ -90,7 +90,7 @@ export default function ContactUsPage() {
 
       <section className="relative w-full bg-white py-16 lg:py-24 overflow-hidden">
 
-      
+
         {/* Main Container */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -112,13 +112,13 @@ export default function ContactUsPage() {
                     {/* Phone */}
                     <a
                       href="tel:+919999999999"
-                      className="flex gap-4 p-2 rounded-xl border  border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
+                      className="flex gap-4 p-2 rounded-xl border items-center border-slate-200  transition-all "
                     >
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <Phone className="w-5 h-5 text-sky-600" />
                       </div>
 
-                      <div>
+                      <div >
                         <p className="text-xs uppercase tracking-wider text-slate-400">
                           Call Support
                         </p>
@@ -324,7 +324,7 @@ export default function ContactUsPage() {
 
         </div>
 
-       
+
       </section>
 
       {/* Google Maps embed */}
@@ -334,16 +334,14 @@ export default function ContactUsPage() {
             Our Geographic Location (Ahmedabad, Gujarat)
           </h3>
           <div className="relative w-full h-[350px] sm:h-[450px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3671.1895781498616!2d72.64834887606622!3d23.053531315809796!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1m3!1d1131.0664!2d72.649622!3d23.053787!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen={true}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 w-full h-full"
-            />
+          <iframe
+                title="SD "
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3718.8577953378845!2d72.87469831341277!3d21.21082043241666!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04fb287dd2941%3A0xf21b6aa67c76559a!2sRaja%27s%20Technology!5e0!3m2!1sen!2sin!4v1747324130202!5m2!1sen!2sin"
+                className="w-full h-[360px] md:h-[560px] border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                allowFullScreen
+              />
           </div>
         </ScrollReveal>
       </section>

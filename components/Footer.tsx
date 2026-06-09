@@ -51,11 +51,7 @@ export default function Footer() {
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
               Leading water purification experts in Gujarat. Dedicated to delivering state-of-the-art domestic, commercial, and industrial RO systems, water softeners, and annual maintenance services.
             </p>
-            <div className="space-y-2">
-              <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">Working Hours</div>
-              <p className="text-sm text-slate-400">Mon - Sat: 9:00 AM - 7:00 PM</p>
-              <p className="text-sm text-slate-400">Sun: Emergency Support Only</p>
-            </div>
+
           </motion.div>
 
           {/* Column 2: Quick Links */}
@@ -91,24 +87,24 @@ export default function Footer() {
               Get In Touch
             </h4>
             <ul className="space-y-4 text-sm text-slate-400 list-none ml-0">
-            <li>
-              <a 
-                href="https://www.google.com/maps/search/?api=1&query=SD+Enterprise+Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-start gap-3 hover:text-sky-400 transition-all group"
-              >
-                <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 group-hover:border-sky-500/30">
-                  <MapPin className="w-4 h-4 text-sky-500" />
-                </div>
-                <span>
-                  Plot No. 12, GIDC Phase 3,<br />
-                  Naroda, Ahmedabad, Gujarat - 382330
-                </span>
-              </a>
+              <li>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=SD+Enterprise+Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 hover:text-sky-400 transition-all group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 group-hover:border-sky-500/30">
+                    <MapPin className="w-4 h-4 text-sky-500" />
+                  </div>
+                  <span>
+                    Plot No. 12, GIDC Phase 3,<br />
+                    Naroda, Ahmedabad, Gujarat - 382330
+                  </span>
+                </a>
               </li>
               <li>
-              <a href="tel:+919879216149" className="flex items-center gap-3 hover:text-sky-400 transition-all group">
+                <a href="tel:+919879216149" className="flex items-center gap-3 hover:text-sky-400 transition-all group">
                   <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center shrink-0 border border-slate-700 group-hover:border-sky-500/30">
                     <Phone className="w-4 h-4 text-sky-500" />
                   </div>
@@ -133,13 +129,13 @@ export default function Footer() {
             </h4>
             <ul className="space-y-3 text-sm list-none ml-0">
               <li>
-                <Link href="#" className="text-slate-400 hover:text-sky-400 transition-colors flex items-center gap-2">
+                <Link href="/privacy" className="text-slate-400 hover:text-sky-400 transition-colors flex items-center gap-2">
                   <span className="w-1.5 h-[1px] bg-slate-600" />
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="#" className="text-slate-400 hover:text-sky-400 transition-colors flex items-center gap-2">
+                <Link href="/terms" className="text-slate-400 hover:text-sky-400 transition-colors flex items-center gap-2">
                   <span className="w-1.5 h-[1px] bg-slate-600" />
                   Terms of Service
                 </Link>
