@@ -695,15 +695,25 @@ export default function HeroSliderAdmin() {
                     />
                   </div>
                   <div className="flex flex-col gap-[5px]">
-                    <label htmlFor="primaryCtaLink" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Primary CTA Link</label>
-                    <input
-                      type="text"
+                    <label
+                      htmlFor="primaryCtaLink"
+                      className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider"
+                    >
+                      Primary CTA Link
+                    </label>
+
+                    <select
                       id="primaryCtaLink"
                       name="primaryCtaLink"
                       className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
                       value={formState.primaryCtaLink}
                       onChange={handleFormChange}
-                    />
+                    >
+                      <option value="">Select CTA Link</option>
+                      <option value="/contact">Contact Us</option>
+                      <option value="/services">Services</option>
+                      <option value="/products">Products</option>
+                    </select>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -720,8 +730,15 @@ export default function HeroSliderAdmin() {
                     />
                   </div>
                   <div className="flex flex-col gap-[5px]">
-                    <label htmlFor="secondaryCtaLink" className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider">Secondary CTA Link</label>
-                    <input
+                    <label
+                      htmlFor="secondaryCtaLink"
+                      className="text-[12px] font-semibold text-sky-600 uppercase tracking-wider"
+                    >
+                      Secondary CTA Link
+                    </label>
+
+                    {/* Text Input */}
+                    {/* <input
                       type="text"
                       id="secondaryCtaLink"
                       name="secondaryCtaLink"
@@ -729,7 +746,21 @@ export default function HeroSliderAdmin() {
                       placeholder="Leave empty for popup"
                       value={formState.secondaryCtaLink}
                       onChange={handleFormChange}
-                    />
+                    /> */}
+
+                    {/* Select Option */}
+                    <select
+                      name="secondaryCtaLink"
+                      className="w-full px-3.5 py-[11px] rounded-[10px] border border-[#e2e8f0] bg-white text-sm transition-all focus:outline-none focus:border-[#083574] focus:ring-2 focus:ring-[#083574]/10"
+                      value={formState.secondaryCtaLink}
+                      onChange={handleFormChange}
+                    >
+                      <option value="">Select quick option</option>
+                      <option value="">Popup (No Link)</option>
+                      <option value="/contact">Contact Us</option>
+                      <option value="/quote">Get Quote</option>
+                      <option value="/services">Services</option>
+                    </select>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
