@@ -299,7 +299,7 @@ export default function AdminProductPage() {
 
 
     return (
-        <div className="space-y-4 sm:space-y-6 bg-slate-50 min-h-screen">
+        <div className="space-y-4 sm:space-y-6 bg-slate-50 ">
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4">
                 <div className="w-full lg:w-auto">
                     <div className="relative flex-1 sm:w-80">

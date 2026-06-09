@@ -51,7 +51,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </button>
         </header>
 
-        <main className="flex-1 overflow-x-hidden">
+        <main className="flex-1 ">
           <div className="p-4 sm:p-6 lg:p-8">
             {children}
           </div>
