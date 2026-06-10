@@ -111,8 +111,8 @@ export default function ContactUsPage() {
 
                     {/* Phone */}
                     <a
-                      href="tel:+919999999999"
-                      className="flex gap-4 p-2 rounded-xl border items-center border-slate-200  transition-all "
+                      href="tel:+919879216149"
+                      className="flex gap-4 p-2 rounded-xl border items-center border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
                     >
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <Phone className="w-5 h-5 text-sky-600" />
@@ -130,7 +130,7 @@ export default function ContactUsPage() {
 
                     {/* WhatsApp */}
                     <a
-                      href="https://wa.me/919999999999"
+                      href="https://wa.me/919879216149"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex gap-4 p-2 rounded-xl border items-center border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
@@ -150,7 +150,10 @@ export default function ContactUsPage() {
                     </a>
 
                     {/* Email */}
-                    <div className="flex gap-4 p-2 items-center rounded-xl border border-slate-200">
+                    <a
+                      href="mailto:info@sdenterprise.com"
+                      className="flex gap-4 p-2 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
+                    >
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <Mail className="w-5 h-5 text-sky-600" />
                       </div>
@@ -163,10 +166,15 @@ export default function ContactUsPage() {
                           info@sdenterprise.com
                         </p>
                       </div>
-                    </div>
+                    </a>
 
                     {/* Address */}
-                    <div className="flex gap-4 p-2 py-3 items-center rounded-xl border border-slate-200">
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex gap-4 p-2 py-3 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
+                    >
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <MapPin className="w-5 h-5 text-sky-600" />
                       </div>
@@ -181,10 +189,15 @@ export default function ContactUsPage() {
                           Gujarat - 382330
                         </p>
                       </div>
-                    </div>
+                    </a>
 
                     {/* Hours */}
-                    <div className="flex gap-4 px-2 py-4 items-center rounded-xl border border-slate-200">
+                    <a
+                      href="https://www.google.com/maps/search/?api=1&query=Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex gap-4 px-2 py-4 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
+                    >
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <Clock className="w-5 h-5 text-sky-600" />
                       </div>
@@ -197,7 +210,7 @@ export default function ContactUsPage() {
                           Mon - Sat : 9:00 AM - 7:00 PM
                         </p>
                       </div>
-                    </div>
+                    </a>
 
                   </div>
                 </div>
@@ -334,14 +347,14 @@ export default function ContactUsPage() {
             Our Geographic Location (Ahmedabad, Gujarat)
           </h3>
           <div className="relative w-full h-[350px] sm:h-[450px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
-          <iframe
-                title="SD "
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3718.8577953378845!2d72.87469831341277!3d21.21082043241666!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be04fb287dd2941%3A0xf21b6aa67c76559a!2sRaja%27s%20Technology!5e0!3m2!1sen!2sin!4v1747324130202!5m2!1sen!2sin"
-                className="w-full h-[360px] md:h-[560px] border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                allowFullScreen
-              />
+     
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12398368.556847932!2d-0.05976507024788251!3d0.1443693565530188!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa5f922de066fd38f%3A0x3578557376eb320b!2sSD%20Enterprise%20Water%20Filter%20Sales%20Service!5e0!3m2!1sen!2sin!4v1781064901243!5m2!1sen!2sin"
+              className="w-full h-[360px] md:h-[560px] border-0"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+
+            />
           </div>
         </ScrollReveal>
       </section>

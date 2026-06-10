@@ -1277,16 +1277,31 @@ export default function HomePage() {
 
                 <div className="space-y-4">
                   {/* Address */}
-                  <div className="flex items-start gap-3">
+                  <a 
+                    href="https://www.google.com/maps/search/?api=1&query=Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-start gap-3 hover:text-sky-600 transition-colors group"
+                  >
                     <MapPin className="w-5 h-5 text-sky-200 mt-0.5 shrink-0" />
                     <span className="text-sm">
                       Plot No. 12, GIDC Phase 3, Naroda, Ahmedabad, Gujarat - 382330
                     </span>
-                  </div>
+                  </a>
                   {/* Email */}
-                  <div className="flex items-center gap-3">
+                  <a 
+                    href="mailto:info@sdenterprise.com"
+                    className="flex items-center gap-3 hover:text-sky-600 transition-colors group"
+                  >
                     <Mail className="w-4 h-4 text-sky-200 shrink-0" />
                     <span className="text-sm">info@sdenterprise.com</span>
+                  </a>
+                  {/* Business Hours */}
+                  <div className="flex items-center gap-3 text-slate-600">
+                    <Clock className="w-4 h-4 text-sky-200 shrink-0" />
+                    <span className="text-sm font-medium">
+                      Mon - Sat: 9:00 AM - 7:00 PM
+                    </span>
                   </div>
                 </div>
 
