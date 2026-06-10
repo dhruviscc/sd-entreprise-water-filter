@@ -170,7 +170,7 @@ export default function ContactUsPage() {
 
                     {/* Address */}
                     <a
-                      href="https://www.google.com/maps/search/?api=1&query=Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
+                      href="https://www.google.com/maps/place/SD+Enterprise+Water+Filter+Sales+Service/@22.415883,71.326972,5z/data=!4m6!3m5!1s0xa5f922de066fd38f:0x3578557376eb320b!8m2!3d22.4158826!4d71.3269721!16s%2Fg%2F11sw15n5dk?hl=en&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex gap-4 p-4 py-3 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"

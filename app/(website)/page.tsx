@@ -1264,9 +1264,7 @@ export default function HomePage() {
                 <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-slate-300 rounded-full blur-3xl animate-blobFloat2" />
 
                 <div className="space-y-4 relative z-10">
-                  <span className="inline-block px-3 py-1 rounded-full bg-white/50 border border-slate-300 text-xs font-bold uppercase tracking-wider shadow-sm animate-float-3d">
-                    Support & Sales
-                  </span>
+                 
                   <h2 className="text-3xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-700 to-slate-900">
                     Ready to upgrade your water quality?
                   </h2>
@@ -1278,7 +1276,7 @@ export default function HomePage() {
                 <div className="space-y-4">
                   {/* Address */}
                   <a 
-                    href="https://www.google.com/maps/search/?api=1&query=Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
+                    href="https://www.google.com/maps/place/SD+Enterprise+Water+Filter+Sales+Service/@22.415883,71.326972,5z/data=!4m6!3m5!1s0xa5f922de066fd38f:0x3578557376eb320b!8m2!3d22.4158826!4d71.3269721!16s%2Fg%2F11sw15n5dk?hl=en&entry=ttu&g_ep=EgoyMDI2MDYwMy4xIKXMDSoASAFQAw%3D%3D"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-start gap-3 hover:text-sky-600 transition-colors group"

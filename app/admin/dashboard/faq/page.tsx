@@ -342,7 +342,7 @@ export default function AdminFAQPage() {
                         <h4 className="font-semibold text-slate-800 text-sm line-clamp-1">
                           {faq.question}
                         </h4>
-                        <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                        <p className="text-xs w-5xl text-slate-500 mt-1 line-clamp-3">
                           {faq.answer}
                         </p>
                       </div>

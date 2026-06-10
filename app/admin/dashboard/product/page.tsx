@@ -387,7 +387,7 @@ export default function AdminProductPage() {
                                 </div>
 
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-slate-800 truncate">
+                                    <p className="font-semibold text-slate-800  ">
                                         {product.name}
                                     </p>
 

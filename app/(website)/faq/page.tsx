@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { faqsData } from "../data/mockData";
 import BubbleBackground from "@/components/BubbleBackground";
 import ScrollReveal from "@/components/ScrollReveal";
-import { Search, ChevronDown, ChevronUp, HelpCircle, X, Droplets, Cylinder, Loader2,  } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, HelpCircle, X, Droplets, Cylinder, Loader2, } from "lucide-react";
 import Link from "next/link";
 
 
@@ -132,48 +132,48 @@ export default function FAQPage() {
           </div>
         </div>
         <ScrollReveal variant="fadeInUp" duration={500}>
-       <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-stretch md:items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
-  
-  {/* Search Bar */}
-  <div className="relative flex-1">
-    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-stretch md:items-center gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
 
-    <input
-      type="text"
-      placeholder="Search questions or keywords..."
-      value={searchTerm}
-      onChange={(e) => setSearchTerm(e.target.value)}
-      className="w-full pl-10 pr-10 py-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
-    />
+            {/* Search Bar */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
 
-    {searchTerm && (
-      <button
-        onClick={() => setSearchTerm("")}
-        className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-slate-200 text-slate-400"
-      >
-        <X className="w-4 h-4" />
-      </button>
-    )}
-  </div>
+              <input
+                type="text"
+                placeholder="Search questions or keywords..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-10 py-3 rounded-lg border border-slate-200 bg-slate-50 text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
+              />
 
-  {/* Action Buttons */}
-  <div className="flex flex-col sm:flex-row gap-2 md:flex-shrink-0">
-    <button
-      onClick={() => expandAll(filteredFaqs)}
-      className="px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg text-sm font-medium text-slate-600 border border-slate-200 transition-colors cursor-pointer"
-    >
-      Expand All
-    </button>
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-slate-200 text-slate-400"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
 
-    <button
-      onClick={collapseAll}
-      className="px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg text-sm font-medium text-slate-600 border border-slate-200 transition-colors cursor-pointer"
-    >
-      Collapse All
-    </button>
-  </div>
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-2 md:flex-shrink-0">
+              <button
+                onClick={() => expandAll(filteredFaqs)}
+                className="px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg text-sm font-medium text-slate-600 border border-slate-200 transition-colors cursor-pointer"
+              >
+                Expand All
+              </button>
 
-</div>
+              <button
+                onClick={collapseAll}
+                className="px-4 py-3 bg-slate-50 hover:bg-slate-100 rounded-lg text-sm font-medium text-slate-600 border border-slate-200 transition-colors cursor-pointer"
+              >
+                Collapse All
+              </button>
+            </div>
+
+          </div>
         </ScrollReveal>
 
         {/* Category Filter Pills */}

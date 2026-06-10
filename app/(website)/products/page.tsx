@@ -436,81 +436,89 @@ export default function ProductsPage() {
 
       {/* Mobile Filters Drawer modal */}
       {showMobileFilters && (
-        <div className="fixed inset-0 z-50 relative flex justify-end bg-black/50 backdrop-blur-sm lg:hidden transition-all duration-300">
+        <>
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black/40 z-40"
+            onClick={() => setShowMobileFilters(false)}
+          />
 
+          {/* Bottom Sheet */}
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-3xl shadow-2xl animate-in slide-in-from-bottom duration-300">
 
-          <div className="w-full max-w-xs bg-white h-full p-6 flex flex-col justify-between shadow-2xl animate-in slide-in-from-right duration-200">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <h3 className="text-base font-bold text-slate-800 flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-sky-500" />
-                  <span>Filters</span>
-                </h3>
-                <button
-                  onClick={() => setShowMobileFilters(false)}
-                  className="p-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
+            {/* Handle */}
+            <div className="flex justify-center py-3">
+              <div className="w-12 h-1.5 rounded-full bg-slate-300" />
+            </div>
 
-              <div className="space-y-2 overflow-y-auto max-h-[70vh] pr-2">
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 pb-4 border-b border-slate-100">
+              <h3 className="flex items-center gap-2 text-base font-semibold">
+                <Filter className="w-4 h-4 text-sky-500" />
+                Filters
+              </h3>
+
+              <button
+                onClick={() => setShowMobileFilters(false)}
+                className="p-2 rounded-lg hover:bg-slate-100"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Scrollable Content */}
+            <div className="max-h-[55vh] overflow-y-auto p-4">
+              <div className="space-y-2">
                 {categories.map((cat) => {
                   const isSelected = selectedCategory === cat;
+
                   return (
                     <button
                       key={cat}
                       onClick={() => {
                         setSelectedCategory(cat);
                         setSelectedColour("");
+                        setShowMobileFilters(false);
                       }}
-                      className={`w-full text-left px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-between cursor-pointer ${isSelected
-                        ? "bg-sky-500 text-white shadow-sm"
-                        : "text-slate-600 hover:bg-slate-50"
+                      className={`w-full text-left px-4 py-3 rounded-xl transition-all ${isSelected
+                          ? "bg-sky-500 text-white"
+                          : "bg-slate-50 text-slate-700 hover:bg-slate-100"
                         }`}
                     >
-                      <span>{cat}</span>
+                      {cat}
                     </button>
                   );
                 })}
               </div>
 
+              {/* Colors */}
               {colourOptions.length > 0 && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                      Colour
-                    </h4>
-                    {activeSelectedColour && (
-                      <button
-                        onClick={() => setSelectedColour("")}
-                        className="text-[11px] font-bold text-sky-600 hover:text-sky-700 cursor-pointer"
-                      >
-                        Clear
-                      </button>
-                    )}
-                  </div>
+                <div className="mt-6">
+                  <h4 className="text-sm font-semibold mb-3">
+                    Filter by Colour
+                  </h4>
+
                   <div className="flex flex-wrap gap-2">
                     {colourOptions.map((option) => {
-                      const isSelected = activeSelectedColour === option.colorHex;
+                      const isSelected =
+                        activeSelectedColour === option.colorHex;
+
                       return (
                         <button
                           key={option.colorHex}
-                          type="button"
-                          title={option.name}
-                          aria-label={`Filter by ${option.name}`}
-                          aria-pressed={isSelected}
-                          onClick={() => setSelectedColour((current) => current === option.colorHex ? "" : option.colorHex)}
-                          className={`relative h-8 w-8 rounded-md border shadow-sm transition-all cursor-pointer ${isSelected
-                            ? "border-sky-500 ring-2 ring-sky-500 ring-offset-2"
-                            : "border-slate-200 hover:scale-105 hover:border-slate-300"
+                          onClick={() =>
+                            setSelectedColour(
+                              isSelected ? "" : option.colorHex
+                            )
+                          }
+                          className={`h-9 w-9 rounded-lg border ${isSelected
+                              ? "ring-2 ring-sky-500 border-sky-500"
+                              : "border-slate-200"
                             }`}
-                          style={{ backgroundColor: option.colorHex }}
-                        >
-                          {isSelected && (
-                            <Check className="absolute inset-0 m-auto h-4 w-4 text-slate-900 drop-shadow-[0_1px_1px_rgba(255,255,255,0.85)]" />
-                          )}
-                        </button>
+                          style={{
+                            backgroundColor: option.colorHex,
+                          }}
+                        />
                       );
                     })}
                   </div>
@@ -518,17 +526,20 @@ export default function ProductsPage() {
               )}
             </div>
 
-            <button
-              onClick={() => {
-                resetAllFilters();
-                setShowMobileFilters(false);
-              }}
-              className="w-full py-2.5 border border-slate-200 hover:bg-slate-50 rounded-lg text-xs font-bold text-slate-700 text-center cursor-pointer"
-            >
-              Reset All Filters
-            </button>
+            {/* Footer */}
+            <div className="p-4 border-t border-slate-100">
+              <button
+                onClick={() => {
+                  resetAllFilters();
+                  setShowMobileFilters(false);
+                }}
+                className="w-full py-3 rounded-xl border border-slate-200 font-medium hover:bg-slate-50"
+              >
+                Reset All Filters
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );
