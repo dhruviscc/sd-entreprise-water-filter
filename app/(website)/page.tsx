@@ -332,20 +332,10 @@ export default function HomePage() {
     return slideIndex - 1;
   })();
 
-
-  const [videoIdx, setVideoIdx] = useState(0);
-  const [itemsVisible, setItemsVisible] = useState(1);
+  const [videoIdx, setVideoIdx] = useState(1);
   const [isVideoTransitioning, setIsVideoTransitioning] = useState(true);
-
-  const extendedVideoReviews = useMemo(() => {
-    if (videoReviews.length === 0) return [];
-    if (videoReviews.length <= itemsVisible) return videoReviews;
-    return [
-      ...videoReviews,
-      ...videoReviews.slice(0, itemsVisible)
-    ];
-  }, [videoReviews, itemsVisible]);
-
+  const [isVideoAnimating, setIsVideoAnimating] = useState(false);
+  const [itemsVisible, setItemsVisible] = useState(1);
 
   useEffect(() => {
     const updateVisible = () => {
@@ -353,49 +343,92 @@ export default function HomePage() {
       else if (window.innerWidth < 1024) setItemsVisible(2);
       else setItemsVisible(3);
     };
+
     updateVisible();
     window.addEventListener("resize", updateVisible);
+
     return () => window.removeEventListener("resize", updateVisible);
-  }, []);
+  }, [videoReviews.length]);
+
+  const extendedVideoReviews = useMemo(() => {
+    if (videoReviews.length === 0) return [];
+
+    // To ensure a seamless loop with multiple items visible, 
+    // we clone enough items at the end to fill the viewport.
+    return [
+      videoReviews[videoReviews.length - 1],
+      ...videoReviews,
+      ...videoReviews.slice(0, itemsVisible),
+    ];
+  }, [videoReviews, itemsVisible]);
 
   useEffect(() => {
-    if (videoReviews.length <= itemsVisible) return;
-    const timer = setInterval(() => {
-      setIsVideoTransitioning(true);
-      setVideoIdx((prev) => prev + 1);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [videoReviews.length, itemsVisible]);
+    if (videoReviews.length === 0) return;
 
-
-  useEffect(() => {
-    if (videoReviews.length > 0 && videoIdx >= videoReviews.length) {
+    if (videoIdx === 0) {
       const timer = setTimeout(() => {
         setIsVideoTransitioning(false);
-        setVideoIdx(0);
-      }, 700);
+        setVideoIdx(videoReviews.length);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+    if (videoIdx === videoReviews.length + 1) {
+      const timer = setTimeout(() => {
+        setIsVideoTransitioning(false);
+        setVideoIdx(1);
+      }, 800);
       return () => clearTimeout(timer);
     }
   }, [videoIdx, videoReviews.length]);
 
-
   useEffect(() => {
     if (!isVideoTransitioning) {
-      const timer = setTimeout(() => setIsVideoTransitioning(true), 50);
+      const timer = setTimeout(() => {
+        setIsVideoTransitioning(true);
+      }, 50);
       return () => clearTimeout(timer);
     }
   }, [isVideoTransitioning]);
 
-  const handlePrev = () => {
-    if (videoReviews.length <= itemsVisible) return;
+  useEffect(() => {
+    setVideoIdx(1);
     setIsVideoTransitioning(true);
-    setVideoIdx((prev) => (prev === 0 ? Math.max(videoReviews.length - 1, 0) : prev - 1));
+    setIsVideoAnimating(false);
+  }, [videoReviews]);
+
+
+  useEffect(() => {
+    if (videoReviews.length <= itemsVisible || isVideoAnimating || isReviewPaused) return;
+
+    const interval = setInterval(() => {
+      handleNext();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [videoReviews.length, itemsVisible, isVideoAnimating, videoIdx]);
+
+  const handlePrev = () => {
+    if (isVideoAnimating || videoReviews.length <= itemsVisible) return;
+
+    setIsVideoAnimating(true);
+    setIsVideoTransitioning(true);
+    setVideoIdx((prev) => prev - 1);
+
+    setTimeout(() => {
+      setIsVideoAnimating(false);
+    }, 900);
   };
 
   const handleNext = () => {
-    if (videoReviews.length <= itemsVisible) return;
+    if (isVideoAnimating || videoReviews.length <= itemsVisible) return;
+
+    setIsVideoAnimating(true);
     setIsVideoTransitioning(true);
     setVideoIdx((prev) => prev + 1);
+
+    setTimeout(() => {
+      setIsVideoAnimating(false);
+    }, 900);
   };
 
   // --- Customer Reviews Slider State ---
@@ -964,7 +997,11 @@ export default function HomePage() {
       </section>
 
       {/* ================= VIDEO REVIEWS SECTION ================= */}
-      <section className="w-full py-32 px-4 sm:px-6 lg:px-8 relative min-h-[400px]">
+      <section
+        className="w-full py-32 px-4 sm:px-6 lg:px-8 relative min-h-[400px]"
+        onMouseEnter={() => setIsReviewPaused(true)}
+        onMouseLeave={() => setIsReviewPaused(false)}
+      >
         {/* Decorative background vectors */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
 
@@ -1026,17 +1063,19 @@ export default function HomePage() {
           ) : (
             <div className="relative overflow-hidden group/slider">
 
-              <motion.div
-                className={`flex ${videoReviews.length <= itemsVisible ? 'justify-center' : ''}`}
-                animate={videoReviews.length > itemsVisible ? { x: `-${videoIdx * (100 / itemsVisible)}%` } : { x: 0 }}
-                transition={isVideoTransitioning ? { duration: 0.8, ease: [0.16, 1, 0.3, 1] } : { duration: 0 }}
+              <div
+                className={`flex ${videoReviews.length <= itemsVisible ? 'justify-center' : ''} h-full`}
+                style={{
+                  transform: `translateX(-${videoIdx * (100 / extendedVideoReviews.length)}%)`,
+                  transition: isVideoTransitioning ? "transform 800ms cubic-bezier(0.4, 0, 0.2, 1)" : "none",
+                  width: `${(extendedVideoReviews.length / itemsVisible) * 100}%`
+                }}
               >
-
                 {extendedVideoReviews.map((review, i) => (
                   <div
                     key={`${review.id}-${i}`}
-                    className="shrink-0 transition-all duration-500"
-                    style={{ width: `${100 / itemsVisible}%` }}
+                    className="shrink-0 p-4"
+                    style={{ width: `${100 / extendedVideoReviews.length}%` }}
                   >
                     <div className="group rounded-2xl p-4">
                       <div className="relative rounded-xl overflow-hidden shadow-md w-full h-[450px] bg-slate-900">
@@ -1062,30 +1101,29 @@ export default function HomePage() {
                     </div>
                   </div>
                 ))}
-              </motion.div>
-
+              </div>
             </div>
           )}
 
-              {videoReviews.length  && (
-                <div className="flex justify-center md:justify-end gap-3 mt-6">
-                  <button
-                    onClick={handlePrev}
-                    className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
-                    aria-label="Previous video"
-                  >
-                    <ChevronLeft />
-                  </button>
+          {videoReviews.length && (
+            <div className="flex justify-center md:justify-end gap-3 mt-6">
+              <button
+                onClick={handlePrev}
+                className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
+                aria-label="Previous video"
+              >
+                <ChevronLeft />
+              </button>
 
-                  <button
-                    onClick={handleNext}
-                    className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
-                    aria-label="Next video"
-                  >
-                    <ChevronRight />
-                  </button>
-                </div>
-              )}
+              <button
+                onClick={handleNext}
+                className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
+                aria-label="Next video"
+              >
+                <ChevronRight />
+              </button>
+            </div>
+          )}
         </div>
 
       </section>
