@@ -89,7 +89,7 @@ export default function Footer() {
             <ul className="space-y-4 text-sm text-slate-400 list-none ml-0">
               <li>
                 <a
-                  href="https://www.google.com/maps/search/?api=1&query=SD+Enterprise+Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
+                  href="https://www.google.com/maps?ll=22.415883,71.326972&z=5&t=m&hl=en&gl=IN&mapclient=embed&cid=3852923435620184587"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-start gap-3 hover:text-sky-400 transition-all group"

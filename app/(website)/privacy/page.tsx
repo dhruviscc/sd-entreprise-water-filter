@@ -8,7 +8,7 @@ export default function PrivacyPolicyPage() {
   return (
     <div className="bg-white min-h-screen">
       {/* Header Section */}
-      <section className="bg-slate-50 py-16 border-b border-slate-200">
+      <section className=" py-16 border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 text-center">
           <ScrollReveal variant="fadeInDown">
             <h1 className="text-4xl font-extrabold text-slate-900 mb-4">Privacy Policy</h1>

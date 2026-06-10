@@ -99,7 +99,7 @@ export default function ContactUsPage() {
             {/* LEFT PANEL */}
             <div>
               <ScrollReveal variant="fadeInLeft" duration={800}>
-                <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 lg:p-8 h-full">
+                <div className="bg-white rounded-3xl border border-slate-200 shadow-lg p-6 lg:p-8 h-[550px]">
 
                   <h2 className="text-xl sm:text-2xl font-black text-slate-800 tracking-wide pb-3 border-b border-slate-200 mb-6">
                     Customer Support Desk
@@ -112,7 +112,7 @@ export default function ContactUsPage() {
                     {/* Phone */}
                     <a
                       href="tel:+919879216149"
-                      className="flex gap-4 p-2 rounded-xl border items-center border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
+                      className="flex gap-4 p-4 rounded-xl border items-center border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
                     >
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <Phone className="w-5 h-5 text-sky-600" />
@@ -133,7 +133,7 @@ export default function ContactUsPage() {
                       href="https://wa.me/919879216149"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex gap-4 p-2 rounded-xl border items-center border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
+                      className="flex gap-4 p-4 rounded-xl border items-center border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
                     >
                       <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center">
                         <MessageSquare className="w-5 h-5 text-emerald-600" />
@@ -152,7 +152,7 @@ export default function ContactUsPage() {
                     {/* Email */}
                     <a
                       href="mailto:info@sdenterprise.com"
-                      className="flex gap-4 p-2 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
+                      className="flex gap-4 p-4 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
                     >
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <Mail className="w-5 h-5 text-sky-600" />
@@ -173,7 +173,7 @@ export default function ContactUsPage() {
                       href="https://www.google.com/maps/search/?api=1&query=Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex gap-4 p-2 py-3 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
+                      className="flex gap-4 p-4 py-3 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
                     >
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
                         <MapPin className="w-5 h-5 text-sky-600" />
@@ -191,26 +191,6 @@ export default function ContactUsPage() {
                       </div>
                     </a>
 
-                    {/* Hours */}
-                    <a
-                      href="https://www.google.com/maps/search/?api=1&query=Plot+No.+12,+GIDC+Phase+3,+Naroda,+Ahmedabad,+Gujarat+-+382330"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex gap-4 px-2 py-4 items-center rounded-xl border border-slate-200 hover:border-sky-300 hover:bg-sky-50 transition-all"
-                    >
-                      <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
-                        <Clock className="w-5 h-5 text-sky-600" />
-                      </div>
-
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-slate-400">
-                          Business Hours
-                        </p>
-                        <p className="text-slate-800 text-sm">
-                          Mon - Sat : 9:00 AM - 7:00 PM
-                        </p>
-                      </div>
-                    </a>
 
                   </div>
                 </div>

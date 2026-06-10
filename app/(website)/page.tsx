@@ -402,7 +402,7 @@ export default function HomePage() {
 
     const interval = setInterval(() => {
       handleNext();
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [videoReviews.length, itemsVisible, isVideoAnimating, videoIdx]);
@@ -1077,7 +1077,7 @@ export default function HomePage() {
                     className="shrink-0 p-4"
                     style={{ width: `${100 / extendedVideoReviews.length}%` }}
                   >
-                    <div className="group rounded-2xl p-4">
+                    <div className="group rounded-2xl">
                       <div className="relative rounded-xl overflow-hidden shadow-md w-full h-[450px] bg-slate-900">
                         {review.video_url && getYoutubeEmbedUrl(review.video_url) ? (
                           <iframe
@@ -1106,7 +1106,7 @@ export default function HomePage() {
           )}
 
           {videoReviews.length && (
-            <div className="flex justify-center md:justify-end gap-3 mt-6">
+            <div className="flex justify-center md:justify-end gap-2 mt-6">
               <button
                 onClick={handlePrev}
                 className="p-3 rounded-full border border-sky-300 hover:bg-sky-50 shadow-sm transition-colors"
@@ -1296,13 +1296,7 @@ export default function HomePage() {
                     <Mail className="w-4 h-4 text-sky-200 shrink-0" />
                     <span className="text-sm">info@sdenterprise.com</span>
                   </a>
-                  {/* Business Hours */}
-                  <div className="flex items-center gap-3 text-slate-600">
-                    <Clock className="w-4 h-4 text-sky-200 shrink-0" />
-                    <span className="text-sm font-medium">
-                      Mon - Sat: 9:00 AM - 7:00 PM
-                    </span>
-                  </div>
+                
                 </div>
 
                 {/* Direct Connect Buttons */}
