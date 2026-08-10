@@ -6,8 +6,8 @@ export interface Blog {
     id?: string;
     title: string;
     slug?: string;
-    content: string;
-    excerpt?: string;
+    content: string; // 'content' is used for the full blog post
+    summary?: string; // 'summary' is used for the excerpt
     featured_image_url?: string;
     status?: BlogStatus;
     author_id?: string;
@@ -26,8 +26,8 @@ const slugify = (value: string) =>
 const normalizeBlog = (blog: Blog) => ({
     ...blog,
     slug: blog.slug || slugify(blog.title),
-    status: blog.status || "draft",
-    excerpt: blog.excerpt || blog.content.substring(0, 150),
+    status: blog.status || "draft", // Default status to 'draft'
+    summary: blog.summary || blog.content.substring(0, 150), // Generate summary if not provided
 });
 
 export const blogService = {
