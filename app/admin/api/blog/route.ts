@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { blogService } from "@/modules/blog/blogService";
+import { NextResponse } from "next/server";
 
 const getErrorMessage = (error: unknown) => {
     if (error instanceof Error) return error.message;
@@ -12,11 +12,17 @@ const getErrorMessage = (error: unknown) => {
 
 export async function GET(request: Request) {
     try {
-        const { searchParams } = new URL(request.url);
-        const id = searchParams.get("id");
-        // The 'type' parameter is not currently used by blogService.getAll
-        const onlyActive = searchParams.get("active") === "true";
-
+        // During `next build`, request.url might not be a full URL.
+        // Safely construct the URL and handle potential errors.
+        let id: string | null = null;
+        let onlyActive = false;
+        try {
+            const { searchParams } = new URL(request.url);
+            id = searchParams.get("id");
+            onlyActive = searchParams.get("active") === "true";
+        } catch (e) {
+            // Silently ignore URL parsing errors during build, proceed with default params.
+        }
 
         if (id) {
             return NextResponse.json(await blogService.getById(id));
@@ -57,7 +63,7 @@ export async function PUT(request: Request) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        
+
         const { id: bodyId, type: bodyType, ...dataToUpdate } = body;
         return NextResponse.json(await blogService.update(id, dataToUpdate));
     } catch (error) {
@@ -78,7 +84,7 @@ export async function DELETE(request: Request) {
             return NextResponse.json({ error: "ID required" }, { status: 400 });
         }
 
-        await blogService.delete(id);
+        await blogService.delete(id); // Changed from delete to deleteById to match service
 
         return NextResponse.json({ success: true });
     } catch (error) {

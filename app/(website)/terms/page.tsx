@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { FileText, ShieldCheck, UserCheck, AlertCircle, Scale } from "lucide-react";

@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import ScrollReveal from "@/components/ScrollReveal";
 import { Shield, Lock, Eye, FileText, Info } from "lucide-react";
@@ -22,7 +20,7 @@ export default function PrivacyPolicyPage() {
       {/* Content Section */}
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-4 space-y-12">
-          
+
           <ScrollReveal variant="fadeInUp">
             <div className="flex gap-4 items-start">
               <div className="bg-sky-100 p-3 rounded-xl shrink-0">
