@@ -63,7 +63,7 @@ export const servicesData: Service[] = [
     name: "Domestic Filter",
     short_description: "Premium water purification systems designed for households to guarantee safe, sweet, and healthy drinking water.",
     description: "Our Domestic Filter solutions include state-of-the-art multi-stage purification technologies (RO + UV + UF + TDS Controller) tailored to meet your household's water quality requirements. We ensure that your family is protected against waterborne contaminants, excess minerals, heavy metals, and harmful microbes, delivering pure drinking water with optimal taste and mineral balance.",
-    image: "https://www.kent.co.in/cdn/shop/files/kent-grand-1.webp?v=1774355519&width=1100",
+    image: "https://cpimg.tistatic.com/06308070/b/4/Domestic-Water-Purification-Filter.jpg",
     icon: "Home",
     features: [
       "Multi-stage RO + UV + UF purification technology",
@@ -117,7 +117,7 @@ export const servicesData: Service[] = [
     name: "Industrial Filter",
     short_description: "High-capacity water filtration and purification systems for commercial spaces, schools, offices, and factories.",
     description: "Designed to handle high water demand, our Industrial Water Filters provide clean, treated water for industries, corporate offices, hotels, hospitals, and educational institutions. With flow rates ranging from 50 LPH to 10,000 LPH, we customize solutions integrating sand filtration, carbon filtration, RO membranes, water softeners, and UV sterilizers to meet strict regulatory and process requirements.",
-    image: "https://www.waterprofessionals.com/wp-content/uploads/2-2.jpg",
+    image: "https://www.filtrasystems.com/assets/images/buckets/imag0004.jpg",
     icon: "Building2",
     features: [
       "Custom capacity from 50 LPH to 10,000 LPH+",
@@ -171,7 +171,7 @@ export const servicesData: Service[] = [
     name: "Gas Geyser",
     short_description: "Safe, energy-efficient gas water heaters for instant hot water and reduced electricity bills.",
     description: "Switch to instant hot water with our highly reliable Gas Geysers. Running on LPG, they offer massive savings on electricity bills compared to electric geysers. Equipped with multiple safety features including flame failure protection, over-heat cutoff, and an oxygen depletion sensor, our gas geysers provide immediate hot water on demand, even at low water pressures.",
-    image: "https://m.media-amazon.com/images/I/71u3A029TAL._AC_UF894,1000_QL80_.jpg",
+    image: "https://storage.googleapis.com/shy-pub/386933/Screenshot13-removebg-preview-1723698885008.jpeg",
     icon: "Flame",
     features: [
       "Instant heating - hot water within 5 seconds",
@@ -225,7 +225,7 @@ export const servicesData: Service[] = [
     name: "R.O. + Water Cooler",
     short_description: "Integrated commercial water cooling cabinets fitted with inline RO purification systems.",
     description: "Perfect for offices, showrooms, public centers, and schools, our integrated RO + Water Coolers deliver chilled, pure water directly from municipal lines. Available in capacities from 20 to 150 liters, these systems combine powerful chilling compressors with highly reliable multi-stage RO filtration, ensuring your employees and visitors stay refreshed and safe.",
-    image: "https://universalpurewatersolutions.com/products-water-purifiers/images/KENT-Perk-Mobile-Banner.png",
+    image: "https://indcool.in/uploads/products/img_x300_69a276d43b08b-1772254932.jpeg",
     icon: "IceCream",
     features: [
       "Combined inline RO purification and heavy-duty water cooling",

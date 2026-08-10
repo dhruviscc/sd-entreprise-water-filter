@@ -183,10 +183,13 @@ export default function ContactUsPage() {
                         <p className="text-xs uppercase tracking-wider text-slate-400">
                           Office Address
                         </p>
-                        <p className=" text-slate-800 text-sm">
-                          Plot No. 12, GIDC Phase 3,
-                          Naroda, Ahmedabad,
-                          Gujarat - 382330
+                        <p className=" text-slate-800 text-sm lowercase">
+                          A-2-502,YAMUNA PALACE
+                          NEAR KRISHNA TOWNSHIP
+                          YAMUNA CHOWK
+                          MOTA VARACHHA
+                          SURAT
+                          PINCODE - 394101
                         </p>
                       </div>
                     </a>
@@ -327,7 +330,7 @@ export default function ContactUsPage() {
             Our Geographic Location (Ahmedabad, Gujarat)
           </h3>
           <div className="relative w-full h-[350px] sm:h-[450px] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
-     
+
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12398368.556847932!2d-0.05976507024788251!3d0.1443693565530188!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xa5f922de066fd38f%3A0x3578557376eb320b!2sSD%20Enterprise%20Water%20Filter%20Sales%20Service!5e0!3m2!1sen!2sin!4v1781064901243!5m2!1sen!2sin"
               className="w-full h-[360px] md:h-[560px] border-0"
               loading="lazy"
