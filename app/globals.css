@@ -94,6 +94,46 @@ body {
   overflow-x: hidden;
 }
 
+/* Rich text rendered by the blog editor. Scoped so site-wide typography stays unchanged. */
+.blog-article-content > * + * {
+  margin-top: 0.75rem;
+}
+
+.blog-article-content h2,
+.blog-article-content h3,
+.blog-article-content h4 {
+  color: #1e293b;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.blog-article-content h2 {
+  margin-top: 1.25rem;
+  font-size: 1.35rem;
+}
+
+.blog-article-content h3 {
+  margin-top: 1.15rem;
+  font-size: 1.15rem;
+}
+
+.blog-article-content p {
+  margin: 0.5rem 0;
+}
+
+.blog-article-content a {
+  color: #0284c7;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.blog-article-content img {
+  width: 100%;
+  height: auto;
+  margin: 1rem 0;
+  border-radius: 0.75rem;
+}
+
 .site-shell {
   position: relative;
   z-index: 1;
