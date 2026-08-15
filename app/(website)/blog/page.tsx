@@ -184,45 +184,47 @@ export default function BlogListingPage() {
                   delay={(index % 3) * 120}
                   duration={700}
                 >
-                  <div className="bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-2 border border-slate-200 hover:border-sky-200 overflow-hidden flex flex-col justify-between h-full transition-all duration-300 group cursor-pointer">
-                    {/* Blog Image */}
-                    <div className="relative h-52 bg-slate-100 overflow-hidden">
-                      <Image
-                        src={post.image}
-                        alt={post.title}
-                        fill
-                        unoptimized
-                        className="object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-in-out"
-                      />
-                      <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-[10px] font-extrabold text-sky-700 uppercase tracking-wider shadow-sm">
-                        {post.category}
+                  <Link href={`/blog/${post.id}`} className="h-full">
+                    <div className="bg-white rounded-2xl shadow-sm hover:shadow-2xl hover:-translate-y-2 border border-slate-200 hover:border-sky-200 overflow-hidden flex flex-col justify-between h-full transition-all duration-300 group cursor-pointer">
+                      {/* Blog Image */}
+                      <div className="relative h-52 bg-slate-100 overflow-hidden">
+                        <Image
+                          src={post.image}
+                          alt={post.title}
+                          fill
+                          unoptimized
+                          className="object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                        />
+                        <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-lg text-[10px] font-extrabold text-sky-700 uppercase tracking-wider shadow-sm">
+                          {post.category}
+                        </div>
+                      </div>
+
+                      {/* Content area */}
+                      <div className="p-6 flex-grow flex flex-col justify-between space-y-4 relative z-10 bg-white">
+                        <div className="space-y-3">
+
+                          <h3 className="text-lg font-bold text-slate-900 group-hover:text-sky-600 transition-colors line-clamp-2 leading-snug">
+                            {post.title}
+                          </h3>
+                          <p className="text-sm text-slate-600 leading-relaxed line-clamp-3 font-medium">
+                            {post.summary}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-5 mt-auto border-t border-slate-100">
+
+                          <div
+
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 group-hover:text-sky-700 transition-colors bg-sky-50 hover:bg-sky-100 px-3 py-1.5 rounded-lg"
+                          >
+                            <span>Read</span>
+                            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                          </div>
+                        </div>
                       </div>
                     </div>
-
-                    {/* Content area */}
-                    <div className="p-6 flex-grow flex flex-col justify-between space-y-4 relative z-10 bg-white">
-                      <div className="space-y-3">
-
-                        <h3 className="text-lg font-bold text-slate-900 group-hover:text-sky-600 transition-colors line-clamp-2 leading-snug">
-                          {post.title}
-                        </h3>
-                        <p className="text-sm text-slate-600 leading-relaxed line-clamp-3 font-medium">
-                          {post.summary}
-                        </p>
-                      </div>
-
-                      <div className="flex items-center justify-between pt-5 mt-auto border-t border-slate-100">
-
-                        <Link
-                          href={`/blog/${post.id}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-bold text-sky-600 group-hover:text-sky-700 transition-colors bg-sky-50 hover:bg-sky-100 px-3 py-1.5 rounded-lg"
-                        >
-                          <span>Read</span>
-                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
+                  </Link>
                 </ScrollReveal>
               ))}
             </div>

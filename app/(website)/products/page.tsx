@@ -353,78 +353,78 @@ export default function ProductsPage() {
                     delay={(index % 3) * 100}
                     duration={600}
                   >
-                    <div className="relative bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-500 overflow-hidden group flex flex-col justify-between h-full hover:shadow-[0_20px_50px_rgba(14,165,233,0.12)] hover:border-sky-200 hover:-translate-y-2">
-                      {/* Image container */}
-                      <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-50 to-sky-50/30 border-b border-slate-100 overflow-hidden">
-                        {currentImage ? <Image
-                          src={currentImage}
-                          alt={product.name}
-                          fill
-                          className="object-contain p-4 object-center group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
-                        /> : <div className="flex items-center justify-center w-full h-full text-slate-300"><ImageIcon size={32} /></div>}
-                        <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-[9px] font-extrabold text-white uppercase tracking-widest shadow-sm transition-all duration-300 group-hover:bg-sky-600">
-                          {product.product_categories?.name}
-                        </div>
-                      </div>
-
-                      {/* Body Content */}
-                      <div className="p-4 flex-grow flex flex-col justify-between space-y-4 relative">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between gap-1.5">
-                            <h3 className="text-sm font-bold text-slate-800 tracking-wide line-clamp-1 group-hover:text-sky-500 transition-colors">
-                              {product.name}
-                            </h3>
-                            {/* Color circles directly on the card */}
-                            {product.product_variants && product.product_variants.length > 1 && (
-                              <div className="flex gap-1 items-center">
-                                {product.product_variants.map((variant: any, vIdx: number) => {
-                                  const isActive = visibleActiveIndex === vIdx;
-                                  return (
-                                    <button
-                                      key={vIdx}
-                                      title={variant.name}
-                                      onClick={(e) => {
-                                        e.preventDefault();
-                                        e.stopPropagation();
-                                        setActiveVariants((prev) => ({ ...prev, [product.id]: vIdx }));
-                                      }}
-                                      className={`w-4 h-4 rounded-full border transition-all cursor-pointer ${isActive ? "ring-1 ring-sky-500 scale-110 border-white" : "border-slate-300 hover:scale-105"
-                                        }`}
-                                      style={{ backgroundColor: variant.color_hex }}
-                                    />
-                                  );
-                                })}
-                              </div>
-                            )}
-
-                          </div>
-
-                          <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
-                            {product.description}
-                          </p>
-                        </div>
-
-                        <div className="space-y-3 pt-3 border-t border-slate-100">
-                          <div className="grid grid-cols-2 gap-2">
-                            <Link
-                              href={`/products/${product.id}?variant=${visibleActiveIndex}`}
-                              className="flex items-center justify-center py-2.5 bg-slate-50 hover:bg-sky-50 rounded-xl text-xs font-bold text-slate-700 hover:text-sky-600 transition-all duration-300 border border-slate-100 hover:border-sky-100"
-                            >
-                              View Details
-                            </Link>
-                            <button
-                              onClick={() => openEnquiry(product.name, "product")}
-                              className="flex items-center justify-center py-3 rounded-2xl text-xs font-bold bg-sky-500 text-white hover:bg-sky-600 transition-all shadow-lg shadow-sky-200 hover:shadow-sky-300 cursor-pointer"
-                            >
-                              Enquire
-                            </button>
+                    <Link href={`/products/${product.id}?variant=${visibleActiveIndex}`} className="h-full">
+                      <div className="relative bg-white rounded-2xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-500 overflow-hidden group flex flex-col justify-between h-full hover:shadow-[0_20px_50px_rgba(14,165,233,0.12)] hover:border-sky-200 hover:-translate-y-2 cursor-pointer">
+                        {/* Image container */}
+                        <div className="relative aspect-[4/3] bg-gradient-to-br from-slate-50 to-sky-50/30 border-b border-slate-100 overflow-hidden">
+                          {currentImage ? <Image
+                            src={currentImage}
+                            alt={product.name}
+                            fill
+                            className="object-contain p-4 object-center group-hover:scale-110 transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+                          /> : <div className="flex items-center justify-center w-full h-full text-slate-300"><ImageIcon size={32} /></div>}
+                          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-[9px] font-extrabold text-white uppercase tracking-widest shadow-sm transition-all duration-300 group-hover:bg-sky-600">
+                            {product.product_categories?.name}
                           </div>
                         </div>
-                      </div>
 
-                      {/* Bottom Gradient Line (Unique Interaction Glow) */}
-                      <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-gradient-to-r from-sky-400 to-blue-600 transition-all duration-500 group-hover:w-full" />
-                    </div>
+                        {/* Body Content */}
+                        <div className="p-4 flex-grow flex flex-col justify-between space-y-4 relative">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between gap-1.5">
+                              <h3 className="text-sm font-bold text-slate-800 tracking-wide line-clamp-1 group-hover:text-sky-500 transition-colors">
+                                {product.name}
+                              </h3>
+                              {/* Color circles directly on the card */}
+                              {product.product_variants && product.product_variants.length > 1 && (
+                                <div className="flex gap-1 items-center">
+                                  {product.product_variants.map((variant: any, vIdx: number) => {
+                                    const isActive = visibleActiveIndex === vIdx;
+                                    return (
+                                      <button
+                                        key={vIdx}
+                                        title={variant.name}
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          setActiveVariants((prev) => ({ ...prev, [product.id]: vIdx }));
+                                        }}
+                                        className={`w-4 h-4 rounded-full border transition-all cursor-pointer ${isActive ? "ring-1 ring-sky-500 scale-110 border-white" : "border-slate-300 hover:scale-105"
+                                          }`}
+                                        style={{ backgroundColor: variant.color_hex }}
+                                      />
+                                    );
+                                  })}
+                                </div>
+                              )}
+
+                            </div>
+
+                            <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
+                              {product.description}
+                            </p>
+                          </div>
+
+                          <div className="space-y-3 pt-3 border-t border-slate-100">
+                            <div className="flex items-center justify-end">
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  openEnquiry(product.name, "product");
+                                }}
+                                className="flex items-center justify-center py-2 px-4 rounded-lg text-xs font-bold bg-sky-500 text-white hover:bg-sky-600 transition-all shadow-lg shadow-sky-200 hover:shadow-sky-300 cursor-pointer"
+                              >
+                                Enquire
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Bottom Gradient Line (Unique Interaction Glow) */}
+                        <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-gradient-to-r from-sky-400 to-blue-600 transition-all duration-500 group-hover:w-full" />
+                      </div>
+                    </Link>
                   </ScrollReveal>
                 );
               })}
@@ -481,8 +481,8 @@ export default function ProductsPage() {
                         setShowMobileFilters(false);
                       }}
                       className={`w-full text-left px-4 py-3 rounded-xl transition-all ${isSelected
-                          ? "bg-sky-500 text-white"
-                          : "bg-slate-50 text-slate-700 hover:bg-slate-100"
+                        ? "bg-sky-500 text-white"
+                        : "bg-slate-50 text-slate-700 hover:bg-slate-100"
                         }`}
                     >
                       {cat}
@@ -512,8 +512,8 @@ export default function ProductsPage() {
                             )
                           }
                           className={`h-9 w-9 rounded-lg border ${isSelected
-                              ? "ring-2 ring-sky-500 border-sky-500"
-                              : "border-slate-200"
+                            ? "ring-2 ring-sky-500 border-sky-500"
+                            : "border-slate-200"
                             }`}
                           style={{
                             backgroundColor: option.colorHex,
